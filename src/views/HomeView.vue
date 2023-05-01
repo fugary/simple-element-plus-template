@@ -1,19 +1,23 @@
 <script setup>
-import LeftMenu from "@/components/LeftMenu.vue";
-import TopNav from "@/components/TopNav.vue";
+import LeftMenu from '@/components/LeftMenu.vue'
+import TopNav from '@/components/TopNav.vue'
+import { ref } from 'vue'
+
+const collapseLeft = ref(false)
+
 </script>
 
 <template>
   <el-container class="index-container">
-    <el-header>
-      <top-nav/>
-    </el-header>
+    <el-aside>
+      <left-menu v-model:collapse-left="collapseLeft" />
+    </el-aside>
     <el-container>
-      <el-aside>
-        <left-menu/>
-      </el-aside>
+      <el-header>
+        <top-nav v-model:collapse-left="collapseLeft" />
+      </el-header>
       <el-main>
-        <router-view/>
+        <router-view />
       </el-main>
     </el-container>
   </el-container>
