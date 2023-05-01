@@ -9,7 +9,7 @@ const collapseLeft = ref(false)
 
 <template>
   <el-container class="index-container">
-    <el-aside>
+    <el-aside width="auto">
       <left-menu v-model:collapse-left="collapseLeft" />
     </el-aside>
     <el-container>

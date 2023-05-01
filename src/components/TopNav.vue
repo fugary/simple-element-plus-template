@@ -4,17 +4,23 @@
     :ellipsis="false"
   >
     <el-menu-item @click="updateCollapseLeft">
-      <el-icon v-if="!isCollapseLeft">
-        <Fold />
-      </el-icon>
-      <el-icon v-if="isCollapseLeft">
-        <Expand />
-      </el-icon>
+      <template #title>
+        <el-icon v-if="!isCollapseLeft">
+          <Fold />
+        </el-icon>
+        <el-icon v-if="isCollapseLeft">
+          <Expand />
+        </el-icon>
+        <span>&nbsp;</span>
+      </template>
     </el-menu-item>
     <div class="flex-grow" />
     <el-sub-menu index="1">
       <template #title>
-        语言
+        <el-icon v-if="isCollapseLeft">
+          <Expand />
+        </el-icon>
+        <span>语言</span>
       </template>
       <el-menu-item index="2-1">
         中文
