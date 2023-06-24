@@ -1,3 +1,11 @@
+<script setup>
+defineProps({
+  collapseLeft: {
+    type: Boolean
+  }
+})
+</script>
+
 <template>
   <el-scrollbar>
     <el-menu
@@ -13,57 +21,46 @@
       <el-sub-menu index="1">
         <template #title>
           <el-icon><setting /></el-icon>
-          <span>系统管理</span>
+          <span>{{ $t('menu.label.systemManagement') }}</span>
         </template>
         <el-menu-item index="1-1">
           <el-icon><user /></el-icon>
-          <span>用户管理</span>
+          <span>{{ $t('menu.label.userManagement') }}</span>
         </el-menu-item>
         <el-menu-item index="1-2">
           <el-icon><Menu /></el-icon>
-          <span>角色管理</span>
+          <span>{{ $t('menu.label.roleManagement') }}</span>
         </el-menu-item>
         <el-menu-item index="1-3">
           <el-icon><lock /></el-icon>
-          <span>权限管理</span>
+          <span>{{ $t('menu.label.authorityManagement') }}</span>
         </el-menu-item>
         <el-menu-item index="1-4">
           <el-icon><Menu /></el-icon>
-          <span>菜单管理</span>
+          <span>{{ $t('menu.label.menuManagement') }}</span>
         </el-menu-item>
       </el-sub-menu>
       <el-sub-menu index="2">
         <template #title>
           <el-icon><WarningFilled /></el-icon>
-          <span>错误页面</span>
+          <span>{{ $t('menu.label.errorPage') }}</span>
         </template>
-        <el-menu-item index="1-1">
+        <el-menu-item index="2-1">
           <el-icon><Warning /></el-icon>
-          <span>客户端错误</span>
+          <span>{{ $t('menu.label.errorPage404') }}</span>
         </el-menu-item>
-        <el-menu-item index="1-2">
+        <el-menu-item index="2-2">
           <el-icon><Warning /></el-icon>
-          <span>没有权限页面</span>
+          <span>{{ $t('menu.label.errorPage403') }}</span>
         </el-menu-item>
-        <el-menu-item index="1-3">
+        <el-menu-item index="2-3">
           <el-icon><Warning /></el-icon>
-          <span>服务器错误</span>
+          <span>{{ $t('menu.label.errorPage500') }}</span>
         </el-menu-item>
       </el-sub-menu>
     </el-menu>
   </el-scrollbar>
 </template>
-
-<script>
-export default {
-  name: 'LeftMenu',
-  props: {
-    collapseLeft: {
-      type: Boolean
-    }
-  }
-}
-</script>
 
 <style scoped>
 </style>

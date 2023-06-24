@@ -2,8 +2,16 @@
 import LeftMenu from '@/components/LeftMenu.vue'
 import TopNav from '@/components/TopNav.vue'
 import { ref } from 'vue'
+import dayjs from 'dayjs'
 
 const collapseLeft = ref(false)
+
+const value1 = ref(new Date())
+const color = ref('rgba(19, 206, 102, 0.8)')
+
+const testDay = function () {
+  return dayjs.weekdays()
+}
 
 </script>
 
@@ -17,7 +25,17 @@ const collapseLeft = ref(false)
         <top-nav v-model:collapse-left="collapseLeft" />
       </el-header>
       <el-main>
-        <router-view />
+        <el-date-picker
+          v-model="value1"
+          type="date"
+          placeholder="Pick a day"
+        />
+        <el-color-picker
+          v-model="color"
+          show-alpha
+        />
+        {{ testDay() }}
+        {{ $i18n.locale }}
       </el-main>
     </el-container>
   </el-container>

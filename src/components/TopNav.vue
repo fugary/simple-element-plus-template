@@ -1,3 +1,21 @@
+<script setup>
+
+import { ref } from 'vue'
+
+const isCollapseLeft = ref(false)
+
+const emit = defineEmits(['update:collapseLeft'])
+const updateCollapseLeft = () => {
+  isCollapseLeft.value = !isCollapseLeft.value
+  emit('update:collapseLeft', isCollapseLeft.value)
+}
+
+defineProps({
+  collapseLeft: {
+    type: Boolean
+  }
+})
+</script>
 <template>
   <el-menu
     mode="horizontal"
@@ -17,74 +35,52 @@
     <div class="flex-grow" />
     <el-sub-menu index="1">
       <template #title>
-        <el-icon v-if="isCollapseLeft">
-          <Expand />
-        </el-icon>
-        <span>语言</span>
+        <span>{{ $t('common.label.language') }}</span>
       </template>
-      <el-menu-item index="2-1">
-        中文
+      <el-menu-item
+        index="1-1"
+        @click="$changeLocale('zh-CN')"
+      >
+        {{ $t('common.label.langCn') }}
       </el-menu-item>
-      <el-menu-item index="2-2">
-        英文
+      <el-menu-item
+        index="1-2"
+        @click="$changeLocale('en-US')"
+      >
+        {{ $t('common.label.langEn') }}
       </el-menu-item>
     </el-sub-menu>
     <el-sub-menu index="2">
       <template #title>
-        主题
+        {{ $t('common.label.theme') }}
       </template>
       <el-menu-item index="2-1">
-        默认
+        {{ $t('common.label.themeDefault') }}
       </el-menu-item>
       <el-menu-item index="2-2">
-        黑色
+        {{ $t('common.label.themeDark') }}
       </el-menu-item>
       <el-menu-item index="2-3">
-        紫色
+        {{ $t('common.label.themePurple') }}
       </el-menu-item>
     </el-sub-menu>
     <el-sub-menu index="3">
       <template #title>
-        个人中心
+        {{ $t('common.label.personalCenter') }}
       </template>
-      <el-menu-item index="2-4-1">
-        个人资料
+      <el-menu-item index="3-1">
+        {{ $t('common.label.personalInfo') }}
       </el-menu-item>
-      <el-menu-item index="2-4-2">
-        关于
+      <el-menu-item index="3-2">
+        {{ $t('common.label.about') }}
       </el-menu-item>
-      <el-menu-item index="2-4-3">
-        退出
+      <el-menu-item index="3-3">
+        {{ $t('common.label.logout') }}
       </el-menu-item>
     </el-sub-menu>
   </el-menu>
 </template>
 
-<script>
-export default {
-  name: 'TopNav',
-  props: {
-    collapseLeft: {
-      type: Boolean
-    }
-  },
-  data () {
-    const isCollapseLeft = this.$props.collapseLeft
-    return {
-      isCollapseLeft
-    }
-  },
-  methods: {
-    updateCollapseLeft () {
-      this.isCollapseLeft = !this.isCollapseLeft
-      this.$emit('update:collapseLeft', this.isCollapseLeft)
-    }
-  }
-}
-</script>
-
 <style scoped>
-.flex-grow {
-  flex-grow: 1;
-}
+
 </style>

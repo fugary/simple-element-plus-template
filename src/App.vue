@@ -1,8 +1,11 @@
 <script setup>
+
 </script>
 
 <template>
-  <router-view />
+  <el-config-provider :locale="$currentLocale.localeData">
+    <router-view />
+  </el-config-provider>
 </template>
 
 <style scoped>
