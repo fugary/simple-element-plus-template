@@ -17,7 +17,10 @@ const testDay = function () {
 
 <template>
   <el-container class="index-container">
-    <el-aside width="auto">
+    <el-aside
+      class="index-aside"
+      width="auto"
+    >
       <left-menu v-model:collapse-left="collapseLeft" />
     </el-aside>
     <el-container>
