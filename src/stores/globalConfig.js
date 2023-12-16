@@ -7,4 +7,6 @@ export const useGlobalConfigStore = defineStore('globalConfig', () => {
     currentLocale.value = locale
   }
   return { currentLocale, changeLocale }
+}, {
+  persist: true
 })

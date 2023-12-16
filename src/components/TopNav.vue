@@ -1,6 +1,11 @@
 <script setup>
 
 import { ref } from 'vue'
+import { useDark } from '@vueuse/core'
+import { Check } from '@element-plus/icons-vue'
+import { useGlobalConfigStore } from '@/stores/globalConfig'
+
+const globalConfigStore = useGlobalConfigStore()
 
 const isCollapseLeft = ref(false)
 
@@ -9,6 +14,8 @@ const updateCollapseLeft = () => {
   isCollapseLeft.value = !isCollapseLeft.value
   emit('update:collapseLeft', isCollapseLeft.value)
 }
+
+const isDark = useDark()
 
 defineProps({
   collapseLeft: {
@@ -41,12 +48,18 @@ defineProps({
         index="1-1"
         @click="$changeLocale('zh-CN')"
       >
+        <el-icon v-if="globalConfigStore.currentLocale==='zh-CN'">
+          <Check />
+        </el-icon>
         {{ $t('common.label.langCn') }}
       </el-menu-item>
       <el-menu-item
         index="1-2"
         @click="$changeLocale('en-US')"
       >
+        <el-icon v-if="globalConfigStore.currentLocale==='en-US'">
+          <Check />
+        </el-icon>
         {{ $t('common.label.langEn') }}
       </el-menu-item>
     </el-sub-menu>
@@ -54,14 +67,23 @@ defineProps({
       <template #title>
         {{ $t('common.label.theme') }}
       </template>
-      <el-menu-item index="2-1">
+      <el-menu-item
+        index="2-1"
+        @click="isDark=false"
+      >
+        <el-icon v-if="!isDark">
+          <Check />
+        </el-icon>
         {{ $t('common.label.themeDefault') }}
       </el-menu-item>
-      <el-menu-item index="2-2">
+      <el-menu-item
+        index="2-2"
+        @click="isDark=true"
+      >
+        <el-icon v-if="isDark">
+          <Check />
+        </el-icon>
         {{ $t('common.label.themeDark') }}
-      </el-menu-item>
-      <el-menu-item index="2-3">
-        {{ $t('common.label.themePurple') }}
       </el-menu-item>
     </el-sub-menu>
     <el-sub-menu index="3">
