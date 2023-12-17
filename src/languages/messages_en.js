@@ -9,7 +9,6 @@ export default {
       theme: 'Themes',
       themeDefault: 'default',
       themeDark: 'dark',
-      themePurple: 'purple',
       personalCenter: 'Personal Center',
       personalInfo: 'Personal Info',
       about: 'About',

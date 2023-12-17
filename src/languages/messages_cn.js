@@ -9,7 +9,6 @@ export default {
       theme: '主题',
       themeDefault: '默认',
       themeDark: '黑色',
-      themePurple: '紫色',
       personalCenter: '个人中心',
       personalInfo: '个人资料',
       about: '关于',

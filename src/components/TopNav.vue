@@ -1,21 +1,15 @@
 <script setup>
 
-import { ref } from 'vue'
-import { useDark } from '@vueuse/core'
 import { Check } from '@element-plus/icons-vue'
-import { useGlobalConfigStore } from '@/stores/globalConfig'
+import { useGlobalConfigStore } from '@/stores/globalConfigStore'
 
 const globalConfigStore = useGlobalConfigStore()
 
-const isCollapseLeft = ref(false)
-
 const emit = defineEmits(['update:collapseLeft'])
 const updateCollapseLeft = () => {
-  isCollapseLeft.value = !isCollapseLeft.value
-  emit('update:collapseLeft', isCollapseLeft.value)
+  globalConfigStore.collapseLeft()
+  emit('update:collapseLeft', globalConfigStore.isCollapseLeft)
 }
-
-const isDark = useDark()
 
 defineProps({
   collapseLeft: {
@@ -30,10 +24,10 @@ defineProps({
   >
     <el-menu-item @click="updateCollapseLeft">
       <template #title>
-        <el-icon v-if="!isCollapseLeft">
+        <el-icon v-if="!globalConfigStore.isCollapseLeft">
           <Fold />
         </el-icon>
-        <el-icon v-if="isCollapseLeft">
+        <el-icon v-if="globalConfigStore.isCollapseLeft">
           <Expand />
         </el-icon>
         <span>&nbsp;</span>
@@ -69,18 +63,18 @@ defineProps({
       </template>
       <el-menu-item
         index="2-1"
-        @click="isDark=false"
+        @click="globalConfigStore.changeTheme(false)"
       >
-        <el-icon v-if="!isDark">
+        <el-icon v-if="!globalConfigStore.isDarkTheme">
           <Check />
         </el-icon>
         {{ $t('common.label.themeDefault') }}
       </el-menu-item>
       <el-menu-item
         index="2-2"
-        @click="isDark=true"
+        @click="globalConfigStore.changeTheme(true)"
       >
-        <el-icon v-if="isDark">
+        <el-icon v-if="globalConfigStore.isDarkTheme">
           <Check />
         </el-icon>
         {{ $t('common.label.themeDark') }}

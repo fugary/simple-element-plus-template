@@ -6,7 +6,7 @@ import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import en from 'element-plus/dist/locale/en.mjs'
 import 'dayjs/locale/zh-cn'
 import dayjs from 'dayjs'
-import { useGlobalConfigStore } from '@/stores/globalConfig'
+import { useGlobalConfigStore } from '@/stores/globalConfigStore'
 
 const DEFAULT_LOCALE = 'zh-CN'
 dayjs.locale(DEFAULT_LOCALE) // dayjs的语言配置
