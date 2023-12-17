@@ -1,6 +1,6 @@
 <script setup>
 import { useGlobalConfigStore } from '@/stores/globalConfigStore'
-import { $changeLocale, elementLocale } from '@/languages/MessagesConfig'
+import { $changeLocale, elementLocale } from '@/messages'
 
 const globalConfigStore = useGlobalConfigStore()
 $changeLocale(globalConfigStore.currentLocale)
