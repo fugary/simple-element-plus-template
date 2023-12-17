@@ -42,18 +42,20 @@ defineProps({
         index="1-1"
         @click="$changeLocale('zh-CN')"
       >
-        <el-icon v-if="globalConfigStore.currentLocale==='zh-CN'">
-          <Check />
-        </el-icon>
+        <common-icon
+          v-if="globalConfigStore.currentLocale==='zh-CN'"
+          icon="check"
+        />
         {{ $t('common.label.langCn') }}
       </el-menu-item>
       <el-menu-item
         index="1-2"
         @click="$changeLocale('en-US')"
       >
-        <el-icon v-if="globalConfigStore.currentLocale==='en-US'">
-          <Check />
-        </el-icon>
+        <common-icon
+          v-if="globalConfigStore.currentLocale==='en-US'"
+          icon="check"
+        />
         {{ $t('common.label.langEn') }}
       </el-menu-item>
     </el-sub-menu>
