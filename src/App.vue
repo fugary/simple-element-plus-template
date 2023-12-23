@@ -1,5 +1,5 @@
 <script setup>
-import { useGlobalConfigStore } from '@/stores/globalConfigStore'
+import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
 import { $changeLocale, elementLocale } from '@/messages'
 
 const globalConfigStore = useGlobalConfigStore()

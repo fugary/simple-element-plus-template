@@ -1,14 +1,19 @@
-import { defineAsyncComponent } from 'vue'
+import CommonIcon from '@/components/common-icon/index.vue'
+import CommonInput from '@/components/common-input/index.vue'
+import CommonMenu from '@/components/common-menu/index.vue'
+import CommonMenuItem from '@/components/common-menu-item/index.vue'
 
 /**
  * 自定义通用组件自动注册
  */
 export default {
-  install (app) {
-    const components = import.meta.glob('./*/index.vue')
-    for (const [filePath, componentFn] of Object.entries(components)) {
-      const compName = filePath.split('/')[1]
-      app.component(compName, defineAsyncComponent(componentFn))
-    }
+  /**
+   * @param Vue {import('vue').App} IDE（IDEA）插件似乎不能正常提示vue3组件注册，参数名写成Vue才能提示
+   */
+  install (Vue) {
+    Vue.component('CommonIcon', CommonIcon)
+    Vue.component('CommonInput', CommonInput)
+    Vue.component('CommonMenu', CommonMenu)
+    Vue.component('CommonMenuItem', CommonMenuItem)
   }
 }

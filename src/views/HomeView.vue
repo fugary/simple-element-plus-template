@@ -1,17 +1,6 @@
 <script setup>
 import LeftMenu from '@/layout/LeftMenu.vue'
 import TopNav from '@/layout/TopNav.vue'
-import { ref } from 'vue'
-import dayjs from 'dayjs'
-
-const collapseLeft = ref(false)
-
-const value1 = ref(new Date())
-
-const testDay = function () {
-  return dayjs.weekdays()
-}
-
 </script>
 
 <template>
@@ -20,20 +9,24 @@ const testDay = function () {
       class="index-aside"
       width="auto"
     >
-      <left-menu v-model:collapse-left="collapseLeft" />
+      <left-menu />
     </el-aside>
     <el-container>
       <el-header>
-        <top-nav v-model:collapse-left="collapseLeft" />
+        <top-nav />
       </el-header>
       <el-main>
-        <el-date-picker
-          v-model="value1"
-          type="date"
-          placeholder="Pick a day"
-        />
-        {{ testDay() }}
-        {{ $i18n.locale }}
+        <router-view v-slot="{ Component, route }">
+          <transition
+            name="slide-fade"
+            mode="out-in"
+          >
+            <component
+              :is="Component"
+              :key="route.fullPath"
+            />
+          </transition>
+        </router-view>
       </el-main>
     </el-container>
   </el-container>

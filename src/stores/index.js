@@ -1,6 +1,6 @@
 import { defineStore, createPinia } from 'pinia'
 import piniaPluginPersistedState from 'pinia-plugin-persistedstate'
-import { useGlobalConfigStore } from '@/stores/globalConfigStore'
+import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
 
 export const useStore = defineStore('store', () => {
   return {

@@ -6,7 +6,8 @@ import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import en from 'element-plus/dist/locale/en.mjs'
 import 'dayjs/locale/zh-cn'
 import dayjs from 'dayjs'
-import { useGlobalConfigStore } from '@/stores/globalConfigStore'
+import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
+import { GlobalLocales } from '@/consts/GlobalConstants'
 
 const DEFAULT_LOCALE = 'zh-CN'
 dayjs.locale(DEFAULT_LOCALE) // dayjs的语言配置
@@ -25,16 +26,36 @@ export const elementLocale = ref({ // 用于element-plus
   localeData: zhCn
 })
 
-export const $changeLocale = function (locale) {
+export const changeMessages = locale => {
   i18n.global.locale.value = locale
   elementLocale.value.localeData = locale === DEFAULT_LOCALE ? zhCn : en
   dayjs.locale(locale.toLowerCase())
+}
+
+export const $changeLocale = locale => {
   useGlobalConfigStore().changeLocale(locale)
+}
+/**
+ * @param cn
+ * @param en
+ * @param {boolean} replaceEmpty 为空是否用不为空的数据代替
+ * @returns {*}
+ */
+export const $i18nMsg = function (cn, en, replaceEmpty) {
+  const { currentLocale } = useGlobalConfigStore()
+  console.log(currentLocale)
+  if (currentLocale === GlobalLocales.CN) {
+    return replaceEmpty ? (cn || en) : cn
+  }
+  return replaceEmpty ? (en || cn) : en
 }
 
 export default {
   install (app) {
     app.use(i18n)
-    app.config.globalProperties.$changeLocale = $changeLocale
+    Object.assign(app.config.globalProperties, {
+      $changeLocale,
+      $i18nMsg
+    })
   }
 }

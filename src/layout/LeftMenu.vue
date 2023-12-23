@@ -1,20 +1,21 @@
 <script setup>
-defineProps({
-  collapseLeft: {
-    type: Boolean
-  }
-})
+import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
+const globalConfigStore = useGlobalConfigStore()
 </script>
 
 <template>
   <el-scrollbar>
     <el-menu
-      :collapse="collapseLeft"
+      class="el-menu-left"
+      :collapse="globalConfigStore.isCollapseLeft"
       :default-openeds="['1']"
     >
-      <el-menu-item index="0">
+      <el-menu-item
+        index="0"
+        route="/"
+      >
         <span>Simple Element Plus</span>
-        <div v-if="collapseLeft">
+        <div v-if="globalConfigStore.isCollapseLeft">
           SEP
         </div>
       </el-menu-item>

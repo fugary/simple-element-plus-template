@@ -2,13 +2,13 @@
 defineProps({
   icon: {
     type: String,
-    required: true
+    required: false
   }
 })
 </script>
 
 <template>
-  <el-icon>
+  <el-icon v-if="icon">
     <component
       :is="icon"
     />
