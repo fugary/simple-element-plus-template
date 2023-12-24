@@ -1,5 +1,5 @@
 <script setup>
-import { useBaseTopMenus, useBusinessMenus } from '@/services/GlobalService'
+import { useBaseTopMenus, useBusinessMenus } from '@/services/global/GlobalService'
 import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
 import { GlobalLayoutMode } from '@/consts/GlobalConstants'
 import { computed } from 'vue'

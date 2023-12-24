@@ -1,6 +1,6 @@
 <script setup>
 import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
-import { useBusinessMenus } from '@/services/GlobalService'
+import { useBusinessMenus } from '@/services/global/GlobalService'
 const globalConfigStore = useGlobalConfigStore()
 const businessMenus = useBusinessMenus()
 </script>

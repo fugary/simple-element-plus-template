@@ -14,13 +14,12 @@ const menuItems = computed(() => {
   return filterMenus(props.menus)
 })
 const calcWithIf = menuItem => {
-  if (menuItem.iconIf) {
-    menuItem.icon = menuItem.iconIf(menuItem)
-  }
-  if (menuItem.labelIf) {
-    menuItem.label = menuItem.labelIf(menuItem)
-  }
-  return menuItem.icon
+  ['icon', 'labelKey', 'label', 'html'].forEach(key => {
+    const keyIf = menuItem[`${key}If`]
+    if (keyIf) {
+      menuItem[key] = keyIf(menuItem)
+    }
+  })
 }
 const filterMenus = menus => menus.filter(menu => !menu.disabled)
   .map(menu => {
@@ -35,43 +34,17 @@ const filterMenus = menus => menus.filter(menu => !menu.disabled)
 <template>
   <el-menu
     v-bind="$attrs"
+    :default-active="$route.path"
     router
     :collapse="collapse"
   >
-    <template v-for="(menuItem, index) in menuItems">
-      <div
-        v-if="menuItem.isSplit"
-        :key="menuItem.index||index"
-        :class="menuItem.splitCls"
-      >
-        {{ menuItem.splitText }}
-      </div>
-      <el-sub-menu
-        v-else-if="menuItem.children && menuItem.children.length"
-        :key="menuItem.index||index"
-        :index="`${menuItem.index||index}`"
-        v-bind="menuItem.attrs"
-      >
-        <template #title>
-          <common-icon
-            :icon="menuItem.icon"
-          />
-          <span v-if="menuItem.labelKey||menuItem.label">
-            {{ menuItem.labelKey?$t(menuItem.labelKey):menuItem.label }}
-          </span>
-        </template>
-        <common-menu-item
-          v-for="(childMenu, childIdx) in menuItem.children"
-          :key="childMenu.index||childIdx"
-          :index="childMenu.index"
-          :menu-item="childMenu"
-        />
-      </el-sub-menu>
+    <template
+      v-for="(menuItem, index) in menuItems"
+      :key="index"
+    >
       <common-menu-item
-        v-else
-        :key="menuItem.index||index"
-        :index="menuItem.index"
         :menu-item="menuItem"
+        :index="index"
       />
     </template>
   </el-menu>

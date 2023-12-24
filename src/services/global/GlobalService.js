@@ -7,12 +7,11 @@ export const useBaseTopMenus = () => {
   return ref([
     {
       iconIf: () => globalConfigStore.isCollapseLeft ? 'expand' : 'fold',
-      click: globalConfigStore.collapseLeft,
-      disabled: globalConfigStore.layoutMode !== GlobalLayoutMode.LEFT
+      click: globalConfigStore.collapseLeft
     },
     {
       isSplit: true,
-      splitCls: 'flex-grow'
+      menuCls: 'flex-grow'
     },
     {
       labelKey: 'common.label.language',
@@ -84,10 +83,10 @@ export const useBaseTopMenus = () => {
 }
 
 export const useBusinessMenus = () => {
-  const globalConfigStore = useGlobalConfigStore()
   return ref([
     {
-      labelIf: () => globalConfigStore.layoutMode === GlobalLayoutMode.LEFT && globalConfigStore.isCollapseLeft ? 'SEP' : 'Simple Element Plus'
+      icon: 'HomeFilled',
+      label: 'Simple Element Plus'
     },
     {
       icon: 'setting',
