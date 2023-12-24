@@ -38,7 +38,7 @@ export const useBaseTopMenus = () => {
       click: () => globalConfigStore.changeTheme(!globalConfigStore.isDarkTheme)
     },
     {
-      icon: 'DisplaySettingsRound',
+      icon: 'AutoAwesomeMosaicFilled',
       index: 'layout',
       isDropdown: true,
       children: [
@@ -109,21 +109,18 @@ export const useBusinessMenus = () => {
       ]
     },
     {
-      icon: 'WarningFilled',
-      labelKey: 'menu.label.errorPage',
+      icon: 'BuildRound',
+      labelKey: 'menu.label.toolsManagement',
       children: [
         {
           index: '/not-found',
-          icon: 'Warning',
+          icon: 'WarningFilled',
           labelKey: 'menu.label.errorPage404'
         },
         {
-          icon: 'Warning',
-          labelKey: 'menu.label.errorPage403'
-        },
-        {
-          icon: 'Warning',
-          labelKey: 'menu.label.errorPage500'
+          index: '/icons',
+          icon: 'InsertEmoticonOutlined',
+          labelKey: 'menu.label.toolsIcons'
         }
       ]
     }])

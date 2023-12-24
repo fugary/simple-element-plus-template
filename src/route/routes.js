@@ -17,6 +17,10 @@ const router = createRouter({
         path: 'personal',
         name: 'personal',
         component: () => import('@/views/account/PersonalInfo.vue')
+      }, {
+        path: 'icons',
+        name: 'icons',
+        component: () => import('@/views/Icons.vue')
       },
       {
         path: '/:pathMatch(.*)*',
