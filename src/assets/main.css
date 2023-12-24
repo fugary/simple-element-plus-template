@@ -23,7 +23,7 @@ html, body, #app, .index-container {
     min-height: 400px;
 }
 /**
- * slide-fade 动画
+ * slide-fade动画
  */
 .slide-fade-enter-active {
     transition: all 0.3s ease-out;
@@ -37,4 +37,8 @@ html, body, #app, .index-container {
 .slide-fade-leave-to {
     transform: translateX(20px);
     opacity: 0;
+}
+
+.flex-grow {
+    flex-grow: 1;
 }

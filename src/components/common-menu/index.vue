@@ -13,15 +13,18 @@ const props = defineProps({
 const menuItems = computed(() => {
   return filterMenus(props.menus)
 })
-const calcIcon = menuItem => {
+const calcWithIf = menuItem => {
   if (menuItem.iconIf) {
     menuItem.icon = menuItem.iconIf(menuItem)
+  }
+  if (menuItem.labelIf) {
+    menuItem.label = menuItem.labelIf(menuItem)
   }
   return menuItem.icon
 }
 const filterMenus = menus => menus.filter(menu => !menu.disabled)
   .map(menu => {
-    menu.icon = calcIcon(menu)
+    calcWithIf(menu)
     if (menu.children && menu.children.length) {
       menu.children = filterMenus(menu.children)
     }
@@ -36,10 +39,17 @@ const filterMenus = menus => menus.filter(menu => !menu.disabled)
     :collapse="collapse"
   >
     <template v-for="(menuItem, index) in menuItems">
-      <el-sub-menu
-        v-if="menuItem.children && menuItem.children.length"
+      <div
+        v-if="menuItem.isSplit"
         :key="menuItem.index||index"
-        :index="menuItem.index"
+        :class="menuItem.splitCls"
+      >
+        {{ menuItem.splitText }}
+      </div>
+      <el-sub-menu
+        v-else-if="menuItem.children && menuItem.children.length"
+        :key="menuItem.index||index"
+        :index="`${menuItem.index||index}`"
         v-bind="menuItem.attrs"
       >
         <template #title>
