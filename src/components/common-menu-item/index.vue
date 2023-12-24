@@ -1,5 +1,7 @@
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   menuItem: {
     type: Object,
     required: true
@@ -9,25 +11,41 @@ defineProps({
     required: false
   }
 })
+const isSubMenu = computed(() => {
+  const menuItem = props.menuItem
+  return !menuItem.isDropdown && menuItem.children && menuItem.children.length
+})
+const isDropdown = computed(() => {
+  const menuItem = props.menuItem
+  return menuItem.isDropdown && menuItem.children && menuItem.children.length
+})
+const menuCls = computed(() => {
+  const menuItem = props.menuItem
+  if (!menuItem.menuCls && menuItem.isDropdown) {
+    return 'padding-left1 padding-right1'
+  }
+  return menuItem.menuCls
+})
 </script>
 
 <template>
   <div
     v-if="menuItem.isSplit"
     :key="menuItem.index||index"
-    :class="menuItem.menuCls"
+    :class="menuCls"
   >
     {{ menuItem.splitText }}
   </div>
   <el-sub-menu
-    v-else-if="menuItem.children && menuItem.children.length"
+    v-else-if="isSubMenu"
     :key="menuItem.index||index"
     :index="`${menuItem.index||index}`"
-    :class="menuItem.menuCls"
+    :class="menuCls"
     v-bind="menuItem.attrs"
   >
     <template #title>
       <common-icon
+        :size="menuItem.iconSize"
         :icon="menuItem.icon"
       />
       <span v-if="menuItem.labelKey||menuItem.label">
@@ -46,14 +64,47 @@ defineProps({
     />
   </el-sub-menu>
   <el-menu-item
+    v-else-if="isDropdown"
+    :key="menuItem.index||index"
+    :class="menuCls"
+  >
+    <el-dropdown>
+      <span class="el-dropdown-link">
+        <common-icon
+          :size="menuItem.iconSize"
+          :icon="menuItem.icon"
+        />
+        <span v-if="menuItem.labelKey||menuItem.label">
+          {{ menuItem.labelKey?$t(menuItem.labelKey):menuItem.label }}
+        </span>
+      </span>
+      <template #dropdown>
+        <el-dropdown-item
+          v-for="(childMenu, childIdx) in menuItem.children"
+          :key="childMenu.index||childIdx"
+          @click="childMenu.click&&childMenu.click()"
+        >
+          <common-icon
+            :size="childMenu.iconSize"
+            :icon="childMenu.icon"
+          />
+          <span v-if="childMenu.labelKey||childMenu.label">
+            {{ childMenu.labelKey?$t(childMenu.labelKey):childMenu.label }}
+          </span>
+        </el-dropdown-item>
+      </template>
+    </el-dropdown>
+  </el-menu-item>
+  <el-menu-item
     v-else
-    :class="menuItem.menuCls"
+    :class="menuCls"
     :route="menuItem.route"
     v-bind="menuItem.attrs"
     :index="menuItem.index"
     @click="menuItem.click&&menuItem.click()"
   >
     <common-icon
+      :size="menuItem.iconSize"
       :icon="menuItem.icon"
     />
     <template #title>

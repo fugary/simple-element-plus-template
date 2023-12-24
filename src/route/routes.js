@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import AdminRoutes from '@/route/AdminRoutes'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -15,16 +16,17 @@ const router = createRouter({
       }, {
         path: 'personal',
         name: 'personal',
-        component: () => import('@/views/PersonalInfo.vue')
+        component: () => import('@/views/account/PersonalInfo.vue')
       },
       {
         path: '/:pathMatch(.*)*',
         name: 'notFound',
         component: () => import('@/views/404.vue')
-      }]
+      },
+      ...AdminRoutes
+      ]
     }
-  ],
-  scrollBehavior: () => ({ left: 0, top: 0 })
+  ]
 })
 
 export default router

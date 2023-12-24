@@ -1,34 +1,16 @@
 <script setup>
 import { computed } from 'vue'
+import { filterMenus } from '@/components/utils'
 
 const props = defineProps({
   menus: {
     type: Array,
     required: true
-  },
-  collapse: {
-    type: Boolean
   }
 })
 const menuItems = computed(() => {
   return filterMenus(props.menus)
 })
-const calcWithIf = menuItem => {
-  ['icon', 'labelKey', 'label', 'html'].forEach(key => {
-    const keyIf = menuItem[`${key}If`]
-    if (keyIf) {
-      menuItem[key] = keyIf(menuItem)
-    }
-  })
-}
-const filterMenus = menus => menus.filter(menu => !menu.disabled)
-  .map(menu => {
-    calcWithIf(menu)
-    if (menu.children && menu.children.length) {
-      menu.children = filterMenus(menu.children)
-    }
-    return menu
-  })
 </script>
 
 <template>
@@ -36,8 +18,8 @@ const filterMenus = menus => menus.filter(menu => !menu.disabled)
     v-bind="$attrs"
     :default-active="$route.path"
     router
-    :collapse="collapse"
   >
+    <slot name="before" />
     <template
       v-for="(menuItem, index) in menuItems"
       :key="index"
@@ -47,6 +29,7 @@ const filterMenus = menus => menus.filter(menu => !menu.disabled)
         :index="index"
       />
     </template>
+    <slot name="default" />
   </el-menu>
 </template>
 

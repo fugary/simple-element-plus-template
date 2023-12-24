@@ -15,8 +15,9 @@ export const useBaseTopMenus = () => {
       menuCls: 'flex-grow'
     },
     {
-      labelKey: 'common.label.language',
+      icon: 'LanguageFilled',
       index: 'language',
+      isDropdown: true,
       children: [
         {
           iconIf: () => GlobalLocales.CN === globalConfigStore.currentLocale ? 'check' : '',
@@ -31,24 +32,15 @@ export const useBaseTopMenus = () => {
       ]
     },
     {
-      labelKey: 'common.label.theme',
       index: 'theme',
-      children: [
-        {
-          iconIf: () => !globalConfigStore.isDarkTheme ? 'check' : '',
-          labelKey: 'common.label.themeDefault',
-          click: () => globalConfigStore.changeTheme(false)
-        },
-        {
-          iconIf: () => globalConfigStore.isDarkTheme ? 'check' : '',
-          labelKey: 'common.label.themeDark',
-          click: () => globalConfigStore.changeTheme(true)
-        }
-      ]
+      isDropdown: true,
+      iconIf: () => !globalConfigStore.isDarkTheme ? 'moon' : 'sunny',
+      click: () => globalConfigStore.changeTheme(!globalConfigStore.isDarkTheme)
     },
     {
-      labelKey: 'common.label.layout',
+      icon: 'DisplaySettingsRound',
       index: 'layout',
+      isDropdown: true,
       children: [
         {
           iconIf: () => globalConfigStore.layoutMode === GlobalLayoutMode.LEFT ? 'check' : '',
@@ -65,6 +57,7 @@ export const useBaseTopMenus = () => {
     {
       icon: 'user',
       index: 'personal',
+      isDropdown: true,
       children: [
         {
           labelKey: 'common.label.personalInfo',
@@ -94,18 +87,22 @@ export const useBusinessMenus = () => {
       labelKey: 'menu.label.systemManagement',
       children: [
         {
+          index: '/admin/users',
           icon: 'user',
           labelKey: 'menu.label.userManagement'
         },
         {
+          index: '/admin/roles',
           icon: 'menu',
           labelKey: 'menu.label.roleManagement'
         },
         {
+          index: '/admin/authority',
           icon: 'lock',
           labelKey: 'menu.label.authorityManagement'
         },
         {
+          index: '/admin/menus',
           icon: 'menu',
           labelKey: 'menu.label.menuManagement'
         }

@@ -8,7 +8,10 @@ defineProps({
 </script>
 
 <template>
-  <el-icon v-if="icon">
+  <el-icon
+    v-if="icon"
+    v-bind="$attrs"
+  >
     <component
       :is="icon"
     />
