@@ -1,6 +1,7 @@
 import { GlobalLayoutMode, GlobalLocales } from '@/consts/GlobalConstants'
 import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
 import { ref } from 'vue'
+import { $i18nBundle } from '@/messages'
 
 export const useBaseTopMenus = () => {
   const globalConfigStore = useGlobalConfigStore()
@@ -86,7 +87,7 @@ export const useBusinessMenus = () => {
   return ref([
     {
       icon: 'HomeFilled',
-      label: 'Simple Element Plus'
+      labelIf: () => $i18nBundle('common.label.title')
     },
     {
       icon: 'setting',

@@ -1,6 +1,7 @@
 import { baseMessages } from '@/messages/base'
 export const common = baseMessages()
 
+common.label.title = 'Simple Element+'
 common.label.login = 'Login'
 common.label.index = 'Home'
 common.label.langCn = '中文'

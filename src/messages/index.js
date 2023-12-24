@@ -1,4 +1,4 @@
-import { createI18n } from 'vue-i18n'
+import { createI18n, useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import messagesCn from './messages_cn'
 import messagesEn from './messages_en'
@@ -41,7 +41,7 @@ export const $changeLocale = locale => {
  * @param {boolean} replaceEmpty 为空是否用不为空的数据代替
  * @returns {*}
  */
-export const $i18nMsg = function (cn, en, replaceEmpty) {
+export const $i18nMsg = (cn, en, replaceEmpty) => {
   const { currentLocale } = useGlobalConfigStore()
   console.log(currentLocale)
   if (currentLocale === GlobalLocales.CN) {
@@ -50,12 +50,15 @@ export const $i18nMsg = function (cn, en, replaceEmpty) {
   return replaceEmpty ? (en || cn) : en
 }
 
+export const $i18nBundle = i18n.global.t
+
 export default {
   install (app) {
     app.use(i18n)
     Object.assign(app.config.globalProperties, {
       $changeLocale,
-      $i18nMsg
+      $i18nMsg,
+      $i18nBundle
     })
   }
 }
