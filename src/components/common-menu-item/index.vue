@@ -1,5 +1,7 @@
 <script setup>
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const props = defineProps({
   menuItem: {
@@ -26,6 +28,16 @@ const menuCls = computed(() => {
   }
   return menuItem.menuCls
 })
+const dropdownClick = menuItem => {
+  if (menuItem.click) {
+    menuItem.click()
+  } else {
+    const route = menuItem.route || menuItem.index
+    if (route) {
+      router.push(route)
+    }
+  }
+}
 </script>
 
 <template>
@@ -67,6 +79,9 @@ const menuCls = computed(() => {
     v-else-if="isDropdown"
     :key="menuItem.index||index"
     :class="menuCls"
+    :route="menuItem.route"
+    :index="menuItem.index"
+    @click="menuItem.click&&menuItem.click()"
   >
     <el-dropdown>
       <span class="el-dropdown-link">
@@ -82,7 +97,7 @@ const menuCls = computed(() => {
         <el-dropdown-item
           v-for="(childMenu, childIdx) in menuItem.children"
           :key="childMenu.index||childIdx"
-          @click="childMenu.click&&childMenu.click()"
+          @click="dropdownClick(childMenu)"
         >
           <common-icon
             :size="childMenu.iconSize"
