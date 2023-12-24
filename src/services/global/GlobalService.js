@@ -89,7 +89,7 @@ export const useBusinessMenus = () => {
         },
         {
           index: '/admin/roles',
-          icon: 'menu',
+          icon: 'GroupFilled',
           labelKey: 'menu.label.roleManagement'
         },
         {
@@ -117,6 +117,16 @@ export const useBusinessMenus = () => {
           index: '/icons',
           icon: 'InsertEmoticonOutlined',
           labelKey: 'menu.label.toolsIcons'
+        },
+        {
+          index: '/forms',
+          icon: 'TableRowsTwotone',
+          labelKey: 'menu.label.toolsForms'
+        },
+        {
+          index: '/tables',
+          icon: 'Grid',
+          labelKey: 'menu.label.toolsTables'
         }
       ]
     }])
