@@ -79,8 +79,6 @@ const dropdownClick = menuItem => {
     v-else-if="isDropdown"
     :key="menuItem.index||index"
     :class="menuCls"
-    :route="menuItem.route"
-    :index="menuItem.index"
     @click="menuItem.click&&menuItem.click()"
   >
     <el-dropdown>

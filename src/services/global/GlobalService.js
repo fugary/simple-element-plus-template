@@ -16,7 +16,6 @@ export const useBaseTopMenus = () => {
     },
     {
       icon: 'LanguageFilled',
-      index: 'language',
       isDropdown: true,
       children: [
         {
@@ -32,14 +31,12 @@ export const useBaseTopMenus = () => {
       ]
     },
     {
-      index: 'theme',
       isDropdown: true,
       iconIf: () => !globalConfigStore.isDarkTheme ? 'moon' : 'sunny',
       click: () => globalConfigStore.changeTheme(!globalConfigStore.isDarkTheme)
     },
     {
       icon: 'AutoAwesomeMosaicFilled',
-      index: 'layout',
       isDropdown: true,
       children: [
         {
@@ -56,7 +53,6 @@ export const useBaseTopMenus = () => {
     },
     {
       icon: 'user',
-      index: 'personal',
       isDropdown: true,
       children: [
         {
