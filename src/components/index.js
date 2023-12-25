@@ -2,6 +2,7 @@ import CommonIcon from '@/components/common-icon/index.vue'
 import CommonInput from '@/components/common-form-input/index.vue'
 import CommonMenu from '@/components/common-menu/index.vue'
 import CommonMenuItem from '@/components/common-menu-item/index.vue'
+import CommonTabsView from '@/components/common-tabs-view/index.vue'
 
 /**
  * 自定义通用组件自动注册
@@ -15,5 +16,6 @@ export default {
     Vue.component('CommonInput', CommonInput)
     Vue.component('CommonMenu', CommonMenu)
     Vue.component('CommonMenuItem', CommonMenuItem)
+    Vue.component('CommonTabsView', CommonTabsView)
   }
 }
