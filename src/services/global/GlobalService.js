@@ -36,6 +36,11 @@ export const useBaseTopMenus = () => {
       click: () => globalConfigStore.changeTheme(!globalConfigStore.isDarkTheme)
     },
     {
+      isDropdown: true,
+      icon: 'Setting',
+      click: () => globalConfigStore.changeShowSettings(true)
+    },
+    {
       icon: 'AutoAwesomeMosaicFilled',
       isDropdown: true,
       children: [

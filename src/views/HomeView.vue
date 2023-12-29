@@ -5,6 +5,7 @@ import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
 import { useTabsViewStore } from '@/stores/TabsViewStore'
 import { GlobalLayoutMode } from '@/consts/GlobalConstants'
 import { computed } from 'vue'
+import GlobalSettings from '@/views/components/global/GlobalSettings.vue'
 const globalConfigStore = useGlobalConfigStore()
 const tabsViewStore = useTabsViewStore()
 const showLeftMenu = computed(() => {
@@ -43,6 +44,7 @@ const showLeftMenu = computed(() => {
           </transition>
         </router-view>
       </el-main>
+      <global-settings/>
     </el-container>
   </el-container>
 </template>

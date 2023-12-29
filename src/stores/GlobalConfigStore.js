@@ -8,11 +8,13 @@ export const useGlobalConfigStore = defineStore('globalConfig', () => {
   const currentLocale = ref(GlobalLocales.CN)
   const isDarkTheme = useDark()
   const isCollapseLeft = ref(false)
+  const isShowSettings = ref(false)
   const layoutMode = ref(GlobalLayoutMode.LEFT)
   return {
     currentLocale,
     isDarkTheme,
     isCollapseLeft,
+    isShowSettings,
     layoutMode,
     changeLocale (locale) {
       if (Object.values(GlobalLocales).includes(locale)) {
@@ -24,6 +26,9 @@ export const useGlobalConfigStore = defineStore('globalConfig', () => {
     },
     changeTheme (dark) {
       isDarkTheme.value = dark
+    },
+    changeShowSettings (val) {
+      isShowSettings.value = val
     },
     collapseLeft () {
       isCollapseLeft.value = !isCollapseLeft.value
