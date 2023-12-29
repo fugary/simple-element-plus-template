@@ -1,5 +1,5 @@
 /* eslint-env node */
-module.exports = {
+export default {
   root: true,
   'extends': [
     'plugin:vue/vue3-recommended',
@@ -8,5 +8,8 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest'
+  },
+  rules: {
+    'vue/multi-word-component-names': "off"
   }
 }
