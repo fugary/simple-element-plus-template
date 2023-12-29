@@ -76,6 +76,7 @@ export const useBusinessMenus = () => {
   return ref([
     {
       icon: 'HomeFilled',
+      index: '/',
       labelIf: () => $i18nBundle('common.label.title')
     },
     {
@@ -105,7 +106,7 @@ export const useBusinessMenus = () => {
       ]
     },
     {
-      icon: 'BuildRound',
+      icon: 'BuildFilled',
       labelKey: 'menu.label.toolsManagement',
       children: [
         {
@@ -120,7 +121,7 @@ export const useBusinessMenus = () => {
         },
         {
           index: '/forms',
-          icon: 'TableRowsTwotone',
+          icon: 'TableRowsFilled',
           labelKey: 'menu.label.toolsForms'
         },
         {

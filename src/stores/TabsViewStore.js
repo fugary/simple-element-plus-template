@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 export const useTabsViewStore = defineStore('tabsView', () => {
   const isTabMode = ref(true)
   const isCachedTabMode = ref(true)
+  const isShowTabIcon = ref(true)
   const historyTabs = ref([])
   const cachedTabs = ref([])
 
@@ -61,6 +62,7 @@ export const useTabsViewStore = defineStore('tabsView', () => {
   return {
     isTabMode,
     isCachedTabMode,
+    isShowTabIcon,
     historyTabs,
     cachedTabs,
     changeTabMode () {
@@ -74,6 +76,9 @@ export const useTabsViewStore = defineStore('tabsView', () => {
       if (!isCachedTabMode.value) {
         cachedTabs.value = []
       }
+    },
+    changeShowTabIcon () {
+      isShowTabIcon.value = !isShowTabIcon.value
     },
     removeHistoryTab,
     clearHistoryTabs,

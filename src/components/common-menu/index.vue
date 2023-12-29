@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { filterMenus } from '@/components/utils'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
   menus: {
@@ -11,12 +12,16 @@ const props = defineProps({
 const menuItems = computed(() => {
   return filterMenus(props.menus)
 })
+const activeRoutePath = computed(() => {
+  const route = useRoute()
+  return route.path !== '/' ? route.path : ''
+})
 </script>
 
 <template>
   <el-menu
     v-bind="$attrs"
-    :default-active="$route.path"
+    :default-active="activeRoutePath"
     router
   >
     <slot name="before" />

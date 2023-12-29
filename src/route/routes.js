@@ -11,6 +11,13 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
       children: [{
+        path: '',
+        name: 'index',
+        component: () => import('@/views/Index.vue'),
+        meta: {
+          labelKey: 'common.label.index'
+        }
+      }, {
         path: 'about',
         name: 'about',
         component: () => import('@/views/account/AboutView.vue')

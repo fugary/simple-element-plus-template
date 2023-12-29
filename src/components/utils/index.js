@@ -12,14 +12,17 @@ const calcWithIf = menuItem => {
 
 export const MENU_INFO_LIST = ref({})
 
-export const useMenuInfo = path => {
-  const menuInfo = MENU_INFO_LIST.value[path]
-  console.info('================', MENU_INFO_LIST.value)
-  return menuInfo
+export const useMenuInfo = item => {
+  const path = item.path
+  if (path !== '/') {
+    const menuInfo = MENU_INFO_LIST.value[path]
+    console.info('config menu:', menuInfo)
+    return menuInfo
+  }
 }
 
 export const useMenuName = item => {
-  const menuInfo = useMenuInfo(item.path)
+  const menuInfo = useMenuInfo(item)
   if (menuInfo) {
     if (menuInfo.label) {
       return menuInfo.label
