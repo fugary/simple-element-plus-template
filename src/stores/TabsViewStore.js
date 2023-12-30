@@ -94,20 +94,17 @@ export const useTabsViewStore = defineStore('tabsView', () => {
     isShowTabIcon,
     historyTabs,
     cachedTabs,
-    changeTabMode () {
-      isTabMode.value = !isTabMode.value
+    changeTabMode (val) {
+      isTabMode.value = val
       if (!isTabMode.value) {
         clearHistoryTabs()
       }
     },
-    changeCachedTabMode () {
-      isCachedTabMode.value = !isCachedTabMode.value
+    changeCachedTabMode (val) {
+      isCachedTabMode.value = val
       if (!isCachedTabMode.value) {
         cachedTabs.value = []
       }
-    },
-    changeShowTabIcon () {
-      isShowTabIcon.value = !isShowTabIcon.value
     },
     removeHistoryTab,
     removeOtherHistoryTabs,

@@ -15,9 +15,7 @@ export const MENU_INFO_LIST = ref({})
 export const useMenuInfo = item => {
   const path = item.path
   if (path !== '/') {
-    const menuInfo = MENU_INFO_LIST.value[path]
-    console.info('config menu:', menuInfo)
-    return menuInfo
+    return MENU_INFO_LIST.value[path]
   }
 }
 

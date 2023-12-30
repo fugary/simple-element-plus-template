@@ -41,22 +41,6 @@ export const useBaseTopMenus = () => {
       click: () => globalConfigStore.changeShowSettings(true)
     },
     {
-      icon: 'AutoAwesomeMosaicFilled',
-      isDropdown: true,
-      children: [
-        {
-          iconIf: () => globalConfigStore.layoutMode === GlobalLayoutMode.LEFT ? 'check' : '',
-          labelKey: 'common.label.layoutLeft',
-          click: () => globalConfigStore.changeLayout(GlobalLayoutMode.LEFT)
-        },
-        {
-          iconIf: () => globalConfigStore.layoutMode === GlobalLayoutMode.TOP ? 'check' : '',
-          labelKey: 'common.label.layoutTop',
-          click: () => globalConfigStore.changeLayout(GlobalLayoutMode.TOP)
-        }
-      ]
-    },
-    {
       icon: 'user',
       isDropdown: true,
       children: [

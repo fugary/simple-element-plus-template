@@ -1,76 +1,102 @@
 <script setup>
 import { computed } from 'vue'
+import { $i18nBundle } from '@/messages'
+import ControlChild from '@/components/common-form-control/control-child.vue'
 
 /**
+ * 定义一些注释属性，方便代码提示
  * @typedef {Object} CommonFormOption
  * @property {'input'|'input-number'|'cascader'|'radio'
  * |'radio-group'|'checkbox'|'checkbox-group'|'date-picker'
  * |'time-picker'|'switch'|'select'|'option'|'slider'|'transfer'|'upload'} type 类型
  * @property {any} value
  * @property {any} config
- * @property {string} prop
+ * @property {string|[string]} prop
  * @property {string} label
+ * @property {string} labelKey 用于国际化的label
+ * @property {boolean} required
  * @property {string} placeholder
- * @property {{clearable:boolean,disabled:boolean}} attrs
+ * @property {{clearable:boolean,disabled:boolean,showPassword:boolean}} attrs
  * @property {[CommonFormOption]} children 子节点
  * @property {Array<RuleItem>} rules 子节点
  */
+
 /**
- * @type {CommonFormOption}
+ * @type {{option:CommonFormOption}}
  */
 const props = defineProps({
-  type: {
-    type: String,
-    default: 'input'
-  },
-  value: {
+  /**
+   * @type {CommonFormOption}
+   */
+  option: {
     type: Object,
-    default: null
+    required: true
   },
-  prop: {
-    type: String,
-    default: ''
-  },
-  label: {
-    type: String,
-    default: ''
-  },
-  children: {
-    type: Array,
-    default: () => []
-  },
-  rules: { type: Array, default: () => [] },
-  placeholder: {
-    type: String,
-    default: ''
-  },
-  attrs: {
-    type: Object,
-    default: null
+  model: {
+    type: Object
   }
 })
 
 const inputType = computed(() => {
-  return `el-${props.type}`
+  return `el-${props.option.type || 'input'}`
+})
+
+const modelAttrs = computed(() => {
+  if (['input', 'select', 'autocomplete', 'cascader'].includes(inputType.value)) {
+    return Object.assign({ clearable: true }, props.option.attrs || {})
+  }
+  return props.option.attrs
+})
+
+const label = computed(() => {
+  const option = props.option
+  if (option.labelKey) {
+    return $i18nBundle(option.labelKey)
+  }
+  return option.label
+})
+
+const controlModel = computed(() => props.option.model || props.model)
+
+const modelValue = computed({
+  get () {
+    console.info('=================', controlModel.value)
+    if (controlModel.value && props.option.prop) {
+      return controlModel.value[props.option.prop]
+    }
+    return null
+  },
+  set (val) {
+    console.info('set===============', controlModel.value)
+    if (controlModel.value && props.option.prop) {
+      controlModel.value[props.option.prop] = val
+    }
+  }
 })
 
 </script>
 
 <template>
-  <component
-    :is="inputType"
-    :prop="prop"
-    v-bind="attrs"
-    :placeholder="placeholder"
+  <el-form-item
+    :label="label"
+    :prop="option.prop"
   >
-    <template v-if="children&&children.length">
-      <common-form-control
-        v-for="(childItem, index) in children"
-        :key="index"
-        :type="childItem.type"
-      />
-    </template>
-  </component>
+    <component
+      :is="inputType"
+      v-model="modelValue"
+      v-bind="modelAttrs"
+      :placeholder="option.placeholder"
+      @change="option.change"
+    >
+      <template v-if="option.children&&option.children.length">
+        <control-child
+          v-for="(childItem, index) in option.children"
+          :key="index"
+          :option="childItem"
+        />
+      </template>
+    </component>
+  </el-form-item>
 </template>
 
 <style scoped>
