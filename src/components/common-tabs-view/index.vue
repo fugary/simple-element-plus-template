@@ -31,10 +31,20 @@ const selectHistoryTab = path => {
 }
 
 const removeHistoryTab = path => {
-  const lastTab = tabsViewStore.removeHistoryTab(path)
+  const lastTab = tabsViewStore.removeHistoryTab({ path })
   if (lastTab) {
     selectHistoryTab(lastTab)
   }
+}
+
+const refreshHistoryTab = tab => {
+  const time = new Date().getTime()
+  router.push(`${tab.path}?${time}`)
+}
+
+const removeOtherHistoryTabs = tab => {
+  tabsViewStore.removeOtherHistoryTabs(tab)
+  selectHistoryTab(tab.path)
 }
 
 </script>
@@ -52,6 +62,9 @@ const removeHistoryTab = path => {
     <tabs-view-item
       v-for="item in tabsViewStore.historyTabs"
       :key="item.path"
+      :refresh-history-tab="refreshHistoryTab"
+      :remove-history-tab="removeHistoryTab"
+      :remove-other-history-tabs="removeOtherHistoryTabs"
       :tab-item="item"
     />
   </el-tabs>

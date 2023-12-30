@@ -6,10 +6,16 @@ import { useTabsViewStore } from '@/stores/TabsViewStore'
 const tabsViewStore = useTabsViewStore()
 
 const props = defineProps({
+  /**
+   * @type RouteRecordRaw
+   */
   tabItem: {
     type: Object,
     required: true
-  }
+  },
+  removeHistoryTab: Function,
+  removeOtherHistoryTabs: Function,
+  refreshHistoryTab: Function
 })
 
 const menuName = computed(() => {
@@ -26,13 +32,33 @@ const menuInfo = computed(() => {
     :name="tabItem.path"
   >
     <template #label>
-      <span class="custom-tabs-label">
-        <common-icon
-          v-if="tabsViewStore.isShowTabIcon && menuInfo && menuInfo.icon"
-          :icon="menuInfo.icon"
-        />
-        <span>{{ menuName }}</span>
-      </span>
+      <el-dropdown trigger="contextmenu">
+        <span class="custom-tabs-label">
+          <common-icon
+            v-if="tabsViewStore.isShowTabIcon && menuInfo && menuInfo.icon"
+            :icon="menuInfo.icon"
+          />
+          <span>{{ menuName }}</span>
+        </span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item
+              @click="refreshHistoryTab(tabItem)"
+            >
+              <common-icon icon="refresh" />
+              {{ $t('common.label.refresh') }}
+            </el-dropdown-item>
+            <el-dropdown-item @click="removeHistoryTab(tabItem.path)">
+              <common-icon icon="close" />
+              {{ $t('common.label.close') }}
+            </el-dropdown-item>
+            <el-dropdown-item @click="removeOtherHistoryTabs(tabItem)">
+              <common-icon icon="close" />
+              {{ $t('common.label.closeOther') }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </template>
   </el-tab-pane>
 </template>

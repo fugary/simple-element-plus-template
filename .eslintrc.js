@@ -1,7 +1,9 @@
 /* eslint-env node */
-export default {
+module.exports = {
   root: true,
-  'extends': [
+  extends: [
+    'plugin:vue/vue3-essential',
+    'eslint:recommended',
     'plugin:vue/vue3-recommended',
     'eslint:recommended',
     '@vue/eslint-config-standard'
@@ -10,6 +12,6 @@ export default {
     ecmaVersion: 'latest'
   },
   rules: {
-    'vue/multi-word-component-names': "off"
+    'vue/multi-word-component-names': 'off'
   }
 }

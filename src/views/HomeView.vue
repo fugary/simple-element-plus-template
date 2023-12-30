@@ -35,7 +35,10 @@ const showLeftMenu = computed(() => {
             name="slide-fade"
             mode="out-in"
           >
-            <KeepAlive :include="tabsViewStore.cachedTabs">
+            <KeepAlive
+              :include="tabsViewStore.cachedTabs"
+              :max="10"
+            >
               <component
                 :is="Component"
                 :key="route.fullPath"
@@ -44,7 +47,7 @@ const showLeftMenu = computed(() => {
           </transition>
         </router-view>
       </el-main>
-      <global-settings/>
+      <global-settings />
     </el-container>
   </el-container>
 </template>

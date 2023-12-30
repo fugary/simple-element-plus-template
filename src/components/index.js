@@ -1,5 +1,5 @@
 import CommonIcon from '@/components/common-icon/index.vue'
-import CommonInput from '@/components/common-form-input/index.vue'
+import CommonFormControl from '@/components/common-form-control/index.vue'
 import CommonMenu from '@/components/common-menu/index.vue'
 import CommonMenuItem from '@/components/common-menu-item/index.vue'
 import CommonTabsView from '@/components/common-tabs-view/index.vue'
@@ -13,7 +13,7 @@ export default {
    */
   install (Vue) {
     Vue.component('CommonIcon', CommonIcon)
-    Vue.component('CommonInput', CommonInput)
+    Vue.component('CommonFormControl', CommonFormControl)
     Vue.component('CommonMenu', CommonMenu)
     Vue.component('CommonMenuItem', CommonMenuItem)
     Vue.component('CommonTabsView', CommonTabsView)

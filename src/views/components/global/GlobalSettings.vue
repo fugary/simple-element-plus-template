@@ -5,7 +5,7 @@ const globalConfigStore = useGlobalConfigStore()
 </script>
 
 <template>
-  <el-drawer v-model="globalConfigStore.isShowSettings" direction="rtl">
+  <el-drawer v-model="globalConfigStore.isShowSettings" direction="rtl" :size="350">
     <template #header>
       <strong>{{ $t('common.label.settings') }}</strong>
     </template>
