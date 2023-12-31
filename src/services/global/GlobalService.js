@@ -1,4 +1,4 @@
-import { GlobalLayoutMode, GlobalLocales } from '@/consts/GlobalConstants'
+import { GlobalLocales } from '@/consts/GlobalConstants'
 import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
 import { ref } from 'vue'
 import { $i18nBundle } from '@/messages'

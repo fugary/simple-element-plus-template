@@ -28,12 +28,10 @@ const options = [
     },
     children: [{
       labelKey: 'common.label.langCn',
-      value: GlobalLocales.CN,
-      type: 'option'
+      value: GlobalLocales.CN
     }, {
       labelKey: 'common.label.langEn',
-      value: GlobalLocales.EN,
-      type: 'option'
+      value: GlobalLocales.EN
     }]
   },
   {
@@ -46,12 +44,10 @@ const options = [
     },
     children: [{
       labelKey: 'common.label.layoutLeft',
-      value: GlobalLayoutMode.LEFT,
-      type: 'option'
+      value: GlobalLayoutMode.LEFT
     }, {
       labelKey: 'common.label.layoutTop',
-      value: GlobalLayoutMode.TOP,
-      type: 'option'
+      value: GlobalLayoutMode.TOP
     }]
   },
   {

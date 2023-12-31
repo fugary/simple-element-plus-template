@@ -78,6 +78,23 @@ const modelValue = computed({
   }
 })
 
+const childTypeMapping = { // 自动映射子元素类型，配置的时候可以不写type
+  'checkbox-group': 'checkbox',
+  'radio-group': 'radio',
+  select: 'option'
+}
+
+const children = computed(() => {
+  const option = props.option
+  const result = option.children || [] // 初始化一些默认值
+  result.forEach(childItem => {
+    if (!childItem.type) {
+      childItem.type = childTypeMapping[option.type]
+    }
+  })
+  return result
+})
+
 </script>
 
 <template>
@@ -94,9 +111,9 @@ const modelValue = computed({
       :readonly="option.readonly"
       @change="option.change"
     >
-      <template v-if="option.children&&option.children.length">
+      <template v-if="children&&children.length">
         <control-child
-          v-for="(childItem, index) in option.children"
+          v-for="(childItem, index) in children"
           :key="index"
           :option="childItem"
         />
