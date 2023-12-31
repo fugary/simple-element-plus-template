@@ -1,6 +1,7 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
+import { $i18nBundle } from '@/messages'
 
 const props = defineProps({
   /**
@@ -22,18 +23,40 @@ const props = defineProps({
 const rules = computed(() => {
   const ruleResult = {}
   props.options.forEach(option => {
-    if (option.prop && option.rules) {
-      ruleResult[option.prop] = cloneDeep(option.rules)
+    if (option.prop) {
+      let _rules = cloneDeep(option.rules || [])
+      if (option.required !== undefined) {
+        const label = option.label || $i18nBundle(option.labelKey)
+        _rules = [{
+          required: option.required,
+          trigger: 'blur',
+          message: $i18nBundle('common.msg.nonNull', [label])
+        }, ..._rules]
+      }
+      if (option.pattern !== undefined) {
+        const label = option.label || $i18nBundle(option.labelKey)
+        _rules = [{
+          pattern: option.pattern,
+          trigger: 'blur',
+          message: option.patternMsg || $i18nBundle('common.msg.patternInvalid', [label])
+        }, ..._rules]
+      }
+      if (_rules.length) {
+        ruleResult[option.prop] = _rules
+      }
     }
   })
-  console.info(ruleResult)
+  console.info('==============rules', ruleResult)
   return ruleResult
 })
+
+const form = ref(null)
 
 </script>
 
 <template>
   <el-form
+    ref="form"
     :model="model"
     :rules="rules"
     :label-width="labelWidth"
@@ -44,6 +67,10 @@ const rules = computed(() => {
       :key="index"
       :model="model"
       :option="option"
+    />
+    <slot
+      name="default"
+      :form="form"
     />
   </el-form>
 </template>

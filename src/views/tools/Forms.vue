@@ -9,12 +9,8 @@ const formOptions = [{
   prop: 'userName',
   value: '',
   placeholder: '请输入用户名',
+  required: true,
   rules: [
-    {
-      required: true,
-      message: '用户名不能为空',
-      trigger: 'blur'
-    },
     {
       min: 2,
       max: 6,
@@ -27,22 +23,18 @@ const formOptions = [{
   prop: 'userPassword',
   value: '',
   placeholder: '请输入密码',
-  rules: [
-    {
-      required: true,
-      message: '密码不能为空',
-      trigger: 'blur'
-    },
-    {
-      min: 2,
-      max: 6,
-      message: '密码在2-6位之间',
-      trigger: 'blur'
-    }
-  ],
+  required: true,
+  pattern: /.{2,6}/,
   attrs: {
     showPassword: true
   }
+}, {
+  label: '出生日期',
+  type: 'date-picker',
+  prop: 'birthday',
+  value: '',
+  placeholder: '选择出生日期',
+  required: true
 }]
 const userDto = ref({
   userName: '',

@@ -21,3 +21,7 @@ common.label.personalCenter = 'Personal Center'
 common.label.personalInfo = 'Personal Info'
 common.label.about = 'About'
 common.label.logout = 'Logout'
+
+//* =======================msg=====================//
+common.msg.nonNull = '{0} is required.'
+common.msg.patternInvalid = '{0} pattern check failed.'

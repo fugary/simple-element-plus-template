@@ -9,16 +9,19 @@ import ControlChild from '@/components/common-form-control/control-child.vue'
  * @property {'input'|'input-number'|'cascader'|'radio'
  * |'radio-group'|'checkbox'|'checkbox-group'|'date-picker'
  * |'time-picker'|'switch'|'select'|'option'|'slider'|'transfer'|'upload'} type 类型
- * @property {any} value
- * @property {any} config
- * @property {string|[string]} prop
- * @property {string} label
+ * @property {any} value 数据值
+ * @property {string|[string]} prop 属性
+ * @property {string} label 标签
  * @property {string} labelKey 用于国际化的label
- * @property {boolean} required
- * @property {string} placeholder
+ * @property {boolean} required 是否必填,后面解析成为rules的一部分
+ * @property {string|RegExp} pattern 正则表达式验证，解析成为rules的一部分
+ * @property {string} patternMsg 正则表达式验证消息
+ * @property {boolean} disabled 禁用
+ * @property {boolean} readonly 只读
+ * @property {string} placeholder 占位提示符
  * @property {{clearable:boolean,disabled:boolean,showPassword:boolean}} attrs
  * @property {[CommonFormOption]} children 子节点
- * @property {Array<RuleItem>} rules 子节点
+ * @property {Array<RuleItem>} rules 验证规则
  */
 
 /**
@@ -42,7 +45,8 @@ const inputType = computed(() => {
 })
 
 const modelAttrs = computed(() => {
-  if (['input', 'select', 'autocomplete', 'cascader'].includes(inputType.value)) {
+  console.info(inputType.value)
+  if (['input', 'select', 'autocomplete', 'cascader'].includes(props.option.type || 'input')) {
     return Object.assign({ clearable: true }, props.option.attrs || {})
   }
   return props.option.attrs
@@ -86,6 +90,8 @@ const modelValue = computed({
       v-model="modelValue"
       v-bind="modelAttrs"
       :placeholder="option.placeholder"
+      :disabled="option.disabled"
+      :readonly="option.readonly"
       @change="option.change"
     >
       <template v-if="option.children&&option.children.length">

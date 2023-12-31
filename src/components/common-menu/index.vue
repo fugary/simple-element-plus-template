@@ -14,7 +14,7 @@ const menuItems = computed(() => {
 })
 const activeRoutePath = computed(() => {
   const route = useRoute()
-  return route.path !== '/' ? route.path : ''
+  return route && route.path !== '/' ? route.path : ''
 })
 </script>
 
