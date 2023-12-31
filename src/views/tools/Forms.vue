@@ -75,11 +75,29 @@ const formOptions = [{
       value: 'unknown'
     }
   ]
+}, {
+  label: '地址',
+  prop: 'address',
+  value: '',
+  attrs: {
+    type: 'textarea'
+  }
 }]
 const userDto = ref({
   userName: '',
   userPassword: ''
 })
+const submitForm = (form) => {
+  console.info(form)
+  form.validate((valid) => {
+    if (valid) {
+      console.log('submit!')
+    } else {
+      console.log('error submit!')
+      return false
+    }
+  })
+}
 </script>
 
 <template>
@@ -87,8 +105,17 @@ const userDto = ref({
     <common-form
       :model="userDto"
       :options="formOptions"
+      :submit-form="submitForm"
       label-width="120px"
-    />
+    >
+      <template
+        #buttons="{form}"
+      >
+        <el-button @click="form.resetFields()">
+          自定义按钮
+        </el-button>
+      </template>
+    </common-form>
     <div>
       {{ userDto }}
     </div>

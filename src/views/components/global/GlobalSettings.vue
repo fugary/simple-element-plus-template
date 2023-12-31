@@ -88,6 +88,7 @@ const options = [
     </template>
     <template #default>
       <common-form
+        :show-buttons="false"
         :options="options"
         label-position="left"
       />

@@ -3,6 +3,17 @@ import { computed, ref } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { $i18nBundle } from '@/messages'
 
+/**
+ * @typedef {FormProps} CommonFormProps
+ * @property {[CommonFormOption]} options 配置选项
+ * @property {boolean} showButtons 是否显示按钮区域
+ * @property {boolean} showSubmit 是否显示提交按钮
+ * @property {boolean} showReset 是否显示重置按钮
+ * @method submitForm 提交逻辑
+ */
+/**
+ * @type {CommonFormProps}
+ */
 const props = defineProps({
   /**
    * @type [CommonFormOption]
@@ -17,6 +28,22 @@ const props = defineProps({
   },
   model: {
     type: Object
+  },
+  showButtons: {
+    type: Boolean,
+    default: true
+  },
+  showSubmit: {
+    type: Boolean,
+    default: true
+  },
+  showReset: {
+    type: Boolean,
+    default: true
+  },
+  submitForm: {
+    type: Function,
+    default () {}
   }
 })
 
@@ -68,8 +95,26 @@ const form = ref(null)
       :model="model"
       :option="option"
     />
+    <el-form-item v-if="showButtons">
+      <el-button
+        v-if="showSubmit"
+        type="primary"
+        @click="submitForm(form)"
+      >
+        {{ $t('common.label.submit') }}
+      </el-button>
+      <el-button
+        v-if="showReset"
+        @click="form.resetFields()"
+      >
+        {{ $t('common.label.reset') }}
+      </el-button>
+      <slot
+        :form="form"
+        name="buttons"
+      />
+    </el-form-item>
     <slot
-      name="default"
       :form="form"
     />
   </el-form>

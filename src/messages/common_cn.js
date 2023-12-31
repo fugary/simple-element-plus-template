@@ -21,6 +21,8 @@ common.label.personalCenter = '个人中心'
 common.label.personalInfo = '个人资料'
 common.label.about = '关于'
 common.label.logout = '退出'
+common.label.submit = '提交'
+common.label.reset = '重置'
 
 //* =======================msg=====================//
 common.msg.nonNull = '{0}不能为空'

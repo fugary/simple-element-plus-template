@@ -21,6 +21,8 @@ common.label.personalCenter = 'Personal Center'
 common.label.personalInfo = 'Personal Info'
 common.label.about = 'About'
 common.label.logout = 'Logout'
+common.label.submit = 'Submit'
+common.label.reset = 'Reset'
 
 //* =======================msg=====================//
 common.msg.nonNull = '{0} is required.'
