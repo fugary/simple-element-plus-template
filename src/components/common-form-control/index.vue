@@ -7,7 +7,7 @@ import ControlChild from '@/components/common-form-control/control-child.vue'
  * 定义一些注释属性，方便代码提示
  * @typedef {Object} CommonFormOption
  * @property {'input'|'input-number'|'cascader'|'radio'
- * |'radio-group'|'checkbox'|'checkbox-group'|'date-picker'
+ * |'radio-group'|'radio-button'|'checkbox'|'checkbox-group'|'checkbox-button'|'date-picker'
  * |'time-picker'|'switch'|'select'|'option'|'slider'|'transfer'|'upload'} type 类型
  * @property {any} value 数据值
  * @property {string|[string]} prop 属性
@@ -60,20 +60,20 @@ const label = computed(() => {
   return option.label
 })
 
-const controlModel = computed(() => props.option.model || props.model)
+const formModel = computed(() => props.option.model || props.model)
 
 const modelValue = computed({
   get () {
-    console.info('=================', controlModel.value)
-    if (controlModel.value && props.option.prop) {
-      return controlModel.value[props.option.prop]
+    console.info('=================', formModel.value)
+    if (formModel.value && props.option.prop) {
+      return formModel.value[props.option.prop]
     }
     return null
   },
   set (val) {
-    console.info('set===============', controlModel.value)
-    if (controlModel.value && props.option.prop) {
-      controlModel.value[props.option.prop] = val
+    console.info('set===============', formModel.value)
+    if (formModel.value && props.option.prop) {
+      formModel.value[props.option.prop] = val
     }
   }
 })

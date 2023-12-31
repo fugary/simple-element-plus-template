@@ -26,6 +26,19 @@ const label = computed(() => {
   }
   return option.label
 })
+/**
+ * element-plus的复选框和单选框没有value值，只有label用于存储值，因此特殊处理
+ * @type {string[]}
+ */
+const labelAsValueKeys = ['checkbox', 'radio', 'checkbox-button', 'radio-button']
+
+const labelOrValue = computed(() => {
+  const option = props.option
+  if (labelAsValueKeys.includes(option.type)) {
+    return option.value
+  }
+  return label.value
+})
 
 </script>
 
@@ -33,9 +46,11 @@ const label = computed(() => {
   <component
     :is="inputType"
     :value="option.value"
-    :label="label"
+    :label="labelOrValue"
     v-bind="option.attrs"
-  />
+  >
+    {{ label }}
+  </component>
 </template>
 
 <style scoped>

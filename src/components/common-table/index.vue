@@ -1,10 +1,10 @@
 <script setup>
+import CommonTableColumn from '@/components/common-table/common-table-column.vue'
+
 /**
  * @typedef {TableProps} CommonTableProps
  * @property {[CommonTableColumn]} columns
  */
-import CommonTableColumn from '@/components/common-table/common-table-column.vue'
-
 /**
  * @type CommonTableProps
  */

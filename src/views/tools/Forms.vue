@@ -56,6 +56,26 @@ const formOptions = [{
     }
   ]
 }, {
+  label: '职业',
+  type: 'select',
+  prop: 'career',
+  value: '',
+  required: true,
+  children: [
+    {
+      label: '程序员',
+      value: 'programer'
+    },
+    {
+      label: '无业游民',
+      value: 'none'
+    },
+    {
+      label: '教师',
+      value: 'teacher'
+    }
+  ]
+}, {
   label: '性别',
   type: 'radio-group',
   prop: 'gender',
