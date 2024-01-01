@@ -25,6 +25,16 @@ const menuName = computed(() => {
 const menuInfo = computed(() => {
   return props.tabItem.path === '/' ? { icon: 'HomeFilled' } : useMenuInfo(props.tabItem)
 })
+
+const menuIcon = computed(() => {
+  if (menuInfo.value && menuInfo.value.icon) {
+    return menuInfo.value.icon
+  }
+  if (props.tabItem.meta && props.tabItem.meta.icon) {
+    return props.tabItem.meta.icon
+  }
+  return null
+})
 </script>
 
 <template>
@@ -35,8 +45,8 @@ const menuInfo = computed(() => {
       <el-dropdown trigger="contextmenu">
         <span class="custom-tabs-label">
           <common-icon
-            v-if="tabsViewStore.isShowTabIcon && menuInfo && menuInfo.icon"
-            :icon="menuInfo.icon"
+            v-if="tabsViewStore.isShowTabIcon && menuIcon"
+            :icon="menuIcon"
           />
           <span>{{ menuName }}</span>
         </span>

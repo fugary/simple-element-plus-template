@@ -30,6 +30,7 @@ common.label.modify = 'Modify'
 common.label.delete = 'Delete'
 common.label.search = 'Search'
 common.label.find = 'Find'
+common.label.back = 'Back'
 
 //* =======================msg=====================//
 common.msg.nonNull = '{0} is required.'

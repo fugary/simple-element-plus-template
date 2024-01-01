@@ -67,7 +67,10 @@ const props = defineProps({
     }
   }
 })
-
+/**
+ *
+ * @type {ComputedRef<[CommonTableColumn]>}
+ */
 const calcColumns = computed(() => {
   let _columns = props.columns
   if (props.buttons.length || props.buttonsSlot) {
@@ -102,8 +105,10 @@ const calcColumns = computed(() => {
         #default="scope"
       >
         <slot
+          v-if="column.slot"
           :scope="scope"
           :item="scope.row"
+          :column-conf="scope.columnConf"
           :name="column.slot"
         />
       </template>

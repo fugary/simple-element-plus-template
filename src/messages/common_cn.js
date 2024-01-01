@@ -30,6 +30,7 @@ common.label.modify = '修改'
 common.label.delete = '删除'
 common.label.search = '搜索'
 common.label.find = '查找'
+common.label.back = '返回'
 
 //* =======================msg=====================//
 common.msg.nonNull = '{0}不能为空'

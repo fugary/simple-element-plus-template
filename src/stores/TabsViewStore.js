@@ -40,18 +40,26 @@ export const useTabsViewStore = defineStore('tabsView', () => {
     }
   }
 
-  const addHistoryTab = (tab, insertIdx) => {
+  const checkMataReplaceHistory = (historyTab, tab) => {
+    // 如果meta中配置有replaceTabHistory，默认替换相关的tab
+    return historyTab.meta && historyTab.meta.replaceTabHistory && historyTab.meta.replaceTabHistory === tab.name
+  }
+
+  const addHistoryTab = (tab) => {
     // 添加tab
     if (isTabMode.value) {
       const idx = historyTabs.value.findIndex(v => v.path === tab.path)
       if (idx < 0) {
-        if (insertIdx !== undefined) {
-          historyTabs.value.splice(insertIdx, 0, tab)
-        } else {
-          historyTabs.value.push(Object.assign({}, tab)) // 可能是Proxy，需要解析出来
+        const replaceIdx = historyTabs.value.findIndex(v => checkMataReplaceHistory(v, tab) || checkMataReplaceHistory(tab, v))
+        if (replaceIdx > -1) {
+          console.info(replaceIdx, historyTabs.value[replaceIdx])
+          if (replaceIdx !== undefined) {
+            historyTabs.value.splice(replaceIdx, 1, Object.assign({}, tab))
+            return
+          }
         }
+        historyTabs.value.push(Object.assign({}, tab)) // 可能是Proxy，需要解析出来
         if (isCachedTabMode.value && tab.name) {
-          console.info('=======================add tab', tab.name)
           if (!cachedTabs.value.includes(tab.name)) {
             cachedTabs.value.push(tab.name)
           }

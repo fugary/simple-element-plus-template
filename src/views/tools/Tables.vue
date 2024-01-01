@@ -33,14 +33,18 @@ const tableData = [
  */
 const columns = [{
   label: '用户名',
-  property: 'userName'
+  property: 'userName',
+  link: '#/tables/edit'
 }, {
   label: '性别',
   property: 'gender',
   slot: 'gender'
 }, {
   label: '出生日期',
-  property: 'birthday'
+  property: 'birthday',
+  click (item) {
+    console.info('=================', item)
+  }
 }, {
   label: '地址',
   property: 'address'
@@ -77,7 +81,10 @@ const buttons = ref([{
       </el-tag>
     </template>
     <template #buttons="{item}">
-      <el-button @click="console.info(item)">
+      <el-button
+        size="small"
+        @click="console.info(item)"
+      >
         测试
       </el-button>
     </template>

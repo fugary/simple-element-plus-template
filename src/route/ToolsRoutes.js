@@ -9,5 +9,18 @@ export default [{
 }, {
   path: '/tables',
   name: 'tables',
-  component: () => import('@/views/tools/Tables.vue')
+  children: [{
+    path: '',
+    name: 'tables-index',
+    component: () => import('@/views/tools/Tables.vue')
+  }, {
+    path: 'edit',
+    name: 'tables-edit',
+    component: () => import('@/views/tools/TableEdit.vue'),
+    meta: {
+      replaceTabHistory: 'tables-index',
+      labelKey: 'common.label.edit',
+      icon: 'Edit'
+    }
+  }]
 }]
