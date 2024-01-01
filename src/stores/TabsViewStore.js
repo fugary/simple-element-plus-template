@@ -17,6 +17,7 @@ export const useTabsViewStore = defineStore('tabsView', () => {
   const isTabMode = ref(true)
   const isCachedTabMode = ref(true)
   const isShowTabIcon = ref(true)
+  const currentTab = ref('')
   /**
    * @type {{value: [import('vue-router').RouteRecordRaw]}}
    */
@@ -28,7 +29,9 @@ export const useTabsViewStore = defineStore('tabsView', () => {
 
   const clearHistoryTabs = () => {
     if (historyTabs.value.length) {
-      const tab = historyTabs.value[0]
+      let idx = historyTabs.value.findIndex(v => currentTab.value && v.path === currentTab.value)
+      idx = idx > -1 ? idx : 0
+      const tab = historyTabs.value[idx]
       removeOtherHistoryTabs(tab)
     }
   }
@@ -73,6 +76,7 @@ export const useTabsViewStore = defineStore('tabsView', () => {
       }
     }
   }
+
   const removeHistoryTab = tab => {
     if (historyTabs.value.length > 1) {
       const idx = historyTabs.value.findIndex(v => v.path === tab.path)
@@ -85,6 +89,36 @@ export const useTabsViewStore = defineStore('tabsView', () => {
     }
   }
 
+  const removeOtherHistoryTabs = tab => {
+    historyTabs.value = [tab]
+    cachedTabs.value = []
+    if (isCachedTabMode.value && tab.name) {
+      cachedTabs.value = [tab.name]
+    }
+  }
+
+  const removeHistoryTabs = (tab, type) => {
+    if (tab) {
+      const idx = cachedTabs.value.findIndex(v => v === tab.name)
+      let removeTabs = []
+      if (type === 'right') {
+        removeTabs = historyTabs.value.splice(idx + 1)
+      } else if (type === 'left') {
+        removeTabs = historyTabs.value.splice(0, idx)
+      }
+      if (removeTabs.length) {
+        removeTabs.forEach(removeCachedTab)
+      }
+    }
+  }
+  const addCachedTab = (tab) => {
+    if (isCachedTabMode.value && tab.name) {
+      if (!cachedTabs.value.includes(tab.name)) {
+        cachedTabs.value.push(tab.name)
+      }
+    }
+  }
+
   const removeCachedTab = tab => {
     if (tab) {
       const idx = cachedTabs.value.findIndex(v => v === tab.name)
@@ -94,11 +128,16 @@ export const useTabsViewStore = defineStore('tabsView', () => {
     }
   }
 
-  const removeOtherHistoryTabs = tab => {
-    historyTabs.value = [tab]
-    cachedTabs.value = []
-    if (isCachedTabMode.value && tab.name) {
-      cachedTabs.value = [tab.name]
+  const hasCloseDropdown = (tab, type) => {
+    const idx = historyTabs.value.findIndex(v => v.path === tab.path)
+    switch (type) {
+      case 'close':
+      case 'other':
+        return historyTabs.value.length > 1
+      case 'left':
+        return idx !== 0
+      case 'right':
+        return idx !== historyTabs.value.length - 1
     }
   }
 
@@ -106,6 +145,7 @@ export const useTabsViewStore = defineStore('tabsView', () => {
     isTabMode,
     isCachedTabMode,
     isShowTabIcon,
+    currentTab,
     historyTabs,
     cachedTabs,
     changeTabMode (val) {
@@ -122,9 +162,13 @@ export const useTabsViewStore = defineStore('tabsView', () => {
     },
     removeHistoryTab,
     removeOtherHistoryTabs,
+    removeHistoryTabs,
     clearHistoryTabs,
     findHistoryTab,
-    addHistoryTab
+    addHistoryTab,
+    addCachedTab,
+    removeCachedTab,
+    hasCloseDropdown
   }
 }, {
   persist: true

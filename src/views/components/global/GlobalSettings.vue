@@ -51,7 +51,7 @@ const options = [
     }]
   },
   {
-    label: '多标签模式',
+    labelKey: 'common.label.tabMode',
     prop: 'isTabMode',
     type: 'switch',
     model: tabsViewStore,
@@ -60,7 +60,7 @@ const options = [
     }
   },
   {
-    label: '缓存标签',
+    labelKey: 'common.label.cachedTabMode',
     prop: 'isCachedTabMode',
     type: 'switch',
     model: tabsViewStore,
@@ -69,7 +69,7 @@ const options = [
     }
   },
   {
-    label: '标签图标',
+    labelKey: 'common.label.showTabIcon',
     prop: 'isShowTabIcon',
     type: 'switch',
     model: tabsViewStore

@@ -77,7 +77,7 @@ const rules = computed(() => {
   return ruleResult
 })
 
-const form = ref(null)
+const form = ref()
 
 </script>
 
