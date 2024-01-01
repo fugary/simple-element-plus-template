@@ -56,6 +56,10 @@ const props = defineProps({
     type: String,
     default: 'small'
   },
+  buttonsColumnAttrs: {
+    type: Object,
+    default: null
+  },
   pageInfo: {
     type: Object,
     default: null
@@ -78,7 +82,8 @@ const calcColumns = computed(() => {
       labelKey: 'common.label.operation',
       isOperation: true,
       slot: props.buttonsSlot,
-      buttons: props.buttons
+      buttons: props.buttons,
+      attrs: props.buttonsColumnAttrs
     }
     _columns = [..._columns, buttonColumn]
   }

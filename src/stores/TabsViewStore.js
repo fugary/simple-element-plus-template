@@ -45,12 +45,18 @@ export const useTabsViewStore = defineStore('tabsView', () => {
     return historyTab.meta && historyTab.meta.replaceTabHistory && historyTab.meta.replaceTabHistory === tab.name
   }
 
+  const isSameReplaceHistory = (historyTab, tab) => {
+    return historyTab.meta && historyTab.meta.replaceTabHistory && tab.meta && tab.meta.replaceTabHistory &&
+        historyTab.meta.replaceTabHistory === tab.meta.replaceTabHistory
+  }
+
   const addHistoryTab = (tab) => {
     // 添加tab
     if (isTabMode.value) {
       const idx = historyTabs.value.findIndex(v => v.path === tab.path)
       if (idx < 0) {
-        const replaceIdx = historyTabs.value.findIndex(v => checkMataReplaceHistory(v, tab) || checkMataReplaceHistory(tab, v))
+        const replaceIdx = historyTabs.value.findIndex(v => checkMataReplaceHistory(v, tab) ||
+            checkMataReplaceHistory(tab, v) || isSameReplaceHistory(v, tab))
         if (replaceIdx > -1) {
           console.info(replaceIdx, historyTabs.value[replaceIdx])
           if (replaceIdx !== undefined) {

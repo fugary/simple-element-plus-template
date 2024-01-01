@@ -72,6 +72,7 @@ const buttons = ref([{
     :columns="columns"
     :buttons="buttons"
     buttons-slot="buttons"
+    :buttons-column-attrs="{width:'300px'}"
   >
     <template #gender="{item}">
       <el-tag
