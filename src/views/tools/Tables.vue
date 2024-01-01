@@ -1,4 +1,6 @@
 <script setup>
+import { ref } from 'vue'
+
 const tableData = [
   {
     birthday: '2016-05-03',
@@ -34,7 +36,8 @@ const columns = [{
   property: 'userName'
 }, {
   label: '性别',
-  property: 'gender'
+  property: 'gender',
+  slot: 'gender'
 }, {
   label: '出生日期',
   property: 'birthday'
@@ -42,13 +45,43 @@ const columns = [{
   label: '地址',
   property: 'address'
 }]
+const buttons = ref([{
+  labelKey: 'common.label.edit',
+  type: 'primary',
+  click: item => {
+    console.info('编辑=============', item)
+  }
+}, {
+  labelKey: 'common.label.delete',
+  type: 'danger',
+  click: item => {
+    console.info('删除=============', item)
+  }
+}, {
+  label: '其他操作'
+}])
 </script>
 
 <template>
   <common-table
     :data="tableData"
     :columns="columns"
-  />
+    :buttons="buttons"
+    buttons-slot="buttons"
+  >
+    <template #gender="{item}">
+      <el-tag
+        :type="item.gender === 'male' ? '' : 'success'"
+      >
+        {{ item.gender }}
+      </el-tag>
+    </template>
+    <template #buttons="{item}">
+      <el-button @click="console.info(item)">
+        测试
+      </el-button>
+    </template>
+  </common-table>
 </template>
 
 <style scoped>

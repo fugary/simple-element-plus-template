@@ -1,5 +1,6 @@
 <script setup>
 import CommonTableColumn from '@/components/common-table/common-table-column.vue'
+import { computed } from 'vue'
 
 /**
  * @typedef {TableProps} CommonTableProps
@@ -32,7 +33,53 @@ const props = defineProps({
   stripe: {
     type: Boolean,
     default: true
+  },
+  border: {
+    type: Boolean,
+    default: true
+  },
+  /**
+   * el-button
+   * @type [ButtonProps]
+   */
+  buttons: {
+    type: Array,
+    default () {
+      return []
+    }
+  },
+  buttonsSlot: {
+    type: String,
+    default: ''
+  },
+  buttonSize: {
+    type: String,
+    default: 'small'
+  },
+  pageInfo: {
+    type: Object,
+    default: null
+  },
+  pageAttrs: {
+    type: Object,
+    default () {
+      return {}
+    }
   }
+})
+
+const calcColumns = computed(() => {
+  let _columns = props.columns
+  if (props.buttons.length || props.buttonsSlot) {
+    const buttonColumn = {
+      labelKey: 'common.label.operation',
+      isOperation: true,
+      slot: props.buttonsSlot,
+      buttons: props.buttons
+    }
+    _columns = [..._columns, buttonColumn]
+  }
+  return _columns
 })
 </script>
 
@@ -42,12 +89,26 @@ const props = defineProps({
     :highlight-current-row="highlightCurrentRow"
     :stripe="stripe"
     :data="data"
+    :border="border"
   >
     <common-table-column
-      v-for="(column, index) in columns"
+      v-for="(column, index) in calcColumns"
       :key="index"
       :column="column"
-    />
+      :button-size="buttonSize"
+    >
+      <!--用于自定义显示属性-->
+      <template
+        #default="scope"
+      >
+        <slot
+          :scope="scope"
+          :item="scope.row"
+          :name="column.slot"
+        />
+      </template>
+    </common-table-column>
+    <el-pagination v-if="pageInfo" />
   </el-table>
 </template>
 

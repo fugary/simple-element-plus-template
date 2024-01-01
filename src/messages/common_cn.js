@@ -23,6 +23,13 @@ common.label.about = '关于'
 common.label.logout = '退出'
 common.label.submit = '提交'
 common.label.reset = '重置'
+common.label.operation = '操作'
+common.label.new = '新增'
+common.label.edit = '编辑'
+common.label.modify = '修改'
+common.label.delete = '删除'
+common.label.search = '搜索'
+common.label.find = '查找'
 
 //* =======================msg=====================//
 common.msg.nonNull = '{0}不能为空'

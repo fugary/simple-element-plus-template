@@ -23,6 +23,13 @@ common.label.about = 'About'
 common.label.logout = 'Logout'
 common.label.submit = 'Submit'
 common.label.reset = 'Reset'
+common.label.operation = 'Operations'
+common.label.new = 'New'
+common.label.edit = 'Edit'
+common.label.modify = 'Modify'
+common.label.delete = 'Delete'
+common.label.search = 'Search'
+common.label.find = 'Find'
 
 //* =======================msg=====================//
 common.msg.nonNull = '{0} is required.'
