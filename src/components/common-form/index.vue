@@ -53,7 +53,6 @@ const rules = computed(() => {
         const label = option.label || $i18nBundle(option.labelKey)
         _rules = [{
           required: option.required,
-          trigger: 'blur',
           message: $i18nBundle('common.msg.nonNull', [label])
         }, ..._rules]
       }
@@ -61,7 +60,6 @@ const rules = computed(() => {
         const label = option.label || $i18nBundle(option.labelKey)
         _rules = [{
           pattern: option.pattern,
-          trigger: 'blur',
           message: option.patternMsg || $i18nBundle('common.msg.patternInvalid', [label])
         }, ..._rules]
       }

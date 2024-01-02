@@ -14,8 +14,7 @@ const formOptions = [{
     {
       min: 2,
       max: 6,
-      message: '用户名在2-6位之间',
-      trigger: 'blur'
+      message: '用户名在2-6位之间'
     }
   ]
 }, {
