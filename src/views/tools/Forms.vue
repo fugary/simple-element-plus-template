@@ -132,8 +132,8 @@ const submitForm = (form) => {
     <common-form
       :model="userDto"
       :options="formOptions"
-      :submit-form="submitForm"
       label-width="120px"
+      @submit-form="submitForm"
     >
       <template
         #buttons="{form}"
