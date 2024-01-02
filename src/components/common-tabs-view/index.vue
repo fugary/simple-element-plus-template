@@ -81,12 +81,12 @@ const onDropdownVisibleChange = (visible, tab) => {
       v-for="item in tabsViewStore.historyTabs"
       ref="tabItems"
       :key="item.path"
-      :refresh-history-tab="refreshHistoryTab"
-      :remove-history-tab="removeHistoryTab"
-      :remove-other-history-tabs="removeOtherHistoryTabs"
-      :remove-history-tabs="removeHistoryTabs"
-      :on-dropdown-visible-change="onDropdownVisibleChange"
       :tab-item="item"
+      @refresh-history-tab="refreshHistoryTab"
+      @remove-other-history-tabs="removeOtherHistoryTabs"
+      @remove-history-tabs="removeHistoryTabs"
+      @on-dropdown-visible-change="onDropdownVisibleChange"
+      @remove-history-tab="removeHistoryTab"
     />
   </el-tabs>
 </template>

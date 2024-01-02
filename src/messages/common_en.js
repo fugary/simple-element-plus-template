@@ -39,6 +39,7 @@ common.label.tabMode = 'Tabs Mode'
 common.label.cachedTabMode = 'Cache Tabs'
 common.label.showTabIcon = 'Tab Icon'
 common.label.keywords = 'Keywords'
+common.label.breadcrumb = 'Breadcrumb'
 
 //* =======================msg=====================//
 common.msg.nonNull = '{0} is required.'

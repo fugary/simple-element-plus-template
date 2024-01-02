@@ -31,6 +31,12 @@ menuStore.loadBusinessMenus()
         <top-nav />
       </el-header>
       <el-header
+        v-if="globalConfigStore.layoutMode === GlobalLayoutMode.TOP && globalConfigStore.isShowBreadcrumb"
+        class="tabs-header"
+      >
+        <common-breadcrumb />
+      </el-header>
+      <el-header
         v-if="tabsViewStore.isTabMode"
         class="tabs-header"
       >

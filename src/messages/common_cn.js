@@ -39,6 +39,7 @@ common.label.tabMode = '多标签模式'
 common.label.cachedTabMode = '缓存标签页'
 common.label.showTabIcon = '标签图标'
 common.label.keywords = '关键字'
+common.label.breadcrumb = '面包屑导航'
 
 //* =======================msg=====================//
 common.msg.nonNull = '{0}不能为空'

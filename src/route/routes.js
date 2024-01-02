@@ -8,13 +8,18 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Home',
       component: HomeView,
+      meta: {
+        icon: 'HomeFilled',
+        labelKey: 'common.label.index'
+      },
       children: [{
         path: '',
         name: 'index',
         component: () => import('@/views/Index.vue'),
         meta: {
+          icon: 'HomeFilled',
           labelKey: 'common.label.index'
         }
       }, {
@@ -28,8 +33,12 @@ const router = createRouter({
       },
       {
         path: '/:pathMatch(.*)*',
-        name: 'notFound',
-        component: () => import('@/views/404.vue')
+        name: 'NotFound',
+        component: () => import('@/views/404.vue'),
+        meta: {
+          icon: 'QuestionFilled',
+          label: 'Not Found'
+        }
       },
       ...AdminRoutes,
       ...ToolsRoutes

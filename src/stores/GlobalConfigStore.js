@@ -9,12 +9,14 @@ export const useGlobalConfigStore = defineStore('globalConfig', () => {
   const isDarkTheme = useDark()
   const isCollapseLeft = ref(false)
   const isShowSettings = ref(false)
+  const isShowBreadcrumb = ref(true)
   const layoutMode = ref(GlobalLayoutMode.LEFT)
   return {
     currentLocale,
     isDarkTheme,
     isCollapseLeft,
     isShowSettings,
+    isShowBreadcrumb,
     layoutMode,
     changeLocale (locale) {
       if (Object.values(GlobalLocales).includes(locale)) {

@@ -28,7 +28,7 @@ const props = defineProps({
     required: true
   },
   index: {
-    type: Number,
+    type: [Number, String],
     required: false
   }
 })
@@ -65,7 +65,7 @@ const dropdownClick = menuItem => {
     :key="menuItem.index||index"
     :class="menuCls"
   >
-    {{ menuItem.splitText }}
+    <slot name="split" />
   </div>
   <el-sub-menu
     v-else-if="isSubMenu"

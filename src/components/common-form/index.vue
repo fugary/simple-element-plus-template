@@ -27,7 +27,8 @@ const props = defineProps({
     default: '100px'
   },
   model: {
-    type: Object
+    type: Object,
+    default: null
   },
   showButtons: {
     type: Boolean,
@@ -40,10 +41,6 @@ const props = defineProps({
   showReset: {
     type: Boolean,
     default: true
-  },
-  submitForm: {
-    type: Function,
-    default () {}
   }
 })
 
@@ -77,6 +74,8 @@ const rules = computed(() => {
   return ruleResult
 })
 
+defineEmits(['submitForm'])
+
 const form = ref()
 
 </script>
@@ -99,7 +98,7 @@ const form = ref()
       <el-button
         v-if="showSubmit"
         type="primary"
-        @click="submitForm(form)"
+        @click="$emit('submitForm', form)"
       >
         {{ $t('common.label.submit') }}
       </el-button>

@@ -12,28 +12,10 @@ const props = defineProps({
   tabItem: {
     type: Object,
     required: true
-  },
-  removeHistoryTab: {
-    type: Function,
-    required: true
-  },
-  removeOtherHistoryTabs: {
-    type: Function,
-    required: true
-  },
-  removeHistoryTabs: {
-    type: Function,
-    required: true
-  },
-  refreshHistoryTab: {
-    type: Function,
-    required: true
-  },
-  onDropdownVisibleChange: {
-    type: Function,
-    required: true
   }
 })
+
+defineEmits(['removeHistoryTab', 'removeOtherHistoryTabs', 'removeHistoryTabs', 'refreshHistoryTab', 'onDropdownVisibleChange'])
 
 const menuName = computed(() => {
   return useMenuName(props.tabItem)
@@ -69,7 +51,7 @@ defineExpose({
         :id="tabItem.path"
         ref="dropdownRef"
         trigger="contextmenu"
-        @visible-change="onDropdownVisibleChange($event, tabItem)"
+        @visible-change="$emit('onDropdownVisibleChange', $event, tabItem)"
       >
         <span class="custom-tabs-label">
           <common-icon
@@ -81,35 +63,35 @@ defineExpose({
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item
-              @click="refreshHistoryTab(tabItem)"
+              @click="$emit('refreshHistoryTab', tabItem)"
             >
               <common-icon icon="refresh" />
               {{ $t('common.label.refresh') }}
             </el-dropdown-item>
             <el-dropdown-item
               v-if="tabsViewStore.hasCloseDropdown(tabItem, 'close')"
-              @click="removeHistoryTab(tabItem.path)"
+              @click="$emit('removeHistoryTab', tabItem.path)"
             >
               <common-icon icon="close" />
               {{ $t('common.label.close') }}
             </el-dropdown-item>
             <el-dropdown-item
               v-if="tabsViewStore.hasCloseDropdown(tabItem, 'left')"
-              @click="removeHistoryTabs(tabItem, 'left')"
+              @click="$emit('removeHistoryTabs', tabItem, 'left')"
             >
               <common-icon icon="KeyboardDoubleArrowLeftFilled" />
               {{ $t('common.label.closeLeft') }}
             </el-dropdown-item>
             <el-dropdown-item
               v-if="tabsViewStore.hasCloseDropdown(tabItem, 'right')"
-              @click="removeHistoryTabs(tabItem, 'right')"
+              @click="$emit('removeHistoryTabs', tabItem, 'right')"
             >
               <common-icon icon="KeyboardDoubleArrowRightFilled" />
               {{ $t('common.label.closeRight') }}
             </el-dropdown-item>
             <el-dropdown-item
               v-if="tabsViewStore.hasCloseDropdown(tabItem, 'other')"
-              @click="removeOtherHistoryTabs(tabItem)"
+              @click="$emit('removeOtherHistoryTabs', tabItem)"
             >
               <common-icon icon="PlaylistRemoveFilled" />
               {{ $t('common.label.closeOther') }}

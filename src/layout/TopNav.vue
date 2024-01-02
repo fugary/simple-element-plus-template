@@ -22,7 +22,14 @@ const allMenus = computed(() => {
     mode="horizontal"
     :ellipsis="false"
     :menus="allMenus"
-  />
+  >
+    <template
+      v-if="globalConfigStore.layoutMode === GlobalLayoutMode.LEFT && globalConfigStore.isShowBreadcrumb"
+      #split
+    >
+      <common-breadcrumb :style="{'padding-left': '0','padding-top': '22px'}" />
+    </template>
+  </common-menu>
 </template>
 
 <style scoped>

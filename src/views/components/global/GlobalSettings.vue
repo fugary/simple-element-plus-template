@@ -51,6 +51,15 @@ const options = [
     }]
   },
   {
+    labelKey: 'common.label.breadcrumb',
+    prop: 'isShowBreadcrumb',
+    type: 'switch',
+    model: globalConfigStore,
+    change (val) {
+      globalConfigStore.isShowBreadcrumb = val
+    }
+  },
+  {
     labelKey: 'common.label.tabMode',
     prop: 'isTabMode',
     type: 'switch',

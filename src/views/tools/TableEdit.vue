@@ -9,7 +9,7 @@ const router = useRouter()
     <br>
     <el-link
       type="primary"
-      @click="router.back()"
+      @click="router.replace('/tables')"
     >
       {{ $t('common.label.back') }}
     </el-link>

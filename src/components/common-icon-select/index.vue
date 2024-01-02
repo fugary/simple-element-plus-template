@@ -113,8 +113,8 @@ const selectIcon = icon => {
           </el-form-item>
         </el-form>
       </el-header>
-      <el-main>
-        <RecycleScroller
+      <el-main class="icon-area">
+        <recycle-scroller
           v-slot="{ item }"
           class="scroller icon-list"
           :items="filterIcons"
@@ -142,7 +142,7 @@ const selectIcon = icon => {
               </a>
             </el-col>
           </el-row>
-        </RecycleScroller>
+        </recycle-scroller>
       </el-main>
     </el-container>
   </el-dialog>
@@ -163,5 +163,8 @@ const selectIcon = icon => {
 }
 .el-radio {
   margin-right: 10px;
+}
+.icon-area {
+  padding: 0;
 }
 </style>

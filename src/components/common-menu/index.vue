@@ -32,7 +32,11 @@ const activeRoutePath = computed(() => {
       <common-menu-item
         :menu-item="menuItem"
         :index="index"
-      />
+      >
+        <template #split>
+          <slot name="split" />
+        </template>
+      </common-menu-item>
     </template>
     <slot name="default" />
   </el-menu>

@@ -6,6 +6,7 @@ import CommonMenu from '@/components/common-menu/index.vue'
 import CommonMenuItem from '@/components/common-menu-item/index.vue'
 import CommonTabsView from '@/components/common-tabs-view/index.vue'
 import CommonTable from '@/components/common-table/index.vue'
+import CommonBreadcrumb from '@/components/common-breadcrumb/index.vue'
 
 /**
  * 自定义通用组件自动注册
@@ -23,5 +24,6 @@ export default {
     Vue.component('CommonMenuItem', CommonMenuItem)
     Vue.component('CommonTabsView', CommonTabsView)
     Vue.component('CommonTable', CommonTable)
+    Vue.component('CommonBreadcrumb', CommonBreadcrumb)
   }
 }
