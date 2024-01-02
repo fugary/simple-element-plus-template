@@ -129,15 +129,15 @@ const selectIcon = icon => {
               class="text-center"
             >
               <a
-                class="el-button el-button--large is-text"
-                style="height:80px;"
+                class="el-button el-button--large is-text icon-a"
                 @click="selectIcon(icon)"
               >
                 <div>
                   <common-icon
                     size="20"
                     :icon="icon"
-                  />
+                  /><br>
+                  <span class="icon-text">{{ icon }}</span>
                 </div>
               </a>
             </el-col>
@@ -166,5 +166,15 @@ const selectIcon = icon => {
 }
 .icon-area {
   padding: 0;
+}
+.icon-a {
+  height:80px;
+  display: block;
+  width:100%;
+  overflow:hidden;
+  padding: 15px 10px;
+}
+.icon-a span {
+  font-size: 12px;
 }
 </style>

@@ -1,11 +1,9 @@
 <script setup>
 import { computed } from 'vue'
-import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
 import { useTabsViewStore } from '@/stores/TabsViewStore'
 import { useRoute } from 'vue-router'
 import { useMenuInfo, useMenuName } from '@/components/utils'
 
-const globalConfigStore = useGlobalConfigStore()
 const tabsViewStore = useTabsViewStore()
 
 const route = useRoute()
@@ -20,13 +18,11 @@ const breadcrumbs = computed(() => {
     } else if (item.meta && item.meta.icon) {
       icon = item.meta.icon
     }
-    const result = {
+    return {
       path: item.path,
       menuName: useMenuName(item),
       icon
     }
-    console.info(item, menuInfo)
-    return result
   }).filter(item => {
     const notExist = !exists.includes(item.menuName)
     if (notExist) {
@@ -39,7 +35,6 @@ const breadcrumbs = computed(() => {
 
 <template>
   <el-breadcrumb
-    v-if="globalConfigStore.isShowBreadcrumb"
     v-bind="$attrs"
     class="common-breadcrumb"
   >

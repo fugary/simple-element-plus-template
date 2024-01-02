@@ -13,15 +13,16 @@ const filterIcons = computed(() => {
 
 const copyIcon = (icon) => {
   const { copy, isSupported } = useClipboard()
+  const iconStr = `<common-icon icon="${icon}"/>`
   if (isSupported) {
-    copy(icon)
+    copy(iconStr)
     ElMessage({
-      message: `Copied: ${icon}`,
+      message: `Copied: ${iconStr}`,
       type: 'success'
     })
   } else {
     ElMessage({
-      message: `Copy Not supported: ${icon}`,
+      message: `Copy Not supported: ${iconStr}`,
       type: 'error'
     })
   }
@@ -44,7 +45,7 @@ const copyIcon = (icon) => {
       </el-form>
     </el-header>
     <el-main>
-      <RecycleScroller
+      <recycle-scroller
         v-slot="{ item }"
         class="scroller icon-list"
         :items="filterIcons"
@@ -59,8 +60,7 @@ const copyIcon = (icon) => {
             class="text-center"
           >
             <a
-              class="el-button el-button--large is-text"
-              style="height:80px;"
+              class="el-button el-button--large is-text icon-a"
               @click="copyIcon(icon)"
             >
               <div>
@@ -68,11 +68,13 @@ const copyIcon = (icon) => {
                   size="20"
                   :icon="icon"
                 />
+                <br>
+                <span class="icon-text">{{ icon }}</span>
               </div>
             </a>
           </el-col>
         </el-row>
-      </RecycleScroller>
+      </recycle-scroller>
     </el-main>
   </el-container>
 </template>
@@ -80,5 +82,18 @@ const copyIcon = (icon) => {
 <style scoped>
 .scroller, .icon-container  {
   height: 100%;
+}
+.icon-container .el-input {
+  width: 80%;
+}
+.icon-a {
+  height:80px;
+  display: block;
+  width:100%;
+  overflow:hidden;
+  padding: 15px 10px;
+}
+.icon-a span {
+  font-size: 12px;
 }
 </style>
