@@ -1,8 +1,8 @@
 <script setup>
 import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
-import { useBusinessMenus } from '@/services/global/GlobalService'
+import { useMenuStore } from '@/stores/MenuStore'
 const globalConfigStore = useGlobalConfigStore()
-const businessMenus = useBusinessMenus()
+const menuStore = useMenuStore()
 </script>
 
 <template>
@@ -10,7 +10,7 @@ const businessMenus = useBusinessMenus()
     <common-menu
       class="el-menu-left"
       :collapse="globalConfigStore.isCollapseLeft"
-      :menus="businessMenus"
+      :menus="menuStore.businessMenus"
       :default-openeds="['1']"
     />
   </el-scrollbar>

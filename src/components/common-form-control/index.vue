@@ -49,7 +49,6 @@ const inputType = computed(() => {
 })
 
 const modelAttrs = computed(() => {
-  console.info(inputType.value)
   if (['input', 'select', 'autocomplete', 'cascader'].includes(props.option.type || 'input')) {
     return Object.assign({ clearable: true }, props.option.attrs || {})
   }
@@ -68,14 +67,12 @@ const formModel = computed(() => props.option.model || props.model)
 
 const modelValue = computed({
   get () {
-    console.info('=================', formModel.value)
     if (formModel.value && props.option.prop) {
       return formModel.value[props.option.prop]
     }
     return null
   },
   set (val) {
-    console.info('set===============', formModel.value)
     if (formModel.value && props.option.prop) {
       formModel.value[props.option.prop] = val
     }
