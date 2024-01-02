@@ -27,7 +27,7 @@ const props = defineProps({
     required: true
   },
   /**
-   * @type {'large'|'small'|'default'}
+   * @type {''|'large'|'small'|'default'}
    */
   buttonSize: {
     type: String,
@@ -75,19 +75,21 @@ const props = defineProps({
     <template
       #default="scope"
     >
-      <el-button
-        v-for="(button, index) in column.buttons"
-        :key="index"
-        :type="button.type"
-        :icon="button.icon"
-        :size="button.size||buttonSize"
-        :disabled="button.disabled"
-        :round="button.round"
-        :circle="button.circle"
-        @click="button.click&&button.click(scope.row, scope)"
-      >
-        {{ button.label || $t(button.labelKey) }}
-      </el-button>
+      <template v-for="(button, index) in column.buttons">
+        <el-button
+          v-if="!button.buttonIf||button.buttonIf(scope.row, scope)"
+          :key="index"
+          :type="button.type"
+          :icon="button.icon"
+          :size="button.size||buttonSize"
+          :disabled="button.disabled"
+          :round="button.round"
+          :circle="button.circle"
+          @click="button.click&&button.click(scope.row, scope)"
+        >
+          {{ button.label || $t(button.labelKey) }}
+        </el-button>
+      </template>
       <slot
         name="default"
         v-bind="scope"

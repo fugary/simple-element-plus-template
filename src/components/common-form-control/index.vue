@@ -16,6 +16,7 @@ import ControlChild from '@/components/common-form-control/control-child.vue'
  * @property {boolean} required 是否必填,后面解析成为rules的一部分
  * @property {string|RegExp} pattern 正则表达式验证，解析成为rules的一部分
  * @property {string} patternMsg 正则表达式验证消息
+ * @property {boolean} common 自定义组件
  * @property {boolean} disabled 禁用
  * @property {boolean} readonly 只读
  * @property {string} placeholder 占位提示符
@@ -41,6 +42,9 @@ const props = defineProps({
 })
 
 const inputType = computed(() => {
+  if (props.option.common) {
+    return `common-${props.option.type}`
+  }
   return `el-${props.option.type || 'input'}`
 })
 

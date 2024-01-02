@@ -7,6 +7,10 @@ export default [{
   name: 'forms',
   component: () => import('@/views/tools/Forms.vue')
 }, {
+  path: '/tests',
+  name: 'tests',
+  component: () => import('@/views/tools/TestPage.vue')
+}, {
   path: '/tables',
   name: 'tables',
   children: [{

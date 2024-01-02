@@ -1,4 +1,4 @@
-import { createI18n, useI18n } from 'vue-i18n'
+import { createI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import messagesCn from './messages_cn'
 import messagesEn from './messages_en'

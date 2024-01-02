@@ -3,18 +3,21 @@ import { ref } from 'vue'
 
 const tableData = [
   {
+    id: '1',
     birthday: '2016-05-03',
     userName: 'Tom',
     gender: 'male',
     address: 'No. 189, Grove St, Los Angeles'
   },
   {
+    id: '2',
     birthday: '2016-05-02',
     userName: 'Tom',
     gender: 'female',
     address: 'No. 189, Grove St, Los Angeles'
   },
   {
+    id: '3',
     birthday: '2016-05-04',
     userName: 'Tom',
     gender: 'male',
@@ -54,12 +57,18 @@ const buttons = ref([{
   type: 'primary',
   click: item => {
     console.info('编辑=============', item)
+  },
+  buttonIf (item) {
+    return !!item.id
   }
 }, {
   labelKey: 'common.label.delete',
   type: 'danger',
   click: item => {
     console.info('删除=============', item)
+  },
+  buttonIf (item) {
+    return !!item.id
   }
 }, {
   label: '其他操作'

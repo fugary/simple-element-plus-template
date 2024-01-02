@@ -117,6 +117,11 @@ export const useBusinessMenus = () => {
           index: '/tables',
           icon: 'Grid',
           labelKey: 'menu.label.toolsTables'
+        },
+        {
+          index: '/tests',
+          icon: 'TipsAndUpdatesOutlined',
+          labelKey: 'menu.label.toolsTests'
         }
       ]
     }])

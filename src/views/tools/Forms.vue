@@ -96,6 +96,13 @@ const formOptions = [{
     }
   ]
 }, {
+  label: '图标测试',
+  prop: 'icon',
+  value: '',
+  type: 'icon-select',
+  required: true,
+  common: true
+}, {
   label: '地址',
   prop: 'address',
   value: '',

@@ -57,6 +57,21 @@ html, body, #app, .index-container {
 .text-right {
     text-align: right;
 }
+
+.icon-dialog .el-dialog__body {
+    padding: 10px;
+}
+
+.icon-list::-webkit-scrollbar {
+    z-index: 10;
+    width: 6px;
+}
+.icon-list::-webkit-scrollbar-thumb {
+    border-radius:5px;
+    width:6px;
+    background:var(--el-text-color-disabled)
+}
+
 /**
  * slide-fade动画
  */

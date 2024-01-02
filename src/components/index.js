@@ -1,4 +1,5 @@
 import CommonIcon from '@/components/common-icon/index.vue'
+import CommonIconSelect from '@/components/common-icon-select/index.vue'
 import CommonForm from '@/components/common-form/index.vue'
 import CommonFormControl from '@/components/common-form-control/index.vue'
 import CommonMenu from '@/components/common-menu/index.vue'
@@ -15,6 +16,7 @@ export default {
    */
   install (Vue) {
     Vue.component('CommonIcon', CommonIcon)
+    Vue.component('CommonIconSelect', CommonIconSelect)
     Vue.component('CommonForm', CommonForm)
     Vue.component('CommonFormControl', CommonFormControl)
     Vue.component('CommonMenu', CommonMenu)

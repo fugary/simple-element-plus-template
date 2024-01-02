@@ -26,7 +26,10 @@ const showLeftMenu = computed(() => {
       <el-header>
         <top-nav />
       </el-header>
-      <el-header v-if="tabsViewStore.isTabMode">
+      <el-header
+        v-if="tabsViewStore.isTabMode"
+        class="tabs-header"
+      >
         <common-tabs-view />
       </el-header>
       <el-main>
@@ -51,3 +54,9 @@ const showLeftMenu = computed(() => {
     </el-container>
   </el-container>
 </template>
+<style scoped>
+.tabs-header {
+  margin-top: 5px;
+  height: 40px
+}
+</style>
