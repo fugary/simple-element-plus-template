@@ -60,14 +60,17 @@ const props = defineProps({
     type: Object,
     default: null
   },
-  pageInfo: {
+  page: {
     type: Object,
     default: null
   },
   pageAttrs: {
     type: Object,
     default () {
-      return {}
+      return {
+        layout: 'total, sizes, prev, pager, next',
+        pageSizes: [10, 20, 50]
+      }
     }
   }
 })
@@ -89,6 +92,9 @@ const calcColumns = computed(() => {
   }
   return _columns
 })
+
+defineEmits(['pageSizeChange', 'currentPageChange'])
+
 </script>
 
 <template>
@@ -118,10 +124,21 @@ const calcColumns = computed(() => {
         />
       </template>
     </common-table-column>
-    <el-pagination v-if="pageInfo" />
   </el-table>
+  <el-pagination
+    v-if="page && page.totalCount"
+    class="common-pagination"
+    v-bind="pageAttrs"
+    :total="page.totalCount"
+    :page-size="page.pageSize"
+    :current-page="page.pageIndex"
+    @size-change="$emit('pageSizeChange', $event)"
+    @current-change="$emit('currentPageChange', $event)"
+  />
 </template>
 
 <style scoped>
-
+.common-pagination {
+  margin-top: 15px;
+}
 </style>

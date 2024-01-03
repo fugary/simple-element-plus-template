@@ -48,4 +48,6 @@ export const useLoginConfigStore = defineStore('loginConfig', () => {
       return loginResult
     }
   }
+}, {
+  persist: true
 })

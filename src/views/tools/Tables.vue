@@ -1,42 +1,33 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { loadUsersResult } from '@/services/user/UserService'
+import { useDefaultPage } from '@/config'
 
-const tableData = [
-  {
-    id: '1',
-    birthday: '2016-05-03',
-    userName: 'Tom',
-    gender: 'male',
-    address: 'No. 189, Grove St, Los Angeles'
-  },
-  {
-    id: '2',
-    birthday: '2016-05-02',
-    userName: 'Tom',
-    gender: 'female',
-    address: 'No. 189, Grove St, Los Angeles'
-  },
-  {
-    id: '3',
-    birthday: '2016-05-04',
-    userName: 'Tom',
-    gender: 'male',
-    address: 'No. 189, Grove St, Los Angeles'
-  },
-  {
-    birthday: '2016-05-01',
-    userName: 'Tom',
-    gender: 'female',
-    address: 'No. 189, Grove St, Los Angeles'
+const page = ref(useDefaultPage())
+
+const tableData = ref([])
+
+onMounted(async () => {
+  const usersResult = await loadUsersResult()
+  console.info('=================', usersResult)
+  if (usersResult.success && usersResult.resultData) {
+    const resultData = usersResult.resultData
+    tableData.value = resultData.userList
+    Object.assign(page.value, resultData.page)
   }
-]
+})
+
 /**
  *
  * @type {[CommonTableColumn]}
  */
 const columns = [{
-  label: '用户名',
-  property: 'userName',
+  label: '中文名',
+  property: 'nameCn',
+  link: '#/tables/edit'
+}, {
+  label: '英文名',
+  property: 'nameEn',
   link: '#/tables/edit'
 }, {
   label: '性别',
@@ -81,7 +72,10 @@ const buttons = ref([{
     :columns="columns"
     :buttons="buttons"
     buttons-slot="buttons"
+    :page="page"
     :buttons-column-attrs="{width:'300px'}"
+    @page-size-change="console.info"
+    @current-page-change="console.info"
   >
     <template #gender="{item}">
       <el-tag
