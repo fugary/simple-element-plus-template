@@ -27,6 +27,11 @@ export const useTabsViewStore = defineStore('tabsView', () => {
    */
   const cachedTabs = ref([])
 
+  const clearAllTabs = () => {
+    historyTabs.value = []
+    cachedTabs.value = []
+  }
+
   const clearHistoryTabs = () => {
     if (historyTabs.value.length) {
       let idx = historyTabs.value.findIndex(v => currentTab.value && v.path === currentTab.value)
@@ -163,6 +168,7 @@ export const useTabsViewStore = defineStore('tabsView', () => {
     removeHistoryTab,
     removeOtherHistoryTabs,
     removeHistoryTabs,
+    clearAllTabs,
     clearHistoryTabs,
     findHistoryTab,
     addHistoryTab,

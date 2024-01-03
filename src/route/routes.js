@@ -1,7 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
+import Login from '@/views/Login.vue'
 import AdminRoutes from '@/route/AdminRoutes'
 import ToolsRoutes from '@/route/ToolsRoutes'
+import { checkRouteAuthority } from '@/authority'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -9,7 +10,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
-      component: HomeView,
+      component: () => import('@/views/HomeView.vue'),
       meta: {
         icon: 'HomeFilled',
         labelKey: 'common.label.index'
@@ -43,8 +44,17 @@ const router = createRouter({
       ...AdminRoutes,
       ...ToolsRoutes
       ]
+    }, {
+      path: '/login',
+      name: 'Login',
+      component: Login,
+      meta: {
+        beforeLogin: true
+      }
     }
   ]
 })
+
+router.beforeEach(checkRouteAuthority)
 
 export default router

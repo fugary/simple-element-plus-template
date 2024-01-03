@@ -76,6 +76,10 @@ defineEmits(['submitForm'])
 
 const form = ref()
 
+defineExpose({
+  form
+})
+
 </script>
 
 <template>

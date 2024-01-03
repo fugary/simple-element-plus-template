@@ -1,14 +1,14 @@
 <script setup>
 import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
-import { useMenuStore } from '@/stores/MenuStore'
+import { useMenuConfigStore } from '@/stores/MenuConfigStore'
 import { GlobalLayoutMode } from '@/consts/GlobalConstants'
 import { computed } from 'vue'
 const globalConfigStore = useGlobalConfigStore()
-const menuStore = useMenuStore()
+const menuConfigStore = useMenuConfigStore()
 
 const allMenus = computed(() => {
-  const topMenus = menuStore.baseTopMenus
-  const businessMenus = menuStore.businessMenus
+  const topMenus = menuConfigStore.baseTopMenus
+  const businessMenus = menuConfigStore.calcBusinessMenus()
   if (globalConfigStore.layoutMode === GlobalLayoutMode.TOP) {
     return [...businessMenus, ...topMenus.slice(1)]
   }

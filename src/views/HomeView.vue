@@ -3,18 +3,18 @@ import LeftMenu from '@/layout/LeftMenu.vue'
 import TopNav from '@/layout/TopNav.vue'
 import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
 import { useTabsViewStore } from '@/stores/TabsViewStore'
-import { useMenuStore } from '@/stores/MenuStore'
+import { useMenuConfigStore } from '@/stores/MenuConfigStore'
 import { GlobalLayoutMode } from '@/consts/GlobalConstants'
 import { computed } from 'vue'
 import GlobalSettings from '@/views/components/global/GlobalSettings.vue'
 const globalConfigStore = useGlobalConfigStore()
-const menuStore = useMenuStore()
+const menuConfigStore = useMenuConfigStore()
 const tabsViewStore = useTabsViewStore()
 const showLeftMenu = computed(() => {
   return globalConfigStore.layoutMode === GlobalLayoutMode.LEFT
 })
-menuStore.loadBaseTopMenus()
-menuStore.loadBusinessMenus()
+menuConfigStore.loadBaseTopMenus()
+menuConfigStore.loadBusinessMenus()
 </script>
 
 <template>

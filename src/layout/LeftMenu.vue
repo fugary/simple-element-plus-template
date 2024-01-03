@@ -1,8 +1,10 @@
 <script setup>
 import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
-import { useMenuStore } from '@/stores/MenuStore'
+import { useMenuConfigStore } from '@/stores/MenuConfigStore'
+import { computed } from 'vue'
 const globalConfigStore = useGlobalConfigStore()
-const menuStore = useMenuStore()
+const menuConfigStore = useMenuConfigStore()
+const businessMenus = computed(() => menuConfigStore.calcBusinessMenus())
 </script>
 
 <template>
@@ -10,7 +12,7 @@ const menuStore = useMenuStore()
     <common-menu
       class="el-menu-left"
       :collapse="globalConfigStore.isCollapseLeft"
-      :menus="menuStore.businessMenus"
+      :menus="businessMenus"
       :default-openeds="['1']"
     />
   </el-scrollbar>

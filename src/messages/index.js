@@ -41,9 +41,8 @@ export const $changeLocale = locale => {
  * @param {boolean} replaceEmpty 为空是否用不为空的数据代替
  * @returns {*}
  */
-export const $i18nMsg = (cn, en, replaceEmpty) => {
+export const $i18nMsg = (cn, en, replaceEmpty = true) => {
   const { currentLocale } = useGlobalConfigStore()
-  console.log(currentLocale)
   if (currentLocale === GlobalLocales.CN) {
     return replaceEmpty ? (cn || en) : cn
   }

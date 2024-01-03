@@ -47,9 +47,9 @@ const menuCls = computed(() => {
   }
   return menuItem.menuCls
 })
-const dropdownClick = menuItem => {
+const dropdownClick = (menuItem, $event) => {
   if (menuItem.click) {
-    menuItem.click()
+    menuItem.click(router, $event)
   } else {
     const route = menuItem.route || menuItem.index
     if (route) {
@@ -98,7 +98,7 @@ const dropdownClick = menuItem => {
     v-else-if="isDropdown"
     :key="menuItem.index||index"
     :class="menuCls"
-    @click="menuItem.click&&menuItem.click()"
+    @click="menuItem.click&&menuItem.click(router, $event)"
   >
     <el-dropdown class="common-dropdown">
       <span class="el-dropdown-link">
@@ -114,7 +114,7 @@ const dropdownClick = menuItem => {
         <el-dropdown-item
           v-for="(childMenu, childIdx) in menuItem.children"
           :key="childMenu.index||childIdx"
-          @click="dropdownClick(childMenu)"
+          @click="dropdownClick(childMenu, $event)"
         >
           <common-icon
             :size="childMenu.iconSize"
@@ -133,7 +133,7 @@ const dropdownClick = menuItem => {
     :route="menuItem.route"
     v-bind="menuItem.attrs"
     :index="menuItem.index"
-    @click="menuItem.click&&menuItem.click()"
+    @click="menuItem.click&&menuItem.click(router, $event)"
   >
     <common-icon
       :size="menuItem.iconSize"
