@@ -1,6 +1,6 @@
 <script setup>
 import CommonTableColumn from '@/components/common-table/common-table-column.vue'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 /**
  * @typedef {TableProps} CommonTableProps
@@ -108,11 +108,18 @@ const currentPageChange = (pageNumber) => {
   emit('currentPageChange', pageNumber)
 }
 
+const table = ref()
+
+defineExpose({
+  table
+})
+
 </script>
 
 <template>
   <el-table
-    :v-bind="$attrs"
+    ref="table"
+    v-bind="$attrs"
     :highlight-current-row="highlightCurrentRow"
     :stripe="stripe"
     :data="data"
@@ -130,7 +137,8 @@ const currentPageChange = (pageNumber) => {
       >
         <slot
           v-if="column.slot"
-          :scope="scope"
+          :row="scope.row"
+          :column="scope.column"
           :item="scope.row"
           :column-conf="scope.columnConf"
           :name="column.slot"

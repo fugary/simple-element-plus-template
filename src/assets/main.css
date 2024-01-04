@@ -99,6 +99,10 @@ html, body, #app, .index-container {
 .form-edit-width-100 {
     width:100%
 }
+.autocomplete-table .el-table__cell{
+    padding: 3px 0;
+    cursor: pointer;
+}
 
 /**
  * slide-fade动画

@@ -8,6 +8,7 @@ import CommonTabsView from '@/components/common-tabs-view/index.vue'
 import CommonTable from '@/components/common-table/index.vue'
 import CommonBreadcrumb from '@/components/common-breadcrumb/index.vue'
 import CommonWindow from '@/components/common-window/index.vue'
+import CommonAutocomplete from '@/components/common-autocomplete/index.vue'
 
 /**
  * 自定义通用组件自动注册
@@ -27,5 +28,6 @@ export default {
     Vue.component('CommonTable', CommonTable)
     Vue.component('CommonBreadcrumb', CommonBreadcrumb)
     Vue.component('CommonWindow', CommonWindow)
+    Vue.component('CommonAutocomplete', CommonAutocomplete)
   }
 }
