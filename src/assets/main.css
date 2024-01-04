@@ -92,8 +92,12 @@ html, body, #app, .index-container {
     padding-top: 20px;
 }
 
-.form-edit-width {
+.form-edit-width-70 {
     width:70%
+}
+
+.form-edit-width-100 {
+    width:100%
 }
 
 /**

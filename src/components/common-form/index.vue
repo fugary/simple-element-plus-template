@@ -38,13 +38,25 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  submitLabel: {
+    type: String,
+    default: ''
+  },
   showReset: {
     type: Boolean,
     default: true
   },
+  resetLabel: {
+    type: String,
+    default: ''
+  },
   showBack: {
     type: Boolean,
     default: false
+  },
+  backLabel: {
+    type: String,
+    default: ''
   },
   backUrl: {
     type: String,
@@ -110,19 +122,19 @@ defineExpose({
         type="primary"
         @click="$emit('submitForm', form)"
       >
-        {{ $t('common.label.submit') }}
+        {{ submitLabel||$t('common.label.submit') }}
       </el-button>
       <el-button
         v-if="showReset"
         @click="form.resetFields()"
       >
-        {{ $t('common.label.reset') }}
+        {{ resetLabel||$t('common.label.reset') }}
       </el-button>
       <el-button
         v-if="showBack||backUrl"
         @click="backUrl?$router.push(backUrl):$router.go(-1)"
       >
-        {{ $t('common.label.back') }}
+        {{ backLabel||$t('common.label.back') }}
       </el-button>
       <slot
         :form="form"

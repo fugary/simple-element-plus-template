@@ -27,3 +27,50 @@ export const loadUserResult = async (id, config) => {
   console.info('==================', usersResult)
   return usersResult
 }
+
+/**
+ * @return {[CommonFormOption]}
+ */
+export const useUserFormOptions = () => {
+  return [{
+    label: '中文名',
+    prop: 'nameCn',
+    placeholder: '请输入中文名',
+    required: true
+  }, {
+    label: '英文名',
+    prop: 'nameEn',
+    placeholder: '请输入英文名',
+    required: true
+  }, {
+    label: '出生日期',
+    type: 'date-picker',
+    prop: 'birthday',
+    value: '',
+    placeholder: '选择出生日期',
+    required: true
+  }, {
+    label: '性别',
+    type: 'radio-group',
+    prop: 'gender',
+    value: '',
+    required: true,
+    children: [
+      {
+        label: '男',
+        value: 'male'
+      },
+      {
+        label: '女',
+        value: 'female'
+      }
+    ]
+  }, {
+    label: '地址',
+    prop: 'address',
+    value: '',
+    attrs: {
+      type: 'textarea'
+    }
+  }]
+}

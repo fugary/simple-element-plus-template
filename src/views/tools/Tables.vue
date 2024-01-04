@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { loadUsersResult } from '@/services/user/UserService'
+import { loadUsersResult, useUserFormOptions } from '@/services/user/UserService'
 import { useDefaultPage } from '@/config'
 import { useRouter } from 'vue-router'
 
@@ -57,7 +57,7 @@ const buttons = ref([{
   labelKey: 'common.label.edit',
   type: 'primary',
   click: item => {
-    console.info('编辑=============', item)
+    toEditUser(item)
   },
   buttonIf (item) {
     return !!item.id
@@ -71,9 +71,26 @@ const buttons = ref([{
   buttonIf (item) {
     return !!item.id
   }
-}, {
-  label: '其他操作'
 }])
+/** *************用户编辑**************/
+const currentUser = ref({})
+const showEdit = ref(false)
+const userFormOptions = ref(useUserFormOptions())
+const toEditUser = user => {
+  currentUser.value = { ...user }
+  showEdit.value = true
+}
+const formRef = ref()
+const submitForm = () => {
+  formRef.value.form.validate(valid => {
+    if (valid) {
+      console.log('submit', currentUser.value)
+      showEdit.value = false
+    }
+  })
+  return false
+}
+
 </script>
 
 <template>
@@ -84,7 +101,7 @@ const buttons = ref([{
       :columns="columns"
       :buttons="buttons"
       buttons-slot="buttons"
-      :buttons-column-attrs="{width:'300px'}"
+      :buttons-column-attrs="{width:'200px'}"
       @page-size-change="loadUsers()"
       @current-page-change="loadUsers()"
     >
@@ -104,6 +121,21 @@ const buttons = ref([{
         </el-button>
       </template>
     </common-table>
+    <common-window
+      v-model="showEdit"
+      :width="'600px'"
+      :ok-click="submitForm"
+      title="用户编辑"
+    >
+      <common-form
+        ref="formRef"
+        class="form-edit-width-100"
+        :model="currentUser"
+        :options="userFormOptions"
+        label-width="100px"
+        :show-buttons="false"
+      />
+    </common-window>
   </el-container>
 </template>
 
