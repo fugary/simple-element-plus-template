@@ -51,3 +51,15 @@ export const $httpPost = (url, data, config) => {
     }, reject)
   })
 }
+
+export const $httpGet = (url, data, config) => {
+  return new Promise((resolve, reject) => {
+    $http.get(url, config).then(response => {
+      if (response.data) {
+        resolve(response.data) // 只要有数据就认为成功，内容再解析
+      } else {
+        reject(new Error('No response data'))
+      }
+    }, reject)
+  })
+}

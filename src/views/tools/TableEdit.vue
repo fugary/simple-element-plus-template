@@ -1,7 +1,13 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { loadUserResult } from '@/services/user/UserService'
 
-const userDto = ref({})
+const route = useRoute()
+
+const userDto = ref({
+  id: route.params.id
+})
 /**
  * @type {[CommonFormOption]}
  */
@@ -46,6 +52,23 @@ const userFormOptions = [{
     type: 'textarea'
   }
 }]
+
+const loadUser = async () => {
+  console.info('============', route)
+  const id = route.params.id
+  if (id) {
+    const userResult = await loadUserResult(id)
+    if (userResult.success && userResult.resultData) {
+      const resultData = userResult.resultData
+      userDto.value = resultData.user
+    }
+  }
+}
+
+onMounted(() => {
+  loadUser()
+})
+
 const submitForm = form => {
   form.validate(valid => {
     if (valid) {

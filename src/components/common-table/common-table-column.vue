@@ -55,7 +55,7 @@ const props = defineProps({
         v-bind="column.linkAttrs"
         @click="column.click(scope.row, scope)"
       >
-        {{ scope.row[column.property] }}
+        {{ column.formatter?column.formatter(scope.row, scope):scope.row[column.property] }}
       </el-link>
       <slot
         v-bind="scope"
