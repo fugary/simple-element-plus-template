@@ -41,6 +41,14 @@ const props = defineProps({
   showReset: {
     type: Boolean,
     default: true
+  },
+  showBack: {
+    type: Boolean,
+    default: false
+  },
+  backUrl: {
+    type: String,
+    default: ''
   }
 })
 
@@ -107,6 +115,12 @@ defineExpose({
       <el-button
         v-if="showReset"
         @click="form.resetFields()"
+      >
+        {{ $t('common.label.reset') }}
+      </el-button>
+      <el-button
+        v-if="showBack"
+        @click="backUrl?$router.push(backUrl):$router.go(-1)"
       >
         {{ $t('common.label.reset') }}
       </el-button>
