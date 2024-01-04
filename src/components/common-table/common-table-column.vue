@@ -10,7 +10,6 @@
  * @property {string} slot 自定义插槽
  * @property [ButtonProps] buttons 自定义按钮
  * @property {Object} attrs 其他属性
- * @property {string} link 链接地址
  * @property {Object} linkAttrs 链接配置
  * @method click 点击事件
  * @method formatter 格式化
@@ -47,15 +46,14 @@ const props = defineProps({
     :formatter="column.formatter"
   >
     <template
-      v-if="column.slot||column.link||column.click"
+      v-if="column.slot||column.click"
       #default="scope"
     >
       <el-link
-        v-if="column.link||column.click"
-        :href="column.link"
+        v-if="column.click"
         type="primary"
         v-bind="column.linkAttrs"
-        @click="column.click&&column.click(scope.row, scope)"
+        @click="column.click(scope.row, scope)"
       >
         {{ scope.row[column.property] }}
       </el-link>

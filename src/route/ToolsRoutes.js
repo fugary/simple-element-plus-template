@@ -18,7 +18,7 @@ export default [{
     name: 'tables-index',
     component: () => import('@/views/tools/Tables.vue')
   }, {
-    path: 'edit',
+    path: 'edit/:id',
     name: 'tables-edit',
     component: () => import('@/views/tools/TableEdit.vue'),
     meta: {

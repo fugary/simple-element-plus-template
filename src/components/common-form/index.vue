@@ -119,10 +119,10 @@ defineExpose({
         {{ $t('common.label.reset') }}
       </el-button>
       <el-button
-        v-if="showBack"
+        v-if="showBack||backUrl"
         @click="backUrl?$router.push(backUrl):$router.go(-1)"
       >
-        {{ $t('common.label.reset') }}
+        {{ $t('common.label.back') }}
       </el-button>
       <slot
         :form="form"

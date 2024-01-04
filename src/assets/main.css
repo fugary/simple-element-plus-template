@@ -85,6 +85,17 @@ html, body, #app, .index-container {
     display: block;
 }
 
+.container-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.form-edit-width {
+    width:70%
+}
+
 /**
  * slide-fade动画
  */

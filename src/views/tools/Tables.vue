@@ -2,6 +2,9 @@
 import { onMounted, ref } from 'vue'
 import { loadUsersResult } from '@/services/user/UserService'
 import { useDefaultPage } from '@/config'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const page = ref(useDefaultPage())
 
@@ -27,11 +30,15 @@ onMounted(() => {
 const columns = [{
   label: '中文名',
   property: 'nameCn',
-  link: '#/tables/edit'
+  click (data) {
+    router.push(`tables/edit/${data.id}`)
+  }
 }, {
   label: '英文名',
   property: 'nameEn',
-  link: '#/tables/edit'
+  click (data) {
+    router.push(`tables/edit/${data.id}`)
+  }
 }, {
   label: '性别',
   property: 'gender',
