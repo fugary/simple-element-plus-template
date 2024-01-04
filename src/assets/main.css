@@ -81,6 +81,10 @@ html, body, #app, .index-container {
     text-align: center;
 }
 
+.no_flex {
+    display: block;
+}
+
 /**
  * slide-fade动画
  */

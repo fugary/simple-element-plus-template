@@ -7,14 +7,17 @@ const page = ref(useDefaultPage())
 
 const tableData = ref([])
 
-onMounted(async () => {
-  const usersResult = await loadUsersResult()
-  console.info('=================', usersResult)
+const loadUsers = async () => {
+  const usersResult = await loadUsersResult({ page: page.value })
   if (usersResult.success && usersResult.resultData) {
     const resultData = usersResult.resultData
     tableData.value = resultData.userList
     Object.assign(page.value, resultData.page)
   }
+}
+
+onMounted(() => {
+  loadUsers()
 })
 
 /**
@@ -67,32 +70,34 @@ const buttons = ref([{
 </script>
 
 <template>
-  <common-table
-    :data="tableData"
-    :columns="columns"
-    :buttons="buttons"
-    buttons-slot="buttons"
-    :page="page"
-    :buttons-column-attrs="{width:'300px'}"
-    @page-size-change="console.info"
-    @current-page-change="console.info"
-  >
-    <template #gender="{item}">
-      <el-tag
-        :type="item.gender === 'male' ? '' : 'success'"
-      >
-        {{ item.gender }}
-      </el-tag>
-    </template>
-    <template #buttons="{item}">
-      <el-button
-        size="small"
-        @click="console.info(item)"
-      >
-        测试
-      </el-button>
-    </template>
-  </common-table>
+  <el-container class="no_flex">
+    <common-table
+      v-model:page="page"
+      :data="tableData"
+      :columns="columns"
+      :buttons="buttons"
+      buttons-slot="buttons"
+      :buttons-column-attrs="{width:'300px'}"
+      @page-size-change="loadUsers()"
+      @current-page-change="loadUsers()"
+    >
+      <template #gender="{item}">
+        <el-tag
+          :type="item.gender === 'male' ? '' : 'success'"
+        >
+          {{ item.gender }}
+        </el-tag>
+      </template>
+      <template #buttons="{item}">
+        <el-button
+          size="small"
+          @click="console.info(item)"
+        >
+          测试
+        </el-button>
+      </template>
+    </common-table>
+  </el-container>
 </template>
 
 <style scoped>

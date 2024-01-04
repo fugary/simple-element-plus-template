@@ -64,6 +64,10 @@ const props = defineProps({
     type: Object,
     default: null
   },
+  pageAlign: {
+    type: String,
+    default: 'center'
+  },
   pageAttrs: {
     type: Object,
     default () {
@@ -93,7 +97,16 @@ const calcColumns = computed(() => {
   return _columns
 })
 
-defineEmits(['pageSizeChange', 'currentPageChange'])
+const emit = defineEmits(['pageSizeChange', 'currentPageChange', 'update:page'])
+
+const pageSizeChange = (pageSize) => {
+  emit('update:page', { ...props.page, pageSize })
+  emit('pageSizeChange', pageSize)
+}
+const currentPageChange = (pageNumber) => {
+  emit('update:page', { ...props.page, pageNumber })
+  emit('currentPageChange', pageNumber)
+}
 
 </script>
 
@@ -126,19 +139,20 @@ defineEmits(['pageSizeChange', 'currentPageChange'])
     </common-table-column>
   </el-table>
   <el-pagination
-    v-if="page && page.totalCount"
+    v-if="page &&page.pageCount&&page.pageCount>1"
     class="common-pagination"
     v-bind="pageAttrs"
     :total="page.totalCount"
     :page-size="page.pageSize"
-    :current-page="page.pageIndex"
-    @size-change="$emit('pageSizeChange', $event)"
-    @current-change="$emit('currentPageChange', $event)"
+    :current-page="page.pageNumber"
+    @size-change="pageSizeChange($event)"
+    @current-change="currentPageChange($event)"
   />
 </template>
 
 <style scoped>
 .common-pagination {
   margin-top: 15px;
+  justify-content: v-bind(pageAlign);
 }
 </style>

@@ -13,8 +13,8 @@ import { $httpPost } from '@/vendors/axios'
  * 加载用户数据
  * @return {{success:boolean, message:string,userList: [UserDto]}}
  */
-export const loadUsersResult = async config => {
-  const usersResult = await $httpPost('/api/users', config)
+export const loadUsersResult = async (data, config) => {
+  const usersResult = await $httpPost('/api/users', data, config)
   console.info('==================', usersResult)
   return usersResult
 }
