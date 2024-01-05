@@ -73,9 +73,18 @@ const props = defineProps({
     default () {
       return {
         layout: 'total, sizes, prev, pager, next',
-        pageSizes: [10, 20, 50]
+        pageSizes: [10, 20, 50],
+        background: true
       }
     }
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  loadingText: {
+    type: String,
+    default: ''
   }
 })
 /**
@@ -120,10 +129,12 @@ defineExpose({
   <el-table
     ref="table"
     v-bind="$attrs"
+    v-loading="loading"
     :highlight-current-row="highlightCurrentRow"
     :stripe="stripe"
     :data="data"
     :border="border"
+    :element-loading-text="loadingText"
   >
     <common-table-column
       v-for="(column, index) in calcColumns"
@@ -147,7 +158,7 @@ defineExpose({
     </common-table-column>
   </el-table>
   <el-pagination
-    v-if="page &&page.pageCount&&page.pageCount>1"
+    v-if="!loading&&page&&page.pageCount&&page.pageCount>1"
     class="common-pagination"
     v-bind="pageAttrs"
     :total="page.totalCount"

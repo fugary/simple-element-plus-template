@@ -101,7 +101,7 @@ const submitForm = () => {
       :columns="columns"
       :buttons="buttons"
       buttons-slot="buttons"
-      :buttons-column-attrs="{width:'200px'}"
+      :buttons-column-attrs="{width:'250px'}"
       @page-size-change="loadUsers()"
       @current-page-change="loadUsers()"
     >

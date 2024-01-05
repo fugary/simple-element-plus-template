@@ -99,9 +99,34 @@ html, body, #app, .index-container {
 .form-edit-width-100 {
     width:100%
 }
-.autocomplete-table .el-table__cell{
+
+.common-autocomplete .el-popover__title{
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.common-autocomplete .autocomplete-table .el-table__cell{
     padding: 3px 0;
     cursor: pointer;
+}
+
+.common-autocomplete .el-tabs__nav-next, .el-tabs__nav-prev {
+    line-height: 30px;
+}
+
+.common-autocomplete .common-select-page .el-tabs__item {
+    height: 30px;
+}
+
+.common-autocomplete .common-select-page .common-select-page-btn {
+    overflow: hidden;
+    width: 100%;
+    padding: 0;
+    margin: 5px;
+}
+
+.common-autocomplete .common-select-page .el-tabs__content {
+    padding: 5px;
 }
 
 /**
