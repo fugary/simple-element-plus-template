@@ -105,14 +105,19 @@ const emit = defineEmits(['update:modelValue', 'onSelectData', 'update:page', 'u
 
 const keywords = ref(props.autocompleteLabel)
 const lastAutocompleteLabel = ref(props.autocompleteLabel)
-const pageAttrs = { layout: 'total, prev, pager, next' }
+const pageAttrs = { layout: 'total, prev, pager, next', small: true }
 const dataList = ref([])
 const popoverVisible = ref(false)
 const autocompletePopover = ref()
 const pageConfig = useVModel(props, 'page', emit)
-
-const onInputKeywords = debounce((click) => {
+/**
+ * @type {function(boolean?)}
+ */
+const onInputKeywords = debounce((input) => {
   if (!props.disabled && !props.readonly) {
+    if (input && pageConfig.value) {
+      pageConfig.value = { ...pageConfig.value, pageNumber: 1 }
+    }
     const val = keywords.value
     if (val || props.emptySearchEnabled) {
       popoverVisible.value = true
@@ -123,7 +128,7 @@ const onInputKeywords = debounce((click) => {
         }
       })
     }
-    if (!val && !click) {
+    if (!val && input) {
       onSelectData()
     }
   }
@@ -228,8 +233,8 @@ onKeyStroke('Enter', e => {
           :disabled="disabled"
           :readonly="readonly"
           v-bind="inputAttrs"
-          @input="onInputKeywords()"
-          @click="onInputKeywords(true)"
+          @input="onInputKeywords(true)"
+          @click="onInputKeywords(false)"
         />
       </template>
       <template #default>
@@ -243,7 +248,7 @@ onKeyStroke('Enter', e => {
           :data="dataList"
           :page-attrs="pageAttrs"
           @row-click="onSelectData($event)"
-          @current-page-change="onInputKeywords()"
+          @current-page-change="onInputKeywords(false)"
         >
           <template
             v-for="column in autocompleteConfig.columns"

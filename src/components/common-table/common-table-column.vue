@@ -16,6 +16,8 @@
  */
 /**
  * 配置信息
+ * @property {CommonTableColumn[]} columns 表格显示列配置
+ * @buttonSize {''|'large'|'small'|'default'}
  */
 const props = defineProps({
   /**
@@ -40,7 +42,7 @@ const props = defineProps({
   <el-table-column
     v-if="!column.isOperation"
     :label="column.label || $t(column.labelKey)"
-    :property="column.property"
+    :prop="column.prop||column.property"
     :width="column.width"
     v-bind="column.attrs"
     :formatter="column.formatter"
