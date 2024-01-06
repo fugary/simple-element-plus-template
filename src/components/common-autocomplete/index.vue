@@ -161,9 +161,15 @@ const showSelectPage = computed(() => {
   return props.selectPageConfig && (!keywords.value || lastAutocompleteLabel.value === keywords.value)
 })
 
+const showPopover = () => {
+  nextTick(() => {
+    popoverVisible.value = true
+  })
+}
+
 const loadAutoDataList = (val) => {
   if (val || props.emptySearchEnabled) {
-    popoverVisible.value = true
+    showPopover()
     loadingData.value = true
     props.autocompleteConfig.searchMethod({ query: val, page: autoPage.value }, (result) => {
       dataList.value = result.items || []
@@ -194,8 +200,8 @@ const onInputKeywords = debounce((input) => {
   if (!props.disabled && !props.readonly) {
     const val = keywords.value
     if (showSelectPage.value) {
-      popoverVisible.value = true
       loadSelectData()
+      showPopover()
     } else {
       if (input && autoPage.value) {
         autoPage.value = { ...autoPage.value, pageNumber: 1 }

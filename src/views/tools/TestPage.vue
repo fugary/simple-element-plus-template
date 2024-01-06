@@ -27,7 +27,7 @@ const citySelectPageConfig = computed(() => useCitySelectPageConfig())
             v-model:default-label="modelAutoLabel"
             id-key="id"
             :label-key="$i18nMsg('nameCn', 'nameEn')"
-            :empty-search-enabled="false"
+            :empty-search-enabled="true"
             title="请选择用户"
             :autocomplete-config="userAutocompleteConfig"
           >
