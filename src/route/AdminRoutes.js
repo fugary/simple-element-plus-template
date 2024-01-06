@@ -15,5 +15,18 @@ export default [{
 }, {
   path: `${BASE_PATH}/menus`,
   name: 'Menus',
-  component: () => import('@/views/admin/Menus.vue')
+  children: [{
+    path: '',
+    name: 'menus-index',
+    component: () => import('@/views/admin/Menus.vue')
+  }, {
+    path: 'edit/:id',
+    name: 'menus-edit',
+    component: () => import('@/views/admin/MenuEdit.vue'),
+    meta: {
+      replaceTabHistory: 'menus-index',
+      labelKey: 'menu.label.menuEdit',
+      icon: 'Edit'
+    }
+  }]
 }]
