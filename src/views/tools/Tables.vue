@@ -82,20 +82,22 @@ const searchFormOptions = computed(() => {
     {
       label: '用户名',
       prop: 'nameCn'
+    },
+    {
+      label: '关键字',
+      prop: 'keywords'
+    },
+    {
+      label: '地址',
+      prop: 'address'
     }, {
       label: $i18nMsg('性别', 'Gender'),
       type: 'select',
       prop: 'gender',
       children: [{
-        type: 'option',
-        value: '',
-        label: '请选择'
-      }, {
-        type: 'option',
         value: 'male',
         label: $i18nMsg('男', 'Male')
       }, {
-        type: 'option',
         value: 'female',
         label: $i18nMsg('女', 'Female')
       }]
@@ -106,9 +108,9 @@ const doSearch = form => {
   console.info('=================searchParam', searchParam.value)
 }
 /** *************用户编辑**************/
-const currentUser = ref({})
+const currentUser = ref(null)
 const showEdit = ref(false)
-const userFormOptions = ref(useUserFormOptions())
+const userFormOptions = computed(() => useUserFormOptions())
 const toEditUser = user => {
   currentUser.value = { ...user }
   showEdit.value = true
@@ -171,6 +173,7 @@ const submitForm = () => {
       title="用户编辑"
     >
       <common-form
+        v-if="currentUser"
         ref="formRef"
         class="form-edit-width-100"
         :model="currentUser"

@@ -31,6 +31,10 @@ const props = defineProps({
     type: Object,
     default: null
   },
+  validateOnRuleChange: {
+    type: Boolean,
+    default: false
+  },
   showButtons: {
     type: Boolean,
     default: true
@@ -99,10 +103,9 @@ const emit = defineEmits(['submitForm', 'update:model'])
 const formModel = useVModel(props, 'model', emit)
 
 watch(() => props.options, (options) => {
-  console.info('=================options', options)
   options.forEach(option => {
-    if (formModel.value && option.value) {
-      formModel.value[option.prop] = option.value
+    if (formModel.value) {
+      formModel.value[option.prop] = option.value || undefined
     }
   })
   rules.value = initRules()
@@ -121,10 +124,12 @@ defineExpose({
 <template>
   <el-form
     ref="form"
+    class="common-form"
     :model="formModel"
     :rules="rules"
     :label-width="labelWidth"
     v-bind="$attrs"
+    :validate-on-rule-change="validateOnRuleChange"
   >
     <common-form-control
       v-for="(option,index) in options"

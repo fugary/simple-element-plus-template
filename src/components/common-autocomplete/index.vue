@@ -29,6 +29,7 @@
  * @property {string} labelKey label字段名
  * @property {number} debounceTime 防抖时间
  * @property {string} autocompleteWidth 宽度
+ * @property {string} inputWidth input宽度
  * @property {CommonSelectPageOption} selectPageConfig 分页
  * @property {Number} colSize 显示几列
  * @property {string} loadingText 加载提示loading
@@ -36,7 +37,7 @@
  * @property {Object} inputAttrs 输入框配置项
  */
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { debounce } from 'lodash'
+import { debounce, isObject } from 'lodash'
 import { onClickOutside, onKeyStroke, useVModel } from '@vueuse/core'
 import chunk from 'lodash/chunk'
 
@@ -80,6 +81,10 @@ const props = defineProps({
     type: String,
     default: '500px'
   },
+  inputWidth: {
+    type: String,
+    default: '220px'
+  },
   autocompleteConfig: {
     type: Object,
     required: true
@@ -122,7 +127,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue', 'onSelectData', 'update:defaultLabel'])
+const emit = defineEmits(['update:modelValue', 'change', 'update:defaultLabel'])
 // 关键字搜索
 const keywords = ref(props.defaultLabel)
 // 上次搜索记录
@@ -214,15 +219,32 @@ watch(() => popoverVisible.value, (val) => {
   }
 })
 
+watch(() => props.modelValue, (value) => {
+  console.info('=====================value', value)
+  if (!props.useIdModel) {
+    setAutocompleteLabel(value && isObject(value) ? value[labelProp.value] : '')
+  }
+  vModel.value = value
+})
+
+watch(() => props.defaultLabel, (label) => {
+  setAutocompleteLabel(label)
+})
+
 //* ********************数据选择*********************
 
 const vModel = useVModel(props, 'modelValue', emit)
-const vAutocompleteLabel = useVModel(props, 'defaultLabel', emit)
+const vDefaultLabel = useVModel(props, 'defaultLabel', emit)
+
+const setAutocompleteLabel = label => {
+  keywords.value = label
+  vDefaultLabel.value = label
+  lastAutocompleteLabel.value = label
+}
 
 const onSelectData = (row) => {
   popoverVisible.value = false
   if (!vModel.value && !row) {
-    console.info('==================', row)
     return
   }
   let label = ''
@@ -231,11 +253,9 @@ const onSelectData = (row) => {
     label = row[labelProp.value]
     value = props.useIdModel ? row[idProp.value] : row
   }
-  keywords.value = label
-  vAutocompleteLabel.value = label
-  lastAutocompleteLabel.value = label
+  setAutocompleteLabel(label)
   vModel.value = value
-  emit('onSelectData', row)
+  emit('change', row)
 }
 
 // =======================按键处理===================
@@ -316,114 +336,113 @@ const selectPagePaginationChange = (tab, pageNumber) => {
 </script>
 
 <template>
-  <div>
-    <el-popover
-      ref="autocompletePopover"
-      :visible="popoverVisible"
-      popper-class="common-autocomplete"
-      placement="bottom-start"
-      :width="autocompleteWidth"
-      :title="title||placeholder"
-    >
-      <template #reference>
-        <el-input
-          v-model="keywords"
-          :clearable="clearable"
-          :placeholder="placeholder||title"
-          :disabled="disabled"
-          :readonly="readonly"
-          v-bind="inputAttrs"
-          @input="onInputKeywords(true)"
-          @click="onInputKeywords(false)"
-        />
-      </template>
-      <template #default>
-        <div v-if="showSelectPage">
-          <el-tabs
-            v-model="selectPageTab"
-            class="common-select-page"
-            type="border-card"
-            @tab-click="onInputKeywords(false)"
-          >
-            <el-tab-pane
-              v-for="tab in selectPageConfig.tabs"
-              :key="tab.id"
-              :name="tab.id"
-            >
-              <template #label>
-                <span>{{ tab.label }}</span>
-              </template>
-              <template #default>
-                <div
-                  v-loading="loadingData"
-                  :element-loading-text="loadingText"
-                  class="select-page-content"
-                  :style="{minHeight}"
-                >
-                  <template
-                    v-for="(rowData, index) in parsedSelectPageData[tab.id]"
-                    :key="index"
-                  >
-                    <el-row>
-                      <el-col
-                        v-for="(colData, idx) in rowData"
-                        :key="idx"
-                        :span="24/colSize"
-                      >
-                        <el-button
-                          plain
-                          class="common-select-page-btn is-text"
-                          @click="onSelectData(colData)"
-                        >
-                          {{ colData[labelProp] }}
-                        </el-button>
-                      </el-col>
-                    </el-row>
-                  </template>
-                  <el-pagination
-                    v-if="selectPagePagination(tab)"
-                    :style="{'justify-content':'center'}"
-                    v-bind="selectPageAttrs"
-                    :total="selectPagePageConfig[tab.id].totalCount"
-                    :page-size="selectPagePageConfig[tab.id].pageSize"
-                    :current-page="selectPagePageConfig[tab.id].pageNumber"
-                    @current-change="selectPagePaginationChange(tab, $event)"
-                  />
-                </div>
-              </template>
-            </el-tab-pane>
-          </el-tabs>
-        </div>
-        <!--自动完成内容-->
-        <common-table
-          v-else
-          ref="tableRef"
-          v-model:page="autoPage"
-          :loading="loadingData"
-          :loading-text="loadingText"
-          class="autocomplete-table"
-          :columns="autocompleteConfig.columns"
-          :empty-text="autocompleteConfig.emptyMessage"
-          :data="dataList"
-          :page-attrs="pageAttrs"
-          @row-click="onSelectData($event)"
-          @current-page-change="onInputKeywords(false)"
+  <el-popover
+    ref="autocompletePopover"
+    :visible="popoverVisible"
+    popper-class="common-autocomplete"
+    placement="bottom-start"
+    :width="autocompleteWidth"
+    :title="title||placeholder"
+  >
+    <template #reference>
+      <el-input
+        v-model="keywords"
+        :clearable="clearable"
+        :placeholder="placeholder||title"
+        :disabled="disabled"
+        :readonly="readonly"
+        :style="{width: inputWidth}"
+        v-bind="inputAttrs"
+        @input="onInputKeywords(true)"
+        @click="onInputKeywords(false)"
+      />
+    </template>
+    <template #default>
+      <div v-if="showSelectPage">
+        <el-tabs
+          v-model="selectPageTab"
+          class="common-select-page"
+          type="border-card"
+          @tab-click="onInputKeywords(false)"
         >
-          <template
-            v-for="column in autocompleteConfig.columns"
-            #[column.slot]="scope"
+          <el-tab-pane
+            v-for="tab in selectPageConfig.tabs"
+            :key="tab.id"
+            :name="tab.id"
           >
-            <slot
-              v-if="column.slot"
-              :item="scope.item"
-              :column-conf="scope.columnConf"
-              :name="column.slot"
-            />
-          </template>
-        </common-table>
-      </template>
-    </el-popover>
-  </div>
+            <template #label>
+              <span>{{ tab.label }}</span>
+            </template>
+            <template #default>
+              <div
+                v-loading="loadingData"
+                :element-loading-text="loadingText"
+                class="select-page-content"
+                :style="{minHeight}"
+              >
+                <template
+                  v-for="(rowData, index) in parsedSelectPageData[tab.id]"
+                  :key="index"
+                >
+                  <el-row>
+                    <el-col
+                      v-for="(colData, idx) in rowData"
+                      :key="idx"
+                      :span="24/colSize"
+                    >
+                      <el-button
+                        plain
+                        class="common-select-page-btn is-text"
+                        @click="onSelectData(colData)"
+                      >
+                        {{ colData[labelProp] }}
+                      </el-button>
+                    </el-col>
+                  </el-row>
+                </template>
+                <el-pagination
+                  v-if="selectPagePagination(tab)"
+                  :style="{'justify-content':'center'}"
+                  v-bind="selectPageAttrs"
+                  :total="selectPagePageConfig[tab.id].totalCount"
+                  :page-size="selectPagePageConfig[tab.id].pageSize"
+                  :current-page="selectPagePageConfig[tab.id].pageNumber"
+                  @current-change="selectPagePaginationChange(tab, $event)"
+                />
+              </div>
+            </template>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+      <!--自动完成内容-->
+      <common-table
+        v-else
+        ref="tableRef"
+        v-model:page="autoPage"
+        :loading="loadingData"
+        :loading-text="loadingText"
+        class="autocomplete-table"
+        :columns="autocompleteConfig.columns"
+        :empty-text="autocompleteConfig.emptyMessage"
+        :data="dataList"
+        :page-attrs="pageAttrs"
+        @row-click="onSelectData($event)"
+        @current-page-change="onInputKeywords(false)"
+      >
+        <template
+          v-for="column in autocompleteConfig.columns"
+          #[column.slot]="scope"
+        >
+          <slot
+            v-if="column.slot"
+            :item="scope.item"
+            :column-conf="scope.columnConf"
+            :name="column.slot"
+          />
+        </template>
+      </common-table>
+    </template>
+  </el-popover>
 </template>
 
 <style scoped>
