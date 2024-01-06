@@ -6,7 +6,7 @@ import { searchMenusResult } from '@/services/menu/MenuService'
 
 const router = useRouter()
 
-const page = ref(useDefaultPage(8))
+const page = ref(useDefaultPage())
 
 const tableData = ref([])
 const loading = ref(true)

@@ -9,6 +9,14 @@ export default [{
   name: 'Roles',
   component: () => import('@/views/admin/Roles.vue')
 }, {
+  path: `${BASE_PATH}/groups`,
+  name: 'Groups',
+  component: () => import('@/views/admin/Groups.vue')
+}, {
+  path: `${BASE_PATH}/tenants`,
+  name: 'Tenants',
+  component: () => import('@/views/admin/Tenants.vue')
+}, {
   path: `${BASE_PATH}/authority`,
   name: 'Authority',
   component: () => import('@/views/admin/Authority.vue')
