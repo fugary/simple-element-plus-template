@@ -126,47 +126,51 @@ defineExpose({
 </script>
 
 <template>
-  <el-table
-    ref="table"
-    v-bind="$attrs"
+  <el-container
     v-loading="loading"
-    :highlight-current-row="highlightCurrentRow"
-    :stripe="stripe"
-    :data="data"
-    :border="border"
+    class="no_flex"
     :element-loading-text="loadingText"
   >
-    <common-table-column
-      v-for="(column, index) in calcColumns"
-      :key="index"
-      :column="column"
-      :button-size="buttonSize"
+    <el-table
+      ref="table"
+      v-bind="$attrs"
+      :highlight-current-row="highlightCurrentRow"
+      :stripe="stripe"
+      :data="data"
+      :border="border"
     >
-      <!--用于自定义显示属性-->
-      <template
-        #default="scope"
+      <common-table-column
+        v-for="(column, index) in calcColumns"
+        :key="index"
+        :column="column"
+        :button-size="buttonSize"
       >
-        <slot
-          v-if="column.slot"
-          :row="scope.row"
-          :column="scope.column"
-          :item="scope.row"
-          :column-conf="scope.columnConf"
-          :name="column.slot"
-        />
-      </template>
-    </common-table-column>
-  </el-table>
-  <el-pagination
-    v-if="!loading&&page&&page.pageCount&&page.pageCount>1"
-    class="common-pagination"
-    v-bind="pageAttrs"
-    :total="page.totalCount"
-    :page-size="page.pageSize"
-    :current-page="page.pageNumber"
-    @size-change="pageSizeChange($event)"
-    @current-change="currentPageChange($event)"
-  />
+        <!--用于自定义显示属性-->
+        <template
+          #default="scope"
+        >
+          <slot
+            v-if="column.slot"
+            :row="scope.row"
+            :column="scope.column"
+            :item="scope.row"
+            :column-conf="scope.columnConf"
+            :name="column.slot"
+          />
+        </template>
+      </common-table-column>
+    </el-table>
+    <el-pagination
+      v-if="page&&page.pageCount&&page.pageCount>1"
+      class="common-pagination"
+      v-bind="pageAttrs"
+      :total="page.totalCount"
+      :page-size="page.pageSize"
+      :current-page="page.pageNumber"
+      @size-change="pageSizeChange($event)"
+      @current-change="currentPageChange($event)"
+    />
+  </el-container>
 </template>
 
 <style scoped>

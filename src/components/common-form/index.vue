@@ -132,6 +132,10 @@ defineExpose({
       :model="formModel"
       :option="option"
     />
+    <slot
+      :form="form"
+      name="before-buttons"
+    />
     <el-form-item v-if="showButtons">
       <el-button
         v-if="showSubmit"

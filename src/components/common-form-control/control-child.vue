@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { $i18nBundle } from '@/messages'
+import { useInputType } from '@/components/utils'
 
 /**
  * @type {{option:CommonFormOption}}
@@ -15,9 +16,7 @@ const props = defineProps({
   }
 })
 
-const inputType = computed(() => {
-  return `el-${props.option.type}`
-})
+const inputType = computed(() => useInputType(props.option))
 
 const label = computed(() => {
   const option = props.option
@@ -30,11 +29,11 @@ const label = computed(() => {
  * element-plus的复选框和单选框没有value值，只有label用于存储值，因此特殊处理
  * @type {string[]}
  */
-const labelAsValueKeys = ['checkbox', 'radio', 'checkbox-button', 'radio-button']
+const labelAsValueKeys = ['el-checkbox', 'el-radio', 'el-checkbox-button', 'el-radio-button']
 
 const labelOrValue = computed(() => {
   const option = props.option
-  if (labelAsValueKeys.includes(option.type)) {
+  if (labelAsValueKeys.includes(inputType.value)) {
     return option.value
   }
   return label.value

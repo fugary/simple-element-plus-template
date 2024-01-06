@@ -1,17 +1,20 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { loadUsersResult, useUserFormOptions } from '@/services/user/UserService'
 import { useDefaultPage } from '@/config'
 import { useRouter } from 'vue-router'
+import { $i18nMsg } from '@/messages'
 
 const router = useRouter()
 
 const page = ref(useDefaultPage())
 
 const tableData = ref([])
-
+const loading = ref(true)
 const loadUsers = async () => {
+  loading.value = true
   const usersResult = await loadUsersResult({ page: page.value })
+  loading.value = false
   if (usersResult.success && usersResult.resultData) {
     const resultData = usersResult.resultData
     tableData.value = resultData.userList
@@ -72,6 +75,36 @@ const buttons = ref([{
     return !!item.id
   }
 }])
+//* ************搜索框**************//
+const searchParam = ref({})
+const searchFormOptions = computed(() => {
+  return [
+    {
+      label: '用户名',
+      prop: 'nameCn'
+    }, {
+      label: $i18nMsg('性别', 'Gender'),
+      type: 'select',
+      prop: 'gender',
+      children: [{
+        type: 'option',
+        value: '',
+        label: '请选择'
+      }, {
+        type: 'option',
+        value: 'male',
+        label: $i18nMsg('男', 'Male')
+      }, {
+        type: 'option',
+        value: 'female',
+        label: $i18nMsg('女', 'Female')
+      }]
+    }
+  ]
+})
+const doSearch = form => {
+  console.info('=================searchParam', searchParam.value)
+}
 /** *************用户编辑**************/
 const currentUser = ref({})
 const showEdit = ref(false)
@@ -94,7 +127,16 @@ const submitForm = () => {
 </script>
 
 <template>
-  <el-container class="no_flex">
+  <el-container
+    class="no_flex"
+  >
+    <common-form
+      inline
+      :model="searchParam"
+      :options="searchFormOptions"
+      :submit-label="$t('common.label.search')"
+      @submit-form="doSearch"
+    />
     <common-table
       v-model:page="page"
       :data="tableData"
@@ -102,6 +144,7 @@ const submitForm = () => {
       :buttons="buttons"
       buttons-slot="buttons"
       :buttons-column-attrs="{width:'250px'}"
+      :loading="loading"
       @page-size-change="loadUsers()"
       @current-page-change="loadUsers()"
     >

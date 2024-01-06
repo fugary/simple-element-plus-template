@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { $i18nBundle } from '@/messages'
 import ControlChild from '@/components/common-form-control/control-child.vue'
+import { useInputType } from '@/components/utils'
 
 /**
  * 定义一些注释属性，方便代码提示
@@ -41,15 +42,10 @@ const props = defineProps({
   }
 })
 
-const inputType = computed(() => {
-  if (props.option.type && props.option.type.startsWith('common-')) {
-    return `${props.option.type}` // 自定义控件
-  }
-  return `el-${props.option.type || 'input'}`
-})
+const inputType = computed(() => useInputType(props.option))
 
 const modelAttrs = computed(() => {
-  if (['input', 'select', 'autocomplete', 'cascader'].includes(props.option.type || 'input')) {
+  if (['el-input', 'el-select', 'common-autocomplete', 'el-autocomplete', 'el-cascader'].includes(inputType.value)) {
     return Object.assign({ clearable: true }, props.option.attrs || {})
   }
   return props.option.attrs
