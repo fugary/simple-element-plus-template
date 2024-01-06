@@ -1,7 +1,8 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { ref, watch } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { $i18nBundle } from '@/messages'
+import { useVModel } from '@vueuse/core'
 
 /**
  * @typedef {FormProps} CommonFormProps
@@ -64,7 +65,7 @@ const props = defineProps({
   }
 })
 
-const rules = computed(() => {
+const initRules = () => {
   const ruleResult = {}
   props.options.forEach(option => {
     if (option.prop) {
@@ -88,11 +89,26 @@ const rules = computed(() => {
       }
     }
   })
-  console.info('==============rules', ruleResult)
   return ruleResult
-})
+}
 
-defineEmits(['submitForm'])
+const rules = ref({})
+
+const emit = defineEmits(['submitForm', 'update:model'])
+
+const formModel = useVModel(props, 'model', emit)
+
+watch(() => props.options, (options) => {
+  console.info('=================options', options)
+  options.forEach(option => {
+    if (formModel.value && option.value) {
+      formModel.value[option.prop] = option.value
+    }
+  })
+  rules.value = initRules()
+}, { deep: true })
+
+//= ============form暴露============//
 
 const form = ref()
 
@@ -105,7 +121,7 @@ defineExpose({
 <template>
   <el-form
     ref="form"
-    :model="model"
+    :model="formModel"
     :rules="rules"
     :label-width="labelWidth"
     v-bind="$attrs"
@@ -113,7 +129,7 @@ defineExpose({
     <common-form-control
       v-for="(option,index) in options"
       :key="index"
-      :model="model"
+      :model="formModel"
       :option="option"
     />
     <el-form-item v-if="showButtons">

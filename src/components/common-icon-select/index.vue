@@ -63,16 +63,16 @@ const selectIcon = icon => {
 <template>
   <label class="el-radio">
     <common-icon
-      v-if="modelValue"
-      :icon="modelValue"
+      v-if="vModel"
+      :icon="vModel"
       class="el-radio__input"
     />
     <span
-      v-if="modelValue"
+      v-if="vModel"
       class="el-radio__label"
-    >{{ modelValue }}</span>
+    >{{ vModel }}</span>
     <el-button
-      class="icon-select-button"
+      :class="{'icon-select-button': !!vModel}"
       type="primary"
       :disabled="disabled||readonly"
       size="small"

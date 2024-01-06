@@ -2,8 +2,9 @@ body, #app .el-header{
     padding: 0;
 }
 
-body {
+html, body {
     margin: 0;
+    --el-border-radius-large: 6px;
 }
 
 html, body, #app, .index-container {
@@ -58,6 +59,10 @@ html, body, #app, .index-container {
     text-align: right;
 }
 
+.el-dialog {
+    --el-dialog-border-radius: var(--el-border-radius-large);
+}
+
 .icon-dialog .el-dialog__body {
     padding: 10px;
 }
@@ -102,7 +107,7 @@ html, body, #app, .index-container {
 
 .common-autocomplete .el-popover__title{
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .common-autocomplete .autocomplete-table .el-table__cell{

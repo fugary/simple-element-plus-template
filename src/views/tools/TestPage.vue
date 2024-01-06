@@ -1,96 +1,17 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { useDefaultPage } from '@/config'
-import { loadUsersResult } from '@/services/user/UserService'
+import { useUserAutocompleteConfig } from '@/services/user/UserService'
 import { $i18nMsg } from '@/messages'
-import { loadAutoCities, loadSelectCities } from '@/services/city/CityService'
+import { useCityAutocompleteConfig, useCitySelectPageConfig } from '@/services/city/CityService'
 
 const modelIcon = ref('Apple')
 const modelAuto = ref('99999')
 const modelAutoLabel = ref('Gary Fu')
-const autoPage = ref(useDefaultPage(8))
+const userAutocompleteConfig = computed(() => useUserAutocompleteConfig())
+// 城市控件
 const cityModel = ref('')
-const autoCityPage = ref(useDefaultPage(8))
-const userAutocompleteConfig = computed(() => {
-  return {
-    columns: [{
-      label: $i18nMsg('姓名', 'Name'),
-      property: $i18nMsg('nameCn', 'nameEn')
-    }, {
-      label: $i18nMsg('性别', 'Gender'),
-      property: 'gender',
-      slot: 'gender'
-    }, {
-      label: $i18nMsg('地址', 'Address'),
-      property: 'address',
-      width: '300px'
-    }],
-    searchMethod (query, cb) {
-      loadUsersResult({ page: autoPage.value })
-        .then(result => {
-          const data = {
-            page: result.resultData.page,
-            items: result.resultData.userList
-          }
-          cb(data)
-        })
-    }
-  }
-})
-const cityAutocompleteConfig = computed(() => {
-  return {
-    columns: [{
-      label: $i18nMsg('代码', 'Code'),
-      property: 'code'
-    }, {
-      label: $i18nMsg('中文名', 'CN Name'),
-      property: 'nameCn'
-    }, {
-      label: $i18nMsg('英文名', 'EN Name'),
-      property: 'nameEn'
-    }],
-    searchMethod (query, cb) {
-      loadAutoCities({ page: autoCityPage.value })
-        .then(result => {
-          const data = {
-            page: result.resultData.page,
-            items: result.resultData.cityList
-          }
-          cb(data)
-        })
-    }
-  }
-})
-const citySelectPageConfig = computed(() => {
-  return {
-    tabs: [{
-      label: $i18nMsg('热门', 'Hot'),
-      id: '0'
-    }, {
-      label: 'A-F',
-      id: 'A-F'
-    }, {
-      label: 'G-J',
-      id: 'G-J'
-    }, {
-      label: 'K-N',
-      id: 'K-N'
-    }, {
-      label: 'P-W',
-      id: 'P-W'
-    }, {
-      label: 'X-Z',
-      id: 'X-Z'
-    }],
-    searchMethod (id, cb) {
-      loadSelectCities({ id })
-        .then(result => {
-          console.info('================selectCities', result)
-          cb(result.resultData.cityList)
-        })
-    }
-  }
-})
+const cityAutocompleteConfig = computed(() => useCityAutocompleteConfig())
+const citySelectPageConfig = computed(() => useCitySelectPageConfig())
 </script>
 
 <template>
@@ -103,8 +24,7 @@ const citySelectPageConfig = computed(() => {
         <el-form-item label="用户">
           <common-autocomplete
             v-model="modelAuto"
-            v-model:autocomplete-label="modelAutoLabel"
-            v-model:page="autoPage"
+            v-model:default-label="modelAutoLabel"
             id-key="id"
             :label-key="$i18nMsg('nameCn', 'nameEn')"
             :empty-search-enabled="false"
@@ -123,7 +43,6 @@ const citySelectPageConfig = computed(() => {
         <el-form-item label="出发城市">
           <common-autocomplete
             v-model="cityModel"
-            v-model:page="autoCityPage"
             id-key="code"
             :label-key="$i18nMsg('nameCn', 'nameEn')"
             :empty-search-enabled="false"

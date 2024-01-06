@@ -23,11 +23,11 @@
  * @property {boolean} disabled 是否禁用
  * @property {boolean} emptySearchEnabled 没有关键字时是否点击就开始搜索
  * @property {string} title popover标题
- * @property {string} autocompleteLabel 自动完成label
+ * @property {string} placeholder placeholder占位符
+ * @property {string} defaultLabel 自动完成默认label
  * @property {string} idKey id字段名
  * @property {string} labelKey label字段名
  * @property {number} debounceTime 防抖时间
- * @property {CommonPage} page 分页数据
  * @property {string} autocompleteWidth 宽度
  * @property {CommonSelectPageOption} selectPageConfig 分页
  * @property {Number} colSize 显示几列
@@ -56,7 +56,11 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  autocompleteLabel: {
+  placeholder: {
+    type: String,
+    default: ''
+  },
+  defaultLabel: {
     type: String,
     default: ''
   },
@@ -75,10 +79,6 @@ const props = defineProps({
   autocompleteWidth: {
     type: String,
     default: '500px'
-  },
-  page: {
-    type: Object,
-    default: null
   },
   autocompleteConfig: {
     type: Object,
@@ -122,11 +122,11 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue', 'onSelectData', 'update:page', 'update:autocompleteLabel'])
+const emit = defineEmits(['update:modelValue', 'onSelectData', 'update:defaultLabel'])
 // 关键字搜索
-const keywords = ref(props.autocompleteLabel)
+const keywords = ref(props.defaultLabel)
 // 上次搜索记录
-const lastAutocompleteLabel = ref(props.autocompleteLabel)
+const lastAutocompleteLabel = ref(props.defaultLabel)
 // 分页条
 const pageAttrs = { layout: 'total, prev, pager, next', small: true, background: true }
 const selectPageAttrs = { layout: 'prev, pager, next', small: true, background: true }
@@ -137,8 +137,14 @@ const selectPageData = ref({})
 const selectPageTab = ref(null)
 const popoverVisible = ref(false)
 const autocompletePopover = ref()
-const pageConfig = useVModel(props, 'page', emit)
+const autoPage = ref({
+  pageSize: 8,
+  pageNumber: 1
+})
 const loadingData = ref(false)
+
+const idProp = computed(() => props.autocompleteConfig?.idKey || props.idKey)
+const labelProp = computed(() => props.autocompleteConfig?.labelKey || props.labelKey)
 
 const showSelectPage = computed(() => {
   return props.selectPageConfig && (!keywords.value || lastAutocompleteLabel.value === keywords.value)
@@ -148,10 +154,10 @@ const loadAutoDataList = (val) => {
   if (val || props.emptySearchEnabled) {
     popoverVisible.value = true
     loadingData.value = true
-    props.autocompleteConfig.searchMethod(val, (result) => {
+    props.autocompleteConfig.searchMethod({ query: val, page: autoPage.value }, (result) => {
       dataList.value = result.items || []
-      if (props.page) {
-        pageConfig.value = { ...result.page }
+      if (result.page) {
+        autoPage.value = { ...result.page }
       }
       loadingData.value = false
     })
@@ -180,8 +186,8 @@ const onInputKeywords = debounce((input) => {
       popoverVisible.value = true
       loadSelectData()
     } else {
-      if (input && pageConfig.value) {
-        pageConfig.value = { ...pageConfig.value, pageNumber: 1 }
+      if (input && autoPage.value) {
+        autoPage.value = { ...autoPage.value, pageNumber: 1 }
       }
       loadAutoDataList(val)
     }
@@ -211,7 +217,7 @@ watch(() => popoverVisible.value, (val) => {
 //* ********************数据选择*********************
 
 const vModel = useVModel(props, 'modelValue', emit)
-const vAutocompleteLabel = useVModel(props, 'autocompleteLabel', emit)
+const vAutocompleteLabel = useVModel(props, 'defaultLabel', emit)
 
 const onSelectData = (row) => {
   popoverVisible.value = false
@@ -222,8 +228,8 @@ const onSelectData = (row) => {
   let label = ''
   let value = null
   if (row) {
-    label = row[props.labelKey]
-    value = props.useIdModel ? row[props.idKey] : row
+    label = row[labelProp.value]
+    value = props.useIdModel ? row[idProp.value] : row
   }
   keywords.value = label
   vAutocompleteLabel.value = label
@@ -317,13 +323,13 @@ const selectPagePaginationChange = (tab, pageNumber) => {
       popper-class="common-autocomplete"
       placement="bottom-start"
       :width="autocompleteWidth"
-      :title="title"
+      :title="title||placeholder"
     >
       <template #reference>
         <el-input
           v-model="keywords"
           :clearable="clearable"
-          :placeholder="title"
+          :placeholder="placeholder||title"
           :disabled="disabled"
           :readonly="readonly"
           v-bind="inputAttrs"
@@ -369,7 +375,7 @@ const selectPagePaginationChange = (tab, pageNumber) => {
                           class="common-select-page-btn is-text"
                           @click="onSelectData(colData)"
                         >
-                          {{ colData[labelKey] }}
+                          {{ colData[labelProp] }}
                         </el-button>
                       </el-col>
                     </el-row>
@@ -392,7 +398,7 @@ const selectPagePaginationChange = (tab, pageNumber) => {
         <common-table
           v-else
           ref="tableRef"
-          v-model:page="pageConfig"
+          v-model:page="autoPage"
           :loading="loadingData"
           :loading-text="loadingText"
           class="autocomplete-table"

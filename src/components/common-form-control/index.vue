@@ -42,8 +42,8 @@ const props = defineProps({
 })
 
 const inputType = computed(() => {
-  if (props.option.common) {
-    return `common-${props.option.type}`
+  if (props.option.type && props.option.type.startsWith('common-')) {
+    return `${props.option.type}` // 自定义控件
   }
   return `el-${props.option.type || 'input'}`
 })

@@ -8,6 +8,7 @@
  * @property {Date} birthday
  */
 import { $httpGet, $httpPost } from '@/vendors/axios'
+import { $i18nMsg } from '@/messages'
 
 /**
  * 加载用户数据
@@ -73,4 +74,34 @@ export const useUserFormOptions = () => {
       type: 'textarea'
     }
   }]
+}
+
+/**
+ * 用户自动完成配置
+ */
+export const useUserAutocompleteConfig = () => {
+  return {
+    columns: [{
+      label: $i18nMsg('姓名', 'Name'),
+      property: $i18nMsg('nameCn', 'nameEn')
+    }, {
+      label: $i18nMsg('性别', 'Gender'),
+      property: 'gender',
+      slot: 'gender'
+    }, {
+      label: $i18nMsg('地址', 'Address'),
+      property: 'address',
+      width: '300px'
+    }],
+    searchMethod ({ query, page }, cb) {
+      loadUsersResult({ page })
+        .then(result => {
+          const data = {
+            page: result.resultData.page,
+            items: result.resultData.userList
+          }
+          cb(data)
+        })
+    }
+  }
 }

@@ -1,10 +1,10 @@
 <script setup>
 import { ref } from 'vue'
-
+import { useCityAutocompleteConfig, useCitySelectPageConfig } from '@/services/city/CityService'
 /**
  * @type {[CommonFormOption]}
  */
-const formOptions = [{
+const formOptions = ref([{
   label: '用户名',
   prop: 'userName',
   value: '',
@@ -95,12 +95,23 @@ const formOptions = [{
     }
   ]
 }, {
-  label: '图标测试',
+  label: '图标',
   prop: 'icon',
   value: '',
-  type: 'icon-select',
+  type: 'common-icon-select',
+  required: true
+}, {
+  label: '城市',
+  prop: 'city',
+  value: 'SHA',
+  type: 'common-autocomplete',
   required: true,
-  common: true
+  placeholder: '请选择城市',
+  attrs: {
+    defaultLabel: '上海市',
+    autocompleteConfig: useCityAutocompleteConfig(),
+    selectPageConfig: useCitySelectPageConfig()
+  }
 }, {
   label: '地址',
   prop: 'address',
@@ -108,7 +119,7 @@ const formOptions = [{
   attrs: {
     type: 'textarea'
   }
-}]
+}])
 const userDto = ref({
   userName: '',
   userPassword: ''
