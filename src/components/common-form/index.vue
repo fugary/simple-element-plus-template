@@ -77,6 +77,7 @@ const initRules = () => {
       if (option.required !== undefined) {
         const label = option.label || $i18nBundle(option.labelKey)
         _rules = [{
+          trigger: option.trigger,
           required: option.required,
           message: $i18nBundle('common.msg.nonNull', [label])
         }, ..._rules]

@@ -1,6 +1,7 @@
 <script setup>
 import { useVModel } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
+import { UPDATE_MODEL_EVENT } from 'element-plus'
 
 const props = defineProps({
   modelValue: {
@@ -65,7 +66,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits([UPDATE_MODEL_EVENT])
 const showDialog = useVModel(props, 'modelValue', emit) // 自动响应v-model
 
 const okButtonClick = $event => {

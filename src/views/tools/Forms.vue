@@ -149,10 +149,7 @@ const formOptions = computed(() => {
     }
   }]
 })
-const userDto = ref({
-  userName: '',
-  userPassword: ''
-})
+const userDto = ref({})
 const submitForm = (form) => {
   console.info(form)
   form.validate((valid) => {

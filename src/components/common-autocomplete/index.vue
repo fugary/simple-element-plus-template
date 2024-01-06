@@ -35,11 +35,13 @@
  * @property {string} loadingText 加载提示loading
  * @property {string} minHeight 高度自定义
  * @property {Object} inputAttrs 输入框配置项
+ * @property {boolean} validateEvent 验证事件
  */
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { debounce, isObject } from 'lodash'
 import { onClickOutside, onKeyStroke, useVModel } from '@vueuse/core'
 import chunk from 'lodash/chunk'
+import { UPDATE_MODEL_EVENT, CHANGE_EVENT, useFormItem } from 'element-plus'
 
 /**
  * @type {CommonAutocompleteProps}
@@ -124,10 +126,14 @@ const props = defineProps({
   minHeight: {
     type: String,
     default: '100px'
+  },
+  validateEvent: {
+    type: Boolean,
+    default: true
   }
 })
 
-const emit = defineEmits(['update:modelValue', 'change', 'update:defaultLabel'])
+const emit = defineEmits([UPDATE_MODEL_EVENT, CHANGE_EVENT, 'update:defaultLabel'])
 // 关键字搜索
 const keywords = ref(props.defaultLabel)
 // 上次搜索记录
@@ -211,7 +217,6 @@ onMounted(() => {
 watch(() => popoverVisible.value, (val) => {
   if (!val) {
     nextTick(() => {
-      console.info('=======================', lastAutocompleteLabel.value, keywords.value)
       if (lastAutocompleteLabel.value && keywords.value && keywords.value !== lastAutocompleteLabel.value) {
         keywords.value = lastAutocompleteLabel.value
       }
@@ -224,10 +229,15 @@ watch(() => props.modelValue, (value) => {
   if (!props.useIdModel) {
     setAutocompleteLabel(value && isObject(value) ? value[labelProp.value] : '')
   }
-  vModel.value = value
 })
 
-watch(() => props.defaultLabel, (label) => {
+watch(() => {
+  if (!props.useIdModel) {
+    const value = props.modelValue
+    return value && isObject(value) ? value[labelProp.value] : ''
+  }
+  return props.defaultLabel
+}, (label) => {
   setAutocompleteLabel(label)
 })
 
@@ -242,20 +252,25 @@ const setAutocompleteLabel = label => {
   lastAutocompleteLabel.value = label
 }
 
+const { formItem } = useFormItem()
+
 const onSelectData = (row) => {
   popoverVisible.value = false
   if (!vModel.value && !row) {
     return
   }
   let label = ''
-  let value = null
+  let value
   if (row) {
     label = row[labelProp.value]
     value = props.useIdModel ? row[idProp.value] : row
   }
   setAutocompleteLabel(label)
   vModel.value = value
-  emit('change', row)
+  emit(CHANGE_EVENT, row)
+  if (props.validateEvent) {
+    formItem?.validate(CHANGE_EVENT)
+  }
 }
 
 // =======================按键处理===================

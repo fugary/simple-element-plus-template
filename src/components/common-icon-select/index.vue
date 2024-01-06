@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { filterIconsByKeywords } from '@/services/icon/IconService'
 import { useVModel } from '@vueuse/core'
+import { UPDATE_MODEL_EVENT, CHANGE_EVENT, useFormItem } from 'element-plus'
 
 const props = defineProps({
   modelValue: {
@@ -37,6 +38,10 @@ const props = defineProps({
   placeholder: {
     type: String,
     default: ''
+  },
+  validateEvent: {
+    type: Boolean,
+    default: true
   }
 })
 const iconSelectVisible = ref(false)
@@ -49,13 +54,19 @@ const filterIcons = computed(() => {
   return []
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits([UPDATE_MODEL_EVENT, CHANGE_EVENT])
 
 const vModel = useVModel(props, 'modelValue', emit)
+
+const { formItem } = useFormItem()
 
 const selectIcon = icon => {
   iconSelectVisible.value = false
   vModel.value = icon
+  emit(CHANGE_EVENT, icon)
+  if (props.validateEvent) {
+    formItem?.validate(CHANGE_EVENT)
+  }
 }
 
 </script>
@@ -86,7 +97,7 @@ const selectIcon = icon => {
     type="danger"
     :disabled="disabled||readonly"
     size="small"
-    @click="vModel = ''"
+    @click="selectIcon()"
   >
     {{ $t('common.label.clear') }}
   </el-button>
