@@ -28,6 +28,11 @@ export const loadMenuResult = (id, config) => {
  * @return {[CommonFormOption]}
  */
 export const useMenuFormOptions = (menus) => {
+  /**
+   * @type {CommonTreeNode[]}
+   */
+  const treeData = menus ? menus.map(menu2TreeMenu) : []
+  const defaultExpandedKeys = treeData.map(node => node.value)
   return [{
     labelKey: 'menu.label.menuNameCn',
     prop: 'nameCn',
@@ -41,7 +46,9 @@ export const useMenuFormOptions = (menus) => {
     prop: 'parentId',
     type: 'tree-select',
     attrs: {
-      data: menus ? menus.map(menu2TreeMenu) : []
+      checkStrictly: true,
+      defaultExpandedKeys,
+      data: treeData
     }
   }, {
     labelKey: 'menu.label.menuIcon',

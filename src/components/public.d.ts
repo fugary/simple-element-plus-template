@@ -18,5 +18,6 @@ export interface CommonPage {
 export interface CommonTreeNode {
     value: string;
     label: string;
-    children: Array<CommonTreeNode>;
+    children?: Array<CommonTreeNode>;
+    isLeaf?: boolean;
 }

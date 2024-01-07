@@ -24,9 +24,10 @@ const loadMenu = async () => {
   }
 }
 
-onMounted(async () => {
-  const menus = await loadAndParseMenus()
-  selectMenus.value = menus
+onMounted(() => {
+  loadAndParseMenus().then(menus => {
+    selectMenus.value = menus
+  })
   loadMenu()
 })
 
