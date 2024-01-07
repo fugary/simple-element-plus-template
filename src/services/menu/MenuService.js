@@ -24,9 +24,10 @@ export const loadMenuResult = (id, config) => {
 }
 
 /**
+ * @param menus {MenuDto[]}
  * @return {[CommonFormOption]}
  */
-export const useMenuFormOptions = () => {
+export const useMenuFormOptions = (menus) => {
   return [{
     labelKey: 'menu.label.menuNameCn',
     prop: 'nameCn',
@@ -37,7 +38,11 @@ export const useMenuFormOptions = () => {
     required: true
   }, {
     labelKey: 'menu.label.menuParent',
-    prop: 'parentId'
+    prop: 'parentId',
+    type: 'tree-select',
+    attrs: {
+      data: menus ? menus.map(menu2TreeMenu) : []
+    }
   }, {
     labelKey: 'menu.label.menuIcon',
     prop: 'iconCls',
@@ -46,6 +51,24 @@ export const useMenuFormOptions = () => {
     labelKey: 'menu.label.menuUrl',
     prop: 'menuUrl'
   }]
+}
+
+/**
+ * @param menu {MenuDto}
+ * @return {CommonTreeNode}
+ */
+export const menu2TreeMenu = (menu) => {
+  /**
+   * @type {CommonTreeNode}
+   */
+  const treeNode = {
+    value: menu.id,
+    label: $i18nMsg(menu.nameCn, menu.nameEn)
+  }
+  if (menu.children) {
+    treeNode.children = menu.children.map(menu2TreeMenu)
+  }
+  return treeNode
 }
 
 /**

@@ -1,15 +1,17 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { loadMenuResult, useMenuFormOptions } from '@/services/menu/MenuService'
+import { loadAndParseMenus, loadMenuResult, useMenuFormOptions } from '@/services/menu/MenuService'
 
 const route = useRoute()
 
 const menuDto = ref({
   id: route.params.id
 })
-
-const menuFormOptions = ref(useMenuFormOptions())
+const selectMenus = ref([])
+const menuFormOptions = computed(() => {
+  return useMenuFormOptions(selectMenus.value)
+})
 
 const loadMenu = async () => {
   const id = route.params.id
@@ -22,7 +24,9 @@ const loadMenu = async () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  const menus = await loadAndParseMenus()
+  selectMenus.value = menus
   loadMenu()
 })
 

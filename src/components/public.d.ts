@@ -12,3 +12,11 @@ export interface CommonPage {
     totalCount?: number;
 }
 
+/**
+ * element树结构
+ */
+export interface CommonTreeNode {
+    value: string;
+    label: string;
+    children: Array<CommonTreeNode>;
+}

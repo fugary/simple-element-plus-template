@@ -32,7 +32,7 @@ export interface CommonFormOption {
     /**表单类型*/
     type: 'input' | 'input-number' | 'cascader' | 'radio'
         | 'radio-group' | 'radio-button' | 'checkbox' | 'checkbox-group' | 'checkbox-button' | 'date-picker'
-        | 'time-picker' | 'switch' | 'select' | 'option' | 'slider' | 'transfer' | 'upload' | 'common-icon-select' | 'common-autocomplete';
+        | 'time-picker' | 'switch' | 'select' | 'option' | 'slider' | 'transfer' | 'upload' | 'common-icon-select' | 'common-autocomplete' | 'tree-select';
     /**数据值*/
     value?: any;
     /**属性名*/
@@ -62,4 +62,6 @@ export interface CommonFormOption {
     children?: Array<CommonFormOption>;
     /**async-validator验证器*/
     rules: Array<RuleItem>;
+    /**change事件*/
+    change: (val: any) => void
 }
