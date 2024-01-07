@@ -1,42 +1,4 @@
 <script setup>
-/**
- * @typedef {Object} CommonAutocompleteOption 自动完成的配置信息
- * @property {[CommonTableColumn]} columns 表格显示列配置
- * @property {string} emptyMessage 没有数据的提示信息
- * @method searchMethod 搜索方法
- */
-/**
- * @typedef {Object} CommonSelectPageOption 默认选择页面配置信息
- * @property {[{ id:string, label:string }]} tabs 显示tabs配置
- * @method searchMethod 搜索方法
- */
-/**
- * @typedef {Object} CommonSelectPageOption 默认选择页配置
- */
-/**
- * @typedef {Object} CommonAutocompleteProps
- * @property {CommonAutocompleteOption} autocompleteConfig 自动完成配置
- * @property {string} modelValue 输出数据
- * @property {boolean} useIdModel 输出对象还是id
- * @property {boolean} clearable 是否可以显示清空
- * @property {boolean} readonly 只读
- * @property {boolean} disabled 是否禁用
- * @property {boolean} emptySearchEnabled 没有关键字时是否点击就开始搜索
- * @property {string} title popover标题
- * @property {string} placeholder placeholder占位符
- * @property {string} defaultLabel 自动完成默认label
- * @property {string} idKey id字段名
- * @property {string} labelKey label字段名
- * @property {number} debounceTime 防抖时间
- * @property {string} autocompleteWidth 宽度
- * @property {string} inputWidth input宽度
- * @property {CommonSelectPageOption} selectPageConfig 分页
- * @property {Number} colSize 显示几列
- * @property {string} loadingText 加载提示loading
- * @property {string} minHeight 高度自定义
- * @property {Object} inputAttrs 输入框配置项
- * @property {boolean} validateEvent 验证事件
- */
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { debounce, isObject } from 'lodash'
 import { onClickOutside, onKeyStroke, useVModel } from '@vueuse/core'
@@ -139,7 +101,13 @@ const keywords = ref(props.defaultLabel)
 // 上次搜索记录
 const lastAutocompleteLabel = ref(props.defaultLabel)
 // 分页条
+/**
+ * @type {PaginationProps}
+ */
 const pageAttrs = { layout: 'total, prev, pager, next', small: true, background: true }
+/**
+ * @type {PaginationProps}
+ */
 const selectPageAttrs = { layout: 'prev, pager, next', small: true, background: true }
 // 自动完成数据
 const dataList = ref([])

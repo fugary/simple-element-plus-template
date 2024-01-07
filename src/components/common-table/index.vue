@@ -3,10 +3,6 @@ import CommonTableColumn from '@/components/common-table/common-table-column.vue
 import { computed, ref } from 'vue'
 
 /**
- * @typedef {TableProps} CommonTableProps
- * @property {[CommonTableColumn]} columns
- */
-/**
  * @type CommonTableProps
  */
 const props = defineProps({
@@ -60,6 +56,9 @@ const props = defineProps({
     type: Object,
     default: null
   },
+  /**
+   * @type {CommonPage}
+   */
   page: {
     type: Object,
     default: null

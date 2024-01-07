@@ -3,26 +3,12 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 /**
- * @typedef {Object} CommonMenuItem 菜单对象
- * @property {boolean} isDropdown 是否是下拉Dropdown样式
- * @property {boolean} isSplit 是否是分割元素
- * @property {string} menuCls 自定义样式
- * @property {string} index 路由地址
- * @property {Object} route 路由
- * @property {string} icon 图标
- * @property {number} iconSize 图标大小
- * @property {string} label 菜单显示名称
- * @property {string} labelKey 菜单显示名称的Key，国际化需要
- * @method iconIf 图标计算函数
- * @method click 点击事件
- * @property {[CommonMenuItem]} children 子菜单
- */
-/**
- * @type {Object}
- * @property {CommonMenuItem} menuItem 菜单对象
- * @property index 序号
+ * @type {CommonMenuItemProps}
  */
 const props = defineProps({
+  /**
+   * @type {CommonMenuItem}
+   */
   menuItem: {
     type: Object,
     required: true
@@ -57,6 +43,7 @@ const dropdownClick = (menuItem, $event) => {
     }
   }
 }
+
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { filterMenus } from '@/components/utils'
+import { filterMenus, useParentRoute } from '@/components/utils'
 import { useRoute } from 'vue-router'
 
 const props = defineProps({
@@ -13,7 +13,8 @@ const menuItems = computed(() => {
   return filterMenus(props.menus)
 })
 const activeRoutePath = computed(() => {
-  const route = useRoute()
+  let route = useRoute()
+  route = useParentRoute(route)
   return route && route.path !== '/' ? route.path : ''
 })
 </script>

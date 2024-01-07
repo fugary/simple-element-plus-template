@@ -23,6 +23,7 @@ export const loadAutoCities = (data, config) => {
 }
 /**
  * 城市自动完成配置
+ * @return {CommonAutocompleteOption}
  */
 export const useCityAutocompleteConfig = () => {
   return {

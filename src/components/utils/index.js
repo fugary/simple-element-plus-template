@@ -54,3 +54,22 @@ export const filterMenus = menus => menus.filter(menu => !menu.disabled)
     }
     return menu
   })
+
+/**
+ * 如果有replaceTabHistory，获取上级菜单
+ * @function useParentRoute
+ * @param route {RouteRecordMultipleViewsWithChildren} 路由信息
+ */
+export const useParentRoute = function (route) {
+  const parentName = route.meta?.replaceTabHistory
+  if (parentName) {
+    const routes = route.matched || []
+    for (let i = routes.length - 1; i > 0; i--) {
+      const r = routes[i]
+      if ((!r.meta || !r.meta.replaceTabHistory) && r.path !== '/') {
+        return r
+      }
+    }
+  }
+  return route
+}

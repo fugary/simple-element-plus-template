@@ -1,23 +1,7 @@
 <script setup>
 /**
- * 表格列配置信息，对应el-table-column数据
- * @typedef {Object} CommonTableColumn
- * @property {string} label 标签头
- * @property {string} labelKey 国际化
- * @property {string} property 数据属性
- * @property {string} width 宽度
- * @property {boolean} isOperation 是否是操作列
- * @property {string} slot 自定义插槽
- * @property [ButtonProps] buttons 自定义按钮
- * @property {Object} attrs 其他属性
- * @property {Object} linkAttrs 链接配置
- * @method click 点击事件
- * @method formatter 格式化
- */
-/**
  * 配置信息
- * @property {CommonTableColumn[]} columns 表格显示列配置
- * @buttonSize {''|'large'|'small'|'default'}
+ * @type {CommonTableColumnProps}
  */
 const props = defineProps({
   /**

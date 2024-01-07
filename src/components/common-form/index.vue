@@ -5,14 +5,6 @@ import { $i18nBundle } from '@/messages'
 import { useVModel } from '@vueuse/core'
 
 /**
- * @typedef {FormProps} CommonFormProps
- * @property {[CommonFormOption]} options 配置选项
- * @property {boolean} showButtons 是否显示按钮区域
- * @property {boolean} showSubmit 是否显示提交按钮
- * @property {boolean} showReset 是否显示重置按钮
- * @method submitForm 提交逻辑
- */
-/**
  * @type {CommonFormProps}
  */
 const props = defineProps({
