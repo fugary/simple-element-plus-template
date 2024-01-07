@@ -41,7 +41,7 @@ const props = defineProps({
   },
   showReset: {
     type: Boolean,
-    default: true
+    default: false
   },
   resetLabel: {
     type: String,
