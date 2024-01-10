@@ -1,5 +1,37 @@
-import {CommonPage} from "../public";
-import {CommonTableColumn} from "../common-table/public";
+import { CommonPage } from '../public'
+import { CommonTableColumn } from '../common-table/public'
+import { InputProps } from 'element-plus'
+
+/**
+ * 搜索参数
+ */
+export interface CommonSearchParam {
+    /** 搜索关键字 */
+    query: string;
+    /** 分页信息 */
+    page: CommonPage;
+}
+
+export interface CommonSelectPageOption {
+    tabs: Array<{ id: string, label: string }>;
+    /** 搜索方法 */
+    searchMethod: (tabId: string, callback: (items: Array<any>) => void) => Promise<any>;
+}
+
+export interface CommonAutocompleteOption {
+    /** 自动完成表格列配置 */
+    columns: Array<CommonTableColumn>;
+    /** 空数据提示信息 */
+    emptyMessage?: string;
+    /** 搜索方法 */
+    searchMethod: (param: CommonSearchParam,
+                   callback: (result: {
+                       /** 返回分分页 */
+                       page: CommonPage,
+                       /** 返回的数据 */
+                       items: Array<any>
+                   }) => void) => Promise<any>;
+}
 
 export interface CommonAutocompleteProps {
     // 自动完成配置
@@ -41,38 +73,7 @@ export interface CommonAutocompleteProps {
     // 最低高度
     minHeight?: string;
     // input自定义属性
-    inputAttrs?: any;
+    inputAttrs?: InputProps;
     // 验证事件
     validateEvent?: boolean;
-}
-
-export interface CommonSelectPageOption {
-    tabs: Array<{ id: string, label: string }>;
-    /**搜索方法*/
-    searchMethod: (tabId: string, callback: (items: Array<any>) => void) => Promise<any>;
-}
-
-export interface CommonAutocompleteOption {
-    /**自动完成表格列配置*/
-    columns: Array<CommonTableColumn>;
-    /**空数据提示信息*/
-    emptyMessage?: string;
-    /**搜索方法*/
-    searchMethod: (param: CommonSearchParam,
-                   callback: (result: {
-                       /**返回分分页*/
-                       page: CommonPage,
-                       /**返回的数据*/
-                       items: Array<any>
-                   }) => void) => Promise<any>;
-}
-
-/**
- * 搜索参数
- */
-export interface CommonSearchParam {
-    /** 搜索关键字 */
-    query: string;
-    /**分页信息*/
-    page: CommonPage;
 }

@@ -23,7 +23,7 @@ const props = defineProps({
 const inputType = computed(() => useInputType(props.option))
 
 const modelAttrs = computed(() => {
-  if (['el-input', 'el-select', 'common-autocomplete', 'el-autocomplete', 'el-cascader'].includes(inputType.value)) {
+  if (['el-input', 'el-select', 'common-autocomplete', 'el-autocomplete', 'el-cascader', 'el-tree-select'].includes(inputType.value)) {
     return Object.assign({ clearable: true }, props.option.attrs || {})
   }
   return props.option.attrs
@@ -74,9 +74,30 @@ const children = computed(() => {
 
 <template>
   <el-form-item
-    :label="label"
     :prop="option.prop"
   >
+    <template #label>
+      <span>{{ label }}</span>
+      <el-tooltip
+        v-if="option.tooltip||option.tooltipFunc"
+        class="box-item"
+        effect="dark"
+        :disabled="!option.tooltip"
+        :content="option.tooltip"
+        placement="top-start"
+      >
+        <span>
+          <el-link
+            :underline="false"
+            @click="option.tooltipFunc"
+          >&nbsp;
+            <common-icon
+              icon="QuestionFilled"
+            />
+          </el-link>
+        </span>
+      </el-tooltip>
+    </template>
     <component
       :is="inputType"
       v-model="modelValue"

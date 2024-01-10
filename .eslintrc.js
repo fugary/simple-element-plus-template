@@ -6,12 +6,16 @@ module.exports = {
     'eslint:recommended',
     'plugin:vue/vue3-recommended',
     'eslint:recommended',
-    '@vue/eslint-config-standard'
+    '@vue/eslint-config-standard',
+    'plugin:@typescript-eslint/recommended'
   ],
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint'],
   parserOptions: {
     ecmaVersion: 'latest'
   },
   rules: {
-    'vue/multi-word-component-names': 'off'
+    'vue/multi-word-component-names': 'off',
+    '@typescript-eslint/no-explicit-any': 'off'
   }
 }

@@ -16,8 +16,12 @@ export interface CommonPage {
  * element树结构
  */
 export interface CommonTreeNode {
+    /** 树值 */
     value: string;
+    /** 展示标签 */
     label: string;
+    /** 子节点 */
     children?: Array<CommonTreeNode>;
+    /** 是否是叶子节点 */
     isLeaf?: boolean;
 }

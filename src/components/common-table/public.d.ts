@@ -1,6 +1,5 @@
-import {ButtonProps, TableProps} from "element-plus";
-import {CommonPage} from "../public";
-import {PaginationProps} from "element-plus/es/components/pagination/src/pagination";
+import { ButtonProps, LinkProps, TableProps, PaginationProps } from 'element-plus'
+import { CommonPage } from '../public'
 
 /**
  * 表格列定义
@@ -25,7 +24,7 @@ export interface CommonTableColumn {
     // 可选属性
     attrs: any;
     // 链接可选属性
-    linkAttrs: any;
+    linkAttrs: LinkProps;
     // 点击事件
     click: (data: any) => any;
     // 格式化函数
@@ -62,9 +61,9 @@ export interface CommonTableProps extends TableProps<any> {
     pageAlign?: 'left' | 'center' | 'right';
     /** 其他分页配置项 */
     pageAttrs?: PaginationProps;
-    /**loading状态*/
+    /** loading状态 */
     loading?: boolean;
-    /**loading显示消息*/
+    /** loading显示消息 */
     loadingText?: string;
 }
 

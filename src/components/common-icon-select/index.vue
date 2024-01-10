@@ -39,6 +39,10 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  clearable: {
+    type: Boolean,
+    default: true
+  },
   validateEvent: {
     type: Boolean,
     default: true
@@ -93,7 +97,7 @@ const selectIcon = icon => {
     </el-button>
   </label>
   <el-button
-    v-if="vModel"
+    v-if="clearable&&vModel"
     type="danger"
     :disabled="disabled||readonly"
     size="small"

@@ -132,7 +132,7 @@ defineExpose({
     />
     <slot
       :form="form"
-      name="before-buttons"
+      name="default"
     />
     <el-form-item v-if="showButtons">
       <el-button
@@ -161,6 +161,7 @@ defineExpose({
     </el-form-item>
     <slot
       :form="form"
+      name="after-buttons"
     />
   </el-form>
 </template>

@@ -1,23 +1,16 @@
-import {RouteRecordRaw} from "vue-router";
-
-export interface CommonMenuItemProps {
-    /**menu配置*/
-    menuItem: CommonMenuItem;
-    /**index序号*/
-    index: number | string;
-}
+import { RouteRecordRaw } from 'vue-router'
 
 /**
  * 菜单对象
  */
 export interface CommonMenuItem {
-    /**是否是下拉Dropdown样式*/
+    /** 是否是下拉Dropdown样式 */
     isDropdown?: boolean;
-    /**是否是分割元素*/
+    /** 是否是分割元素 */
     isSplit?: boolean;
-    /**自定义样式*/
+    /** 自定义样式 */
     menuCls?: string;
-    /**路由地址*/
+    /** 路由地址 */
     index?: string;
     /** 路由 */
     route?: RouteRecordRaw;
@@ -33,10 +26,17 @@ export interface CommonMenuItem {
     iconIf?: () => string;
     /** click事件 */
     click?: () => string;
-    /**子菜单*/
+    /** 子菜单 */
     children?: Array<CommonMenuItem>;
-    /**自定义属性*/
+    /** 自定义属性 */
     attrs: {
         [key: string]: any
     }
+}
+
+export interface CommonMenuItemProps {
+    /** menu配置 */
+    menuItem: CommonMenuItem;
+    /** index序号 */
+    index: number | string;
 }
