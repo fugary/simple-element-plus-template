@@ -4,18 +4,13 @@ import { loadAndParseMenus, menu2CommonMenu, useBaseTopMenus } from '@/services/
 
 export const useMenuConfigStore = defineStore('menuConfig', () => {
   /**
-   * @type {[CommonMenuItem]}
-   */
-  const baseTopMenus = ref([])
-  /**
    * @type {[MenuDto]}
    */
   const businessMenus = ref([])
   return {
-    baseTopMenus,
     businessMenus,
     loadBaseTopMenus () {
-      baseTopMenus.value = useBaseTopMenus()
+      return useBaseTopMenus()
     },
     async loadBusinessMenus () {
       businessMenus.value = await loadAndParseMenus()

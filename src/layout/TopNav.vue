@@ -7,7 +7,7 @@ const globalConfigStore = useGlobalConfigStore()
 const menuConfigStore = useMenuConfigStore()
 
 const allMenus = computed(() => {
-  const topMenus = menuConfigStore.baseTopMenus
+  const topMenus = menuConfigStore.loadBaseTopMenus()
   const businessMenus = menuConfigStore.calcBusinessMenus()
   if (globalConfigStore.layoutMode === GlobalLayoutMode.TOP) {
     return [...businessMenus, ...topMenus.slice(1)]
@@ -18,6 +18,7 @@ const allMenus = computed(() => {
 </script>
 <template>
   <common-menu
+    class="padding-right2"
     router
     mode="horizontal"
     :ellipsis="false"

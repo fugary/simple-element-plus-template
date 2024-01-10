@@ -177,6 +177,7 @@ export const useBaseTopMenus = () => {
     {
       icon: 'user',
       isDropdown: true,
+      label: $i18nMsg(loginConfigStore.accountInfo.userNameCN, loginConfigStore.accountInfo.userNameEN),
       children: [
         {
           labelKey: 'common.label.personalInfo',
