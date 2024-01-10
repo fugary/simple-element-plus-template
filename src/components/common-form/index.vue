@@ -95,14 +95,20 @@ const emit = defineEmits(['submitForm', 'update:model'])
 
 const formModel = useVModel(props, 'model', emit)
 
-watch(() => props.options, (options) => {
-  options.forEach(option => {
-    if (formModel.value) {
-      formModel.value[option.prop] = option.value || undefined
-    }
-  })
+const initFormModel = () => {
+  if (formModel.value) {
+    props.options.forEach(option => {
+      if (option.prop) {
+        formModel.value[option.prop] = option.value || undefined
+      }
+    })
+  }
   rules.value = initRules()
-}, { deep: true })
+}
+
+initFormModel()
+
+watch(() => props.options, initFormModel, { deep: true })
 
 //= ============form暴露============//
 
