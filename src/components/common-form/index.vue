@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { $i18nBundle } from '@/messages'
 import { useVModel } from '@vueuse/core'
@@ -61,7 +61,11 @@ const props = defineProps({
   }
 })
 
-const initRules = () => {
+//= ============form暴露============//
+
+const form = ref()
+
+const rules = computed(() => {
   const ruleResult = {}
   props.options.forEach(option => {
     if (option.prop) {
@@ -86,10 +90,9 @@ const initRules = () => {
       }
     }
   })
+  form.value && form.value.clearValidate()
   return ruleResult
-}
-
-const rules = ref({})
+})
 
 const emit = defineEmits(['submitForm', 'update:model'])
 
@@ -103,16 +106,11 @@ const initFormModel = () => {
       }
     })
   }
-  rules.value = initRules()
 }
 
 initFormModel()
 
 watch(() => props.options, initFormModel, { deep: true })
-
-//= ============form暴露============//
-
-const form = ref()
 
 defineExpose({
   form
