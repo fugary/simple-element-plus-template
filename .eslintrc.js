@@ -9,10 +9,10 @@ module.exports = {
     '@vue/eslint-config-standard',
     'plugin:@typescript-eslint/recommended'
   ],
-  parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
   parserOptions: {
-    ecmaVersion: 'latest'
+    ecmaVersion: 'latest',
+    parser: '@typescript-eslint/parser'
   },
   rules: {
     'vue/multi-word-component-names': 'off',
