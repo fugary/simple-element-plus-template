@@ -1,7 +1,6 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useVModel } from '@vueuse/core'
-import { set } from 'lodash'
 
 /**
  * @type {CommonFormProps}
@@ -60,27 +59,13 @@ const props = defineProps({
   }
 })
 
-//= ============form暴露============//
-
-const form = ref()
-
 const emit = defineEmits(['submitForm', 'update:model'])
 
 const formModel = useVModel(props, 'model', emit)
 
-const initFormModel = () => {
-  if (formModel.value) {
-    props.options.forEach(option => {
-      if (option.prop) {
-        set(formModel.value, option.prop, option.value || undefined)
-      }
-    })
-  }
-}
+//= ============form暴露============//
 
-initFormModel()
-
-watch(() => props.options, initFormModel, { deep: true })
+const form = ref()
 
 defineExpose({
   form

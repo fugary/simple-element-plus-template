@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { $i18nBundle } from '@/messages'
 import ControlChild from '@/components/common-form-control/control-child.vue'
 import { useInputType } from '@/components/utils'
@@ -99,6 +99,20 @@ const rules = computed(() => {
   formItemRef.value && formItemRef.value.clearValidate()
   return _rules
 })
+
+const initFormModel = () => {
+  if (formModel.value) {
+    const option = props.option
+    if (option.prop) {
+      const defaultVal = get(formModel.value, option.prop)
+      set(formModel.value, option.prop, defaultVal || option.value || undefined)
+    }
+  }
+}
+
+initFormModel()
+
+watch(() => props.option, initFormModel, { deep: true })
 
 </script>
 
