@@ -212,9 +212,10 @@ const submitForm = (form) => {
             添加联系人
           </el-button>
         </el-form-item>
-        <template
+        <div
           v-for="(contact, index) in userDto.contacts"
           :key="index"
+          class="common-subform el-form--inline"
         >
           <common-form-control
             v-for="(option, optIdx) in contactsOptions"
@@ -232,7 +233,7 @@ const submitForm = (form) => {
               Delete
             </el-button>
           </el-form-item>
-        </template>
+        </div>
       </template>
       <template
         #buttons="{form}"

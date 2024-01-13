@@ -101,6 +101,10 @@ html, body, #app, .index-container {
     --el-input-width: 220px;
 }
 
+.common-subform.el-form--inline .el-input{
+    --el-input-width: 220px;
+}
+
 .form-edit-width-70 {
     width:70%
 }
