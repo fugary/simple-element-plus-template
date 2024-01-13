@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useCityAutocompleteConfig, useCitySelectPageConfig } from '@/services/city/CityService'
 import { $i18nMsg } from '@/messages'
+import { ElMessage } from 'element-plus'
 
 const defaultCity = ref({})
 
@@ -149,7 +150,37 @@ const formOptions = computed(() => {
     }
   }]
 })
-const userDto = ref({})
+const userDto = ref({
+  contacts: [{
+    name: 'Jerry',
+    phone: '1234567890'
+  }]
+})
+/**
+ * @type {CommonFormOption[]}
+ */
+const contactsOptions = ref([{
+  label: '联系人姓名',
+  prop: 'name',
+  required: true
+}, {
+  label: '联系电话',
+  prop: 'phone',
+  required: true
+}])
+
+const addContact = () => {
+  if (userDto.value.contacts.length < 3) {
+    userDto.value.contacts.push({})
+  } else {
+    ElMessage.error('联系人不能超过3个')
+  }
+}
+
+const deleteContact = idx => {
+  userDto.value.contacts.splice(idx, 1)
+}
+
 const submitForm = (form) => {
   console.info(form)
   form.validate((valid) => {
@@ -171,11 +202,43 @@ const submitForm = (form) => {
       label-width="120px"
       @submit-form="submitForm"
     >
+      <template #default>
+        <el-form-item>
+          <el-button
+            type="primary"
+            size="small"
+            @click="addContact"
+          >
+            添加联系人
+          </el-button>
+        </el-form-item>
+        <template
+          v-for="(contact, index) in userDto.contacts"
+          :key="index"
+        >
+          <common-form-control
+            v-for="(option, optIdx) in contactsOptions"
+            :key="`${index}-${optIdx}`"
+            :model="contact"
+            :option="option"
+            :prop="`contacts.${index}.${option.prop}`"
+          />
+          <el-form-item>
+            <el-button
+              type="danger"
+              size="small"
+              @click.prevent="deleteContact(index)"
+            >
+              Delete
+            </el-button>
+          </el-form-item>
+        </template>
+      </template>
       <template
         #buttons="{form}"
       >
         <el-button @click="form.resetFields()">
-          自定义按钮
+          重置
         </el-button>
       </template>
     </common-form>
