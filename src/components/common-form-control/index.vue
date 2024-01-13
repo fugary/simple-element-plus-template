@@ -1,8 +1,10 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { $i18nBundle } from '@/messages'
 import ControlChild from '@/components/common-form-control/control-child.vue'
 import { useInputType } from '@/components/utils'
+import cloneDeep from 'lodash/cloneDeep'
+import { get, set } from 'lodash'
 
 /**
  * @type {{option:CommonFormOption}}
@@ -16,17 +18,19 @@ const props = defineProps({
     required: true
   },
   model: {
-    type: Object
+    type: Object,
+    required: true
   }
 })
 
 const inputType = computed(() => useInputType(props.option))
 
 const modelAttrs = computed(() => {
-  if (['el-input', 'el-select', 'common-autocomplete', 'el-autocomplete', 'el-cascader', 'el-tree-select'].includes(inputType.value)) {
-    return Object.assign({ clearable: true }, props.option.attrs || {})
+  const attrs = { ...props.option.attrs }
+  if (attrs.clearable === undefined && ['el-input', 'el-select', 'common-autocomplete', 'el-autocomplete', 'el-cascader', 'el-tree-select'].includes(inputType.value)) {
+    attrs.clearable = true
   }
-  return props.option.attrs
+  return attrs
 })
 
 const label = computed(() => {
@@ -42,13 +46,13 @@ const formModel = computed(() => props.option.model || props.model)
 const modelValue = computed({
   get () {
     if (formModel.value && props.option.prop) {
-      return formModel.value[props.option.prop]
+      return get(formModel.value, props.option.prop)
     }
     return null
   },
   set (val) {
     if (formModel.value && props.option.prop) {
-      formModel.value[props.option.prop] = val
+      set(formModel.value, props.option.prop, val)
     }
   }
 })
@@ -70,10 +74,38 @@ const children = computed(() => {
   return result
 })
 
+const formItemRef = ref()
+
+const rules = computed(() => {
+  const option = props.option
+  let _rules = cloneDeep(option.rules || [])
+  if (option.prop) {
+    if (option.required !== undefined) {
+      const label = option.label || $i18nBundle(option.labelKey)
+      _rules = [{
+        trigger: option.trigger,
+        required: option.required,
+        message: $i18nBundle('common.msg.nonNull', [label])
+      }, ..._rules]
+    }
+    if (option.pattern !== undefined) {
+      const label = option.label || $i18nBundle(option.labelKey)
+      _rules = [{
+        pattern: option.pattern,
+        message: option.patternMsg || $i18nBundle('common.msg.patternInvalid', [label])
+      }, ..._rules]
+    }
+  }
+  formItemRef.value && formItemRef.value.clearValidate()
+  return _rules
+})
+
 </script>
 
 <template>
   <el-form-item
+    ref="formItemRef"
+    :rules="rules"
     :prop="option.prop"
   >
     <template #label>

@@ -41,6 +41,8 @@ export interface CommonFormOption {
     tooltip: string;
     /** 提示函数 */
     tooltipFunc: () => void;
+    /** 自定义slot名称 */
+    slot: string;
 }
 
 export interface CommonFormProps extends FormProps {

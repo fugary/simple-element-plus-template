@@ -1,6 +1,6 @@
 <script setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { debounce, isObject } from 'lodash'
+import { debounce, isEmpty, isObject } from 'lodash'
 import { onClickOutside, onKeyStroke, useVModel } from '@vueuse/core'
 import chunk from 'lodash/chunk'
 import { UPDATE_MODEL_EVENT, CHANGE_EVENT, useFormItem } from 'element-plus'
@@ -183,7 +183,7 @@ const onInputKeywords = debounce((input) => {
 }, props.debounceTime)
 
 onMounted(() => {
-  onClickOutside(autocompletePopover.value?.popperRef?.contentRef, (event) => {
+  onClickOutside(autocompletePopover.value?.popperRef?.contentRef, () => {
     popoverVisible.value = false
   })
 })
@@ -202,6 +202,9 @@ watch(() => props.modelValue, (value) => {
   console.info('=====================value', value)
   if (!props.useIdModel) {
     setAutocompleteLabel(value && isObject(value) ? value[labelProp.value] : '')
+    if (isEmpty(value)) {
+      vModel.value = null
+    }
   }
 })
 
@@ -277,11 +280,11 @@ const moveSelection = function (down) {
 }
 
 // 向下按键移动元素
-onKeyStroke('ArrowDown', e => moveSelection(true))
+onKeyStroke('ArrowDown', () => moveSelection(true))
 // 向上按键移动元素
-onKeyStroke('ArrowUp', e => moveSelection(false))
+onKeyStroke('ArrowUp', () => moveSelection(false))
 // 选中回车
-onKeyStroke('Enter', e => {
+onKeyStroke('Enter', () => {
   onSelectData(currentOnRow.value)
 })
 

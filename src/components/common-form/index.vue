@@ -1,8 +1,7 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
-import cloneDeep from 'lodash/cloneDeep'
-import { $i18nBundle } from '@/messages'
+import { ref, watch } from 'vue'
 import { useVModel } from '@vueuse/core'
+import { set } from 'lodash'
 
 /**
  * @type {CommonFormProps}
@@ -65,35 +64,6 @@ const props = defineProps({
 
 const form = ref()
 
-const rules = computed(() => {
-  const ruleResult = {}
-  props.options.forEach(option => {
-    if (option.prop) {
-      let _rules = cloneDeep(option.rules || [])
-      if (option.required !== undefined) {
-        const label = option.label || $i18nBundle(option.labelKey)
-        _rules = [{
-          trigger: option.trigger,
-          required: option.required,
-          message: $i18nBundle('common.msg.nonNull', [label])
-        }, ..._rules]
-      }
-      if (option.pattern !== undefined) {
-        const label = option.label || $i18nBundle(option.labelKey)
-        _rules = [{
-          pattern: option.pattern,
-          message: option.patternMsg || $i18nBundle('common.msg.patternInvalid', [label])
-        }, ..._rules]
-      }
-      if (_rules.length) {
-        ruleResult[option.prop] = _rules
-      }
-    }
-  })
-  form.value && form.value.clearValidate()
-  return ruleResult
-})
-
 const emit = defineEmits(['submitForm', 'update:model'])
 
 const formModel = useVModel(props, 'model', emit)
@@ -102,7 +72,7 @@ const initFormModel = () => {
   if (formModel.value) {
     props.options.forEach(option => {
       if (option.prop) {
-        formModel.value[option.prop] = option.value || undefined
+        set(formModel.value, option.prop, option.value || undefined)
       }
     })
   }
@@ -123,19 +93,29 @@ defineExpose({
     ref="form"
     class="common-form"
     :model="formModel"
-    :rules="rules"
     :label-width="labelWidth"
     v-bind="$attrs"
     :validate-on-rule-change="validateOnRuleChange"
   >
-    <common-form-control
+    <template
       v-for="(option,index) in options"
       :key="index"
-      :model="formModel"
-      :option="option"
-    />
+    >
+      <slot
+        v-if="option.slot"
+        name="option.slot"
+        :option="option"
+        :form="form"
+        :model="formModel"
+      />
+      <common-form-control
+        :model="formModel"
+        :option="option"
+      />
+    </template>
     <slot
       :form="form"
+      :model="formModel"
       name="default"
     />
     <el-form-item v-if="showButtons">
@@ -160,11 +140,13 @@ defineExpose({
       </el-button>
       <slot
         :form="form"
+        :model="formModel"
         name="buttons"
       />
     </el-form-item>
     <slot
       :form="form"
+      :model="formModel"
       name="after-buttons"
     />
   </el-form>
