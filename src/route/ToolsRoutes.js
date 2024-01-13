@@ -12,17 +12,17 @@ export default [{
   component: () => import('@/views/tools/TestPage.vue')
 }, {
   path: '/tables',
-  name: 'tables',
+  name: 'TablesBase',
   children: [{
     path: '',
-    name: 'tables-index',
+    name: 'Tables',
     component: () => import('@/views/tools/Tables.vue')
   }, {
     path: 'edit/:id',
-    name: 'tables-edit',
+    name: 'TableEdit',
     component: () => import('@/views/tools/TableEdit.vue'),
     meta: {
-      replaceTabHistory: 'tables-index',
+      replaceTabHistory: 'Tables',
       labelKey: 'common.label.edit',
       icon: 'Edit'
     }
