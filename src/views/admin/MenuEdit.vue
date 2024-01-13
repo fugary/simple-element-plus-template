@@ -1,10 +1,12 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { loadAndParseMenus, loadMenuResult, useMenuFormOptions } from '@/services/menu/MenuService'
 
 const route = useRoute()
+const router = useRouter()
 
+const backUrl = '/admin/menus'
 const menuDto = ref({
   id: route.params.id
 })
@@ -35,6 +37,7 @@ const submitForm = form => {
   form.validate(valid => {
     if (valid) {
       console.log('submit', menuDto.value)
+      router.push(backUrl)
     }
   })
 }
@@ -47,7 +50,7 @@ const submitForm = form => {
       :model="menuDto"
       :options="menuFormOptions"
       label-width="120px"
-      back-url="/admin/menus"
+      :back-url="backUrl"
       @submit-form="submitForm"
     />
   </el-container>

@@ -65,19 +65,14 @@ export const useTabsViewStore = defineStore('tabsView', () => {
       if (idx < 0) {
         const replaceIdx = historyTabs.value.findIndex(v => checkMataReplaceHistory(v, tab) ||
             checkMataReplaceHistory(tab, v) || isSameReplaceHistory(v, tab))
+        let replaceTab = null
         if (replaceIdx > -1) {
-          console.info(replaceIdx, historyTabs.value[replaceIdx])
-          if (replaceIdx !== undefined) {
-            historyTabs.value.splice(replaceIdx, 1, Object.assign({}, tab))
-            return
-          }
+          replaceTab = historyTabs.value[replaceIdx]
+          historyTabs.value.splice(replaceIdx, 1, Object.assign({}, tab))
+        } else {
+          historyTabs.value.push(Object.assign({}, tab)) // 可能是Proxy，需要解析出来
         }
-        historyTabs.value.push(Object.assign({}, tab)) // 可能是Proxy，需要解析出来
-        if (isCachedTabMode.value && tab.name) {
-          if (!cachedTabs.value.includes(tab.name)) {
-            cachedTabs.value.push(tab.name)
-          }
-        }
+        addCachedTab(tab, replaceTab)
       }
     }
   }
@@ -116,8 +111,9 @@ export const useTabsViewStore = defineStore('tabsView', () => {
       }
     }
   }
-  const addCachedTab = (tab) => {
-    if (isCachedTabMode.value && tab.name) {
+  const addCachedTab = (tab, replaceTab) => {
+    if (isCachedTabMode.value && tab.name && !tab.name.includes('-')) {
+      removeCachedTab(replaceTab)
       if (!cachedTabs.value.includes(tab.name)) {
         cachedTabs.value.push(tab.name)
       }

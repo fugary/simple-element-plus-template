@@ -22,17 +22,17 @@ export default [{
   component: () => import('@/views/admin/Authority.vue')
 }, {
   path: `${BASE_PATH}/menus`,
-  name: 'Menus',
+  name: 'MenusBase',
   children: [{
     path: '',
-    name: 'menus-index',
+    name: 'Menus',
     component: () => import('@/views/admin/Menus.vue')
   }, {
     path: 'edit/:id',
-    name: 'menus-edit',
+    name: 'MenuEdit',
     component: () => import('@/views/admin/MenuEdit.vue'),
     meta: {
-      replaceTabHistory: 'menus-index',
+      replaceTabHistory: 'Menus',
       labelKey: 'menu.label.menuEdit',
       icon: 'Edit'
     }
