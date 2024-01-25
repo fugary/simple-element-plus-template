@@ -90,6 +90,10 @@ html, body, #app, .index-container {
     display: block;
 }
 
+.flex-column {
+    flex-direction: column;
+}
+
 .container-center {
     display: flex;
     justify-content: center;

@@ -102,7 +102,7 @@ const calcColumns = computed(() => {
     }
     _columns = [..._columns, buttonColumn]
   }
-  return _columns
+  return _columns.filter(column => column.enabled !== false)
 })
 
 const emit = defineEmits(['pageSizeChange', 'currentPageChange', 'update:page'])
@@ -127,7 +127,7 @@ defineExpose({
 <template>
   <el-container
     v-loading="loading"
-    class="no_flex"
+    class="flex-column"
     :element-loading-text="loadingText"
   >
     <el-table
@@ -160,7 +160,7 @@ defineExpose({
       </common-table-column>
     </el-table>
     <el-pagination
-      v-if="page&&page.pageCount&&page.pageCount>1"
+      v-if="page&&page.pageCount"
       class="common-pagination"
       v-bind="pageAttrs"
       :total="page.totalCount"

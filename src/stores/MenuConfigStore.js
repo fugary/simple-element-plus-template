@@ -10,7 +10,7 @@ export const useMenuConfigStore = defineStore('menuConfig', () => {
   return {
     businessMenus,
     loadBaseTopMenus () {
-      return useBaseTopMenus()
+      return ref(useBaseTopMenus())
     },
     async loadBusinessMenus () {
       businessMenus.value = await loadAndParseMenus()

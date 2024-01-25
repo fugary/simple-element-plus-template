@@ -10,7 +10,8 @@ const route = useRoute()
 
 const breadcrumbs = computed(() => {
   const exists = []
-  return route.matched.map(item => {
+  return route.matched.map((item, index) => {
+    item = index === route.matched.length - 1 ? route : item
     const menuInfo = useMenuInfo(item)
     let icon = ''
     if (menuInfo && menuInfo.icon) {
@@ -28,7 +29,7 @@ const breadcrumbs = computed(() => {
     if (notExist) {
       exists.push(item.menuName)
     }
-    return notExist
+    return notExist && !item.menuName.endsWith('Base')
   })
 })
 </script>

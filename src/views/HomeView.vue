@@ -13,7 +13,6 @@ const tabsViewStore = useTabsViewStore()
 const showLeftMenu = computed(() => {
   return globalConfigStore.layoutMode === GlobalLayoutMode.LEFT
 })
-menuConfigStore.loadBaseTopMenus()
 menuConfigStore.loadBusinessMenus()
 </script>
 

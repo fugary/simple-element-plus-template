@@ -20,15 +20,23 @@ const props = defineProps({
   model: {
     type: Object,
     required: true
+  },
+  labelWidth: {
+    type: String,
+    default: null
   }
 })
 
 const inputType = computed(() => useInputType(props.option))
 
 const modelAttrs = computed(() => {
-  const attrs = { ...props.option.attrs }
-  if (attrs.clearable === undefined && ['el-input', 'el-select', 'common-autocomplete', 'el-autocomplete', 'el-cascader', 'el-tree-select'].includes(inputType.value)) {
+  const option = props.option
+  const attrs = { ...option.attrs }
+  if (attrs.clearable === undefined && ['el-input', 'el-select', 'el-select-v2', 'common-autocomplete', 'el-autocomplete', 'el-cascader', 'el-tree-select'].includes(inputType.value)) {
     attrs.clearable = true
+  }
+  if (inputType.value === 'common-autocomplete' && option.getAutocompleteLabel) {
+    attrs.defaultLabel = option.getAutocompleteLabel(props.model, option)
   }
   return attrs
 })
@@ -39,6 +47,10 @@ const label = computed(() => {
     return $i18nBundle(option.labelKey)
   }
   return option.label
+})
+
+const showLabel = computed(() => {
+  return props.option.showLabel !== false && props.labelWidth !== '0'
 })
 
 const formModel = computed(() => props.option.model || props.model)
@@ -105,7 +117,7 @@ const initFormModel = () => {
     const option = props.option
     if (option.prop) {
       const defaultVal = get(formModel.value, option.prop)
-      set(formModel.value, option.prop, defaultVal || option.value || undefined)
+      set(formModel.value, option.prop, defaultVal ?? option.value ?? undefined)
     }
   }
 }
@@ -114,15 +126,36 @@ initFormModel()
 
 watch(() => props.option, initFormModel, { deep: true })
 
+const hasModelText = computed(() => {
+  return !!(modelAttrs.value.modelText || modelAttrs.value.modelTextFunc)
+})
+
+const emit = defineEmits(['change'])
+
+const controlChange = (...args) => {
+  const option = props.option
+  if (option.change) {
+    option.change(...args)
+  }
+  emit('change', ...args)
+}
+
+const formItemEnabled = computed(() => props.option.enabled !== false)
+
 </script>
 
 <template>
   <el-form-item
+    v-if="formItemEnabled"
     ref="formItemRef"
     :rules="rules"
     :prop="option.prop"
+    :label-width="labelWidth"
   >
-    <template #label>
+    <template
+      v-if="showLabel"
+      #label
+    >
       <span>{{ label }}</span>
       <el-tooltip
         v-if="option.tooltip||option.tooltipFunc"
@@ -151,8 +184,14 @@ watch(() => props.option, initFormModel, { deep: true })
       :placeholder="option.placeholder"
       :disabled="option.disabled"
       :readonly="option.readonly"
-      @change="option.change"
+      @change="controlChange"
     >
+      <template
+        v-if="hasModelText"
+        #default
+      >
+        {{ modelAttrs.modelText || modelAttrs.modelTextFunc(modelValue) }}
+      </template>
       <template v-if="children&&children.length">
         <control-child
           v-for="(childItem, index) in children"

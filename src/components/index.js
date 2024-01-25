@@ -2,10 +2,12 @@ import CommonIcon from '@/components/common-icon/index.vue'
 import CommonIconSelect from '@/components/common-icon-select/index.vue'
 import CommonForm from '@/components/common-form/index.vue'
 import CommonFormControl from '@/components/common-form-control/index.vue'
+import CommonFormLabel from '@/components/common-form-control/common-form-label.vue'
 import CommonMenu from '@/components/common-menu/index.vue'
 import CommonMenuItem from '@/components/common-menu-item/index.vue'
 import CommonTabsView from '@/components/common-tabs-view/index.vue'
 import CommonTable from '@/components/common-table/index.vue'
+import CommonTableForm from '@/components/common-table-form/index.vue'
 import CommonBreadcrumb from '@/components/common-breadcrumb/index.vue'
 import CommonWindow from '@/components/common-window/index.vue'
 import CommonAutocomplete from '@/components/common-autocomplete/index.vue'
@@ -22,10 +24,12 @@ export default {
     Vue.component('CommonIconSelect', CommonIconSelect)
     Vue.component('CommonForm', CommonForm)
     Vue.component('CommonFormControl', CommonFormControl)
+    Vue.component('CommonFormLabel', CommonFormLabel)
     Vue.component('CommonMenu', CommonMenu)
     Vue.component('CommonMenuItem', CommonMenuItem)
     Vue.component('CommonTabsView', CommonTabsView)
     Vue.component('CommonTable', CommonTable)
+    Vue.component('CommonTableForm', CommonTableForm)
     Vue.component('CommonBreadcrumb', CommonBreadcrumb)
     Vue.component('CommonWindow', CommonWindow)
     Vue.component('CommonAutocomplete', CommonAutocomplete)

@@ -130,7 +130,7 @@ const submitForm = () => {
 
 <template>
   <el-container
-    class="no_flex"
+    class="flex-column"
   >
     <common-form
       inline

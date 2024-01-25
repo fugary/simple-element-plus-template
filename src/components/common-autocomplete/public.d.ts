@@ -50,14 +50,16 @@ export interface CommonAutocompleteProps {
     disabled?: boolean;
     // 没有输入时是否可以搜索
     emptySearchEnabled?: boolean;
+    // 是否在自动完成时显示标题
+    autoPageShowTitle?: boolean;
     // 自动完成标题
     title?: string;
     // 占位符
     placeholder?: string;
     // id字段名
-    idKey?: string;
+    idProp?: string;
     // label字段名
-    labelKey?: string;
+    labelProp?: string;
     // 防抖延时
     debounceTime?: number;
     // 自动完成宽度
@@ -68,6 +70,8 @@ export interface CommonAutocompleteProps {
     selectPageConfig?: CommonSelectPageOption;
     // 可选项列默认显示几列
     colSize?: number;
+    // 可选项列默认显示几行
+    rowSize?: number;
     // 加载提示loading
     loadingText?: string;
     // 最低高度

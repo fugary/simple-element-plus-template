@@ -11,11 +11,13 @@ const props = defineProps({
    */
   options: {
     type: Array,
-    required: true
+    default () {
+      return []
+    }
   },
   labelWidth: {
     type: String,
-    default: '100px'
+    default: '110px'
   },
   model: {
     type: Object,
@@ -94,6 +96,7 @@ defineExpose({
         :model="formModel"
       />
       <common-form-control
+        v-if="option.enabled!==false"
         :model="formModel"
         :option="option"
       />

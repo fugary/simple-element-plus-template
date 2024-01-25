@@ -1,4 +1,8 @@
 <script setup>
+import { formatDate } from '@/components/utils'
+import { computed } from 'vue'
+import { get } from 'lodash'
+
 /**
  * 配置信息
  * @type {CommonTableColumnProps}
@@ -20,6 +24,21 @@ const props = defineProps({
   }
 })
 
+const formatter = computed(() => {
+  const column = props.column
+  if (!column.formatter && column.dateFormat) { // 没有formatter但是有dateFormat
+    return row => {
+      const data = getPropertyData(row)
+      return formatDate(data, column.dateFormat)
+    }
+  }
+  return column.formatter
+})
+
+const getPropertyData = (row) => {
+  return get(row, props.column.property)
+}
+
 </script>
 
 <template>
@@ -29,7 +48,7 @@ const props = defineProps({
     :prop="column.prop||column.property"
     :width="column.width"
     v-bind="column.attrs"
-    :formatter="column.formatter"
+    :formatter="formatter"
   >
     <template
       v-if="column.slot||column.click"
@@ -41,7 +60,7 @@ const props = defineProps({
         v-bind="column.linkAttrs"
         @click="column.click(scope.row, scope)"
       >
-        {{ column.formatter?column.formatter(scope.row, scope):scope.row[column.property] }}
+        {{ formatter?formatter(scope.row, scope):getPropertyData(scope.row) }}
       </el-link>
       <slot
         v-bind="scope"

@@ -7,7 +7,7 @@ const globalConfigStore = useGlobalConfigStore()
 const menuConfigStore = useMenuConfigStore()
 
 const allMenus = computed(() => {
-  const topMenus = menuConfigStore.loadBaseTopMenus()
+  const topMenus = menuConfigStore.loadBaseTopMenus().value
   const businessMenus = menuConfigStore.calcBusinessMenus()
   if (globalConfigStore.layoutMode === GlobalLayoutMode.TOP) {
     return [...businessMenus, ...topMenus.slice(1)]

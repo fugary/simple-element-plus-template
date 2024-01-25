@@ -21,6 +21,10 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  autoPageShowTitle: {
+    type: Boolean,
+    default: false
+  },
   placeholder: {
     type: String,
     default: ''
@@ -29,11 +33,11 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  idKey: {
+  idProp: {
     type: String,
     default: 'value'
   },
-  labelKey: {
+  labelProp: {
     type: String,
     default: 'label'
   },
@@ -47,7 +51,7 @@ const props = defineProps({
   },
   inputWidth: {
     type: String,
-    default: '220px'
+    default: '200px'
   },
   autocompleteConfig: {
     type: Object,
@@ -60,6 +64,14 @@ const props = defineProps({
   colSize: {
     type: Number,
     default: 4
+  },
+  rowSize: {
+    type: Number,
+    default: 6
+  },
+  tabStretch: {
+    type: Boolean,
+    default: true
   },
   clearable: {
     type: Boolean,
@@ -122,8 +134,8 @@ const autoPage = ref({
 })
 const loadingData = ref(false)
 
-const idProp = computed(() => props.autocompleteConfig?.idKey || props.idKey)
-const labelProp = computed(() => props.autocompleteConfig?.labelKey || props.labelKey)
+const idProp = computed(() => props.autocompleteConfig?.idProp || props.idProp)
+const labelProp = computed(() => props.autocompleteConfig?.labelProp || props.labelProp)
 
 const showSelectPage = computed(() => {
   return props.selectPageConfig && (!keywords.value || lastAutocompleteLabel.value === keywords.value)
@@ -303,8 +315,8 @@ const parsedSelectPageData = computed(() => {
 })
 
 const getSelectPage = (totalCount) => {
-  const pageSize = 5
-  const pageCount = Math.ceil((totalCount + pageSize - 1) / pageSize)
+  const pageSize = props.rowSize
+  const pageCount = Math.floor((totalCount + pageSize - 1) / pageSize)
   return {
     pageNumber: 1,
     pageSize,
@@ -321,9 +333,21 @@ const selectPagePagination = (tab) => {
 const selectPagePaginationChange = (tab, pageNumber) => {
   const pager = selectPagePageConfig.value?.[tab.id]
   pager.pageNumber = pageNumber
-  console.info('==================selectPagePaginationChange', tab, pageNumber, pager)
   selectPageData.value = { ...selectPageData.value }
 }
+
+const autoTitle = computed(() => {
+  if (!showSelectPage.value && !props.autoPageShowTitle) {
+    return undefined
+  }
+  return props.title || props.placeholder
+})
+
+watch(() => props.selectPageConfig, () => {
+  selectPagePageConfig.value = {}
+  selectPageData.value = {}
+  selectPageTab.value = null
+})
 
 </script>
 
@@ -334,7 +358,7 @@ const selectPagePaginationChange = (tab, pageNumber) => {
     popper-class="common-autocomplete"
     placement="bottom-start"
     :width="autocompleteWidth"
-    :title="title||placeholder"
+    :title="autoTitle"
   >
     <template #reference>
       <el-input
@@ -355,6 +379,7 @@ const selectPagePaginationChange = (tab, pageNumber) => {
           v-model="selectPageTab"
           class="common-select-page"
           type="border-card"
+          :stretch="tabStretch"
           @tab-click="onInputKeywords(false)"
         >
           <el-tab-pane
@@ -363,7 +388,7 @@ const selectPagePaginationChange = (tab, pageNumber) => {
             :name="tab.id"
           >
             <template #label>
-              <span>{{ tab.label }}</span>
+              <span>{{ tab.label || (tab.labelKey && $t(tab.labelKey)) || tab.id }}</span>
             </template>
             <template #default>
               <div

@@ -27,8 +27,8 @@ export const loadAutoCities = (data, config) => {
  */
 export const useCityAutocompleteConfig = () => {
   return {
-    idKey: 'code',
-    labelKey: $i18nMsg('nameCn', 'nameEn'),
+    idProp: 'code',
+    labelProp: $i18nMsg('nameCn', 'nameEn'),
     columns: [{
       label: $i18nMsg('代码', 'Code'),
       property: 'code'
