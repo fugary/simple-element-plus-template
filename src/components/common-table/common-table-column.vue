@@ -1,5 +1,5 @@
 <script setup>
-import { formatDate } from '@/components/utils'
+import { formatDate } from '@/utils'
 import { computed } from 'vue'
 import { get } from 'lodash'
 

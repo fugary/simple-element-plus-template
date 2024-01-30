@@ -1,6 +1,5 @@
 import { ref } from 'vue'
 import { $i18nBundle } from '@/messages'
-import dayjs from 'dayjs'
 
 const calcWithIf = menuItem => {
   ['icon', 'labelKey', 'label', 'html'].forEach(key => {
@@ -73,16 +72,4 @@ export const useParentRoute = function (route) {
     }
   }
   return route
-}
-
-export const formatDate = (date, format) => {
-  if (date) {
-    return dayjs(date).format(format || 'YYYY-MM-DD HH:mm:ss')
-  }
-}
-
-export const formatDay = (date, format) => {
-  if (date) {
-    return dayjs(date).format(format || 'YYYY-MM-DD')
-  }
 }

@@ -14,6 +14,10 @@ export interface CommonFormOption {
     label?: string;
     /** 用于国际化的label */
     labelKey?: string;
+    /**
+     * 样式自定义
+     */
+    labelCls?: string;
     /** 是否必填,后面解析成为rules的一部分 */
     required?: boolean;
     /** 正则表达式验证，解析成为rules的一部分 */

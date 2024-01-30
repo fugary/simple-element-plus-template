@@ -5,6 +5,7 @@ import ControlChild from '@/components/common-form-control/control-child.vue'
 import { useInputType } from '@/components/utils'
 import cloneDeep from 'lodash/cloneDeep'
 import { get, set } from 'lodash'
+import dayjs from 'dayjs'
 
 /**
  * @type {{option:CommonFormOption}}
@@ -38,7 +39,38 @@ const modelAttrs = computed(() => {
   if (inputType.value === 'common-autocomplete' && option.getAutocompleteLabel) {
     attrs.defaultLabel = option.getAutocompleteLabel(props.model, option)
   }
+  if (inputType.value === 'el-date-picker') {
+    attrs.disabledDate = (date) => {
+      const option = props.option
+      let result = false
+      if (option.minDate) {
+        result = date.getTime() < dayjs(option.minDate).startOf('d').toDate().getTime()
+      }
+      if (result && option.maxDate) {
+        result = date.getTime() > dayjs(option.maxDate).startOf('d').toDate().getTime()
+      }
+      return result
+    }
+  }
+  attrs.defaultValue = modelValue.value || option.minDate
   return attrs
+})
+
+watch(() => [inputType.value, props.option.minDate, props.option.maxDate], ([type, minDate, maxDate]) => {
+  const option = props.option
+  const date = modelValue.value
+  if (type === 'el-date-picker' && date && !option.disabled && option.clearInvalidDate !== false) {
+    let invalid = false
+    if (minDate) {
+      invalid = date.getTime() < dayjs(option.minDate).startOf('d').toDate().getTime()
+    }
+    if (invalid && maxDate) {
+      invalid = date.getTime() > dayjs(option.maxDate).startOf('d').toDate().getTime()
+    }
+    if (invalid) {
+      modelValue.value = undefined
+    }
+  }
 })
 
 const label = computed(() => {
@@ -142,6 +174,12 @@ const controlChange = (...args) => {
 
 const formItemEnabled = computed(() => props.option.enabled !== false)
 
+const controlLabelWidth = computed(() => {
+  const option = props.option
+  const labelWidth = props.labelWidth
+  return option.labelWidth || modelAttrs.value.labelWidth || labelWidth
+})
+
 </script>
 
 <template>
@@ -150,13 +188,15 @@ const formItemEnabled = computed(() => props.option.enabled !== false)
     ref="formItemRef"
     :rules="rules"
     :prop="option.prop"
-    :label-width="labelWidth"
+    :label-width="controlLabelWidth"
+    v-bind="$attrs"
   >
     <template
       v-if="showLabel"
       #label
     >
-      <span>{{ label }}</span>
+      <slot name="beforeLabel" />
+      <span :class="option.labelCls">{{ label }}</span>
       <el-tooltip
         v-if="option.tooltip||option.tooltipFunc"
         class="box-item"
@@ -200,6 +240,7 @@ const formItemEnabled = computed(() => props.option.enabled !== false)
         />
       </template>
     </component>
+    <slot name="after" />
   </el-form-item>
 </template>
 

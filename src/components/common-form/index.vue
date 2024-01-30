@@ -23,6 +23,14 @@ const props = defineProps({
     type: Object,
     default: null
   },
+  className: {
+    type: String,
+    default: 'common-form'
+  },
+  buttonStyle: {
+    type: [String, Object],
+    default: ''
+  },
   validateOnRuleChange: {
     type: Boolean,
     default: false
@@ -78,7 +86,7 @@ defineExpose({
 <template>
   <el-form
     ref="form"
-    class="common-form"
+    :class="className"
     :model="formModel"
     :label-width="labelWidth"
     v-bind="$attrs"
@@ -106,7 +114,10 @@ defineExpose({
       :model="formModel"
       name="default"
     />
-    <el-form-item v-if="showButtons">
+    <el-form-item
+      v-if="showButtons"
+      :style="buttonStyle"
+    >
       <el-button
         v-if="showSubmit"
         type="primary"

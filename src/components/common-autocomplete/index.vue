@@ -51,7 +51,7 @@ const props = defineProps({
   },
   inputWidth: {
     type: String,
-    default: '200px'
+    default: ''
   },
   autocompleteConfig: {
     type: Object,
@@ -194,10 +194,21 @@ const onInputKeywords = debounce((input) => {
   }
 }, props.debounceTime)
 
+const calcDefaultLabelFunc = () => {
+  if (!props.useIdModel) {
+    const value = props.modelValue
+    return value && isObject(value) ? value[labelProp.value] : ''
+  }
+  return props.defaultLabel
+}
+
+const calcDefaultLabel = computed(calcDefaultLabelFunc)
+
 onMounted(() => {
   onClickOutside(autocompletePopover.value?.popperRef?.contentRef, () => {
     popoverVisible.value = false
   })
+  setAutocompleteLabel(calcDefaultLabel.value)
 })
 
 watch(() => popoverVisible.value, (val) => {
@@ -211,7 +222,6 @@ watch(() => popoverVisible.value, (val) => {
 })
 
 watch(() => props.modelValue, (value) => {
-  console.info('=====================value', value)
   if (!props.useIdModel) {
     setAutocompleteLabel(value && isObject(value) ? value[labelProp.value] : '')
     if (isEmpty(value)) {
@@ -220,13 +230,7 @@ watch(() => props.modelValue, (value) => {
   }
 })
 
-watch(() => {
-  if (!props.useIdModel) {
-    const value = props.modelValue
-    return value && isObject(value) ? value[labelProp.value] : ''
-  }
-  return props.defaultLabel
-}, (label) => {
+watch(calcDefaultLabelFunc, (label) => {
   setAutocompleteLabel(label)
 })
 
@@ -287,7 +291,6 @@ const moveSelection = function (down) {
     currentOnIndex.value = -1
     currentOnRow.value = null
   }
-  console.info('=================', tableRef.value.table, currentOnIndex.value, currentOnRow.value)
   tableRef.value.table?.setCurrentRow(currentOnRow.value)
 }
 
