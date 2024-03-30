@@ -1,21 +1,28 @@
 <script setup>
-import { computed } from 'vue'
-import { filterMenus, useParentRoute } from '@/components/utils'
+import { computed, ref, watchEffect } from 'vue'
+import { processMenus, useParentRoute } from '@/components/utils'
 import { useRoute } from 'vue-router'
-
 const props = defineProps({
   menus: {
     type: Array,
     required: true
+  },
+  defaultActivePath: {
+    type: String,
+    default: ''
   }
 })
-const menuItems = computed(() => {
-  return filterMenus(props.menus)
+const route = useRoute()
+const menuItems = ref([])
+watchEffect(() => {
+  menuItems.value = processMenus(props.menus)
 })
 const activeRoutePath = computed(() => {
-  let route = useRoute()
-  route = useParentRoute(route)
-  return route && route.path !== '/' ? route.path : ''
+  if (props.defaultActivePath) {
+    return props.defaultActivePath
+  }
+  const current = useParentRoute(route)
+  return current && current.path !== '/' ? current.path : ''
 })
 </script>
 

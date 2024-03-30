@@ -1,6 +1,12 @@
 <script setup>
 import CommonTableColumn from '@/components/common-table/common-table-column.vue'
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
+import { useIntersectionObserver } from '@vueuse/core'
+import { getFrontendPage } from '@/components/utils'
+
+defineOptions({
+  inheritAttrs: false
+})
 
 /**
  * @type CommonTableProps
@@ -11,7 +17,7 @@ const props = defineProps({
    */
   columns: {
     type: Array,
-    required: true
+    default: () => []
   },
   /**
    * 显示数据
@@ -36,7 +42,7 @@ const props = defineProps({
   },
   /**
    * el-button
-   * @type [ButtonProps]
+   * @type [TableButtonProps]
    */
   buttons: {
     type: Array,
@@ -84,6 +90,26 @@ const props = defineProps({
   loadingText: {
     type: String,
     default: ''
+  },
+  expandTable: {
+    type: Boolean,
+    default: false
+  },
+  hideExpandBtn: {
+    type: Boolean,
+    default: false
+  },
+  frontendPaging: {
+    type: Boolean,
+    default: false
+  },
+  frontendPageSize: {
+    type: Number,
+    default: 10
+  },
+  infinitePaging: {
+    type: Boolean,
+    default: false
   }
 })
 /**
@@ -92,6 +118,15 @@ const props = defineProps({
  */
 const calcColumns = computed(() => {
   let _columns = props.columns
+  if (props.expandTable) {
+    _columns = [{
+      slot: 'expand',
+      attrs: {
+        type: 'expand',
+        width: props.hideExpandBtn ? 1 : 0
+      }
+    }, ..._columns]
+  }
   if (props.buttons.length || props.buttonsSlot) {
     const buttonColumn = {
       labelKey: 'common.label.operation',
@@ -116,6 +151,74 @@ const currentPageChange = (pageNumber) => {
   emit('currentPageChange', pageNumber)
 }
 
+const calcData = ref([])
+const frontendPage = ref(getFrontendPage(0, props.frontendPageSize))
+const infiniteRef = ref(null)
+const isInfiniteEnd = ref(false)
+
+function checkInfiniteEnd (pageVal) {
+  if (props.infinitePaging) {
+    isInfiniteEnd.value = pageVal ? pageVal.pageNumber >= pageVal.pageCount : true
+  }
+}
+
+function calcFrontEndPageData () {
+  if (props.frontendPaging) {
+    calcData.value = props.data?.slice((frontendPage.value.pageNumber - 1) * frontendPage.value.pageSize,
+      frontendPage.value.pageNumber * frontendPage.value.pageSize) // 展示数据
+    checkInfiniteEnd(frontendPage.value)
+  }
+}
+
+function calcTableDataAndPage () {
+  if (props.frontendPaging) { // 前端分页模式
+    frontendPage.value = getFrontendPage(props.data?.length, frontendPage.value.pageSize, frontendPage.value.pageNumber) // 前端分页信息
+    calcFrontEndPageData()
+  } else { // 后端分页模式
+    if (props.infinitePaging) { // 无限加载模式
+      if (!calcData.value.length && props.page && props.page.pageNumber > 1) { // 如果进来就是后面的页码，重新查询
+        emit('update:page', { ...props.page, pageNumber: 1 }) // 仅更新pageNumber
+      } else {
+        calcData.value = [...calcData.value, ...props.data]
+      }
+      checkInfiniteEnd(props.page)
+    } else {
+      calcData.value = props.data
+    }
+  }
+}
+
+watch(() => props.data, () => {
+  calcTableDataAndPage()
+}, { deep: true, immediate: true })
+
+watch(() => frontendPage, () => {
+  calcFrontEndPageData()
+}, { deep: true, immediate: true })
+
+onMounted(() => {
+  if (props.infinitePaging) {
+    console.info('================================mounted', infiniteRef.value)
+    useIntersectionObserver(infiniteRef, onInfiniteLoad, {
+      threshold: 1
+    })
+  }
+})
+
+const onInfiniteLoad = (args) => {
+  const isIntersecting = args[0].isIntersecting
+  console.info('===========================infinite', isIntersecting, ...args)
+  if (isIntersecting && calcData.value?.length) {
+    if (props.frontendPaging) {
+      frontendPage.value = getFrontendPage(props.data?.length,
+        frontendPage.value.pageSize + props.frontendPageSize,
+        frontendPage.value.pageNumber)
+    } else if (props.page) {
+      currentPageChange(props.page.pageNumber + 1)
+    }
+  }
+}
+
 const table = ref()
 
 defineExpose({
@@ -135,7 +238,8 @@ defineExpose({
       v-bind="$attrs"
       :highlight-current-row="highlightCurrentRow"
       :stripe="stripe"
-      :data="data"
+      :data="calcData"
+      :class="{'common-hide-expand': hideExpandBtn}"
       :border="border"
     >
       <common-table-column
@@ -144,23 +248,50 @@ defineExpose({
         :column="column"
         :button-size="buttonSize"
       >
+        <template
+          v-if="column.headerSlot"
+          #header="scope"
+        >
+          <slot
+            v-bind="scope"
+            :name="column.headerSlot"
+          />
+        </template>
         <!--用于自定义显示属性-->
         <template
+          v-if="column.slot"
           #default="scope"
         >
           <slot
-            v-if="column.slot"
-            :row="scope.row"
-            :column="scope.column"
+            v-bind="scope"
             :item="scope.row"
-            :column-conf="scope.columnConf"
             :name="column.slot"
           />
         </template>
       </common-table-column>
+      <template #append="scope">
+        <slot
+          name="append"
+          v-bind="scope"
+        />
+        <el-container
+          v-show="infinitePaging&&!isInfiniteEnd"
+          ref="infiniteRef"
+          v-loading="true"
+          class="container-center"
+        >
+          Loading
+        </el-container>
+      </template>
+      <template #empty="scope">
+        <slot
+          name="empty"
+          v-bind="scope"
+        />
+      </template>
     </el-table>
     <el-pagination
-      v-if="page&&page.pageCount"
+      v-if="!infinitePaging&&!frontendPaging&&page&&page.pageCount"
       class="common-pagination"
       v-bind="pageAttrs"
       :total="page.totalCount"
@@ -168,6 +299,16 @@ defineExpose({
       :current-page="page.pageNumber"
       @size-change="pageSizeChange($event)"
       @current-change="currentPageChange($event)"
+    />
+    <el-pagination
+      v-if="!infinitePaging&&frontendPaging&&frontendPage&&frontendPage.pageCount"
+      class="common-pagination"
+      v-bind="pageAttrs"
+      :total="frontendPage.totalCount"
+      :page-size="frontendPage.pageSize"
+      :current-page="frontendPage.pageNumber"
+      @size-change="frontendPage.pageSize=$event"
+      @current-change="frontendPage.pageNumber=$event"
     />
   </el-container>
 </template>

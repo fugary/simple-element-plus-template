@@ -35,11 +35,15 @@ export const changeMessages = locale => {
 export const $changeLocale = locale => {
   useGlobalConfigStore().changeLocale(locale)
 }
+
+export const $isLocale = locale => {
+  return useGlobalConfigStore().currentLocale === locale
+}
 /**
- * @param cn
- * @param en
+ * @param cn 中文字段
+ * @param en 英文字段
  * @param {boolean} replaceEmpty 为空是否用不为空的数据代替
- * @returns {*}
+ * @returns {String}
  */
 export const $i18nMsg = (cn, en, replaceEmpty = true) => {
   const { currentLocale } = useGlobalConfigStore()
@@ -48,8 +52,39 @@ export const $i18nMsg = (cn, en, replaceEmpty = true) => {
   }
   return replaceEmpty ? (en || cn) : en
 }
-
+/**
+ * @param {String} key 国际化资源key
+ * @param {String[]=} params 可选参数
+ * @returns {string}
+ */
 export const $i18nBundle = i18n.global.t
+
+/**
+ * 根据key和locale返回数据<br>
+ * vue-i18n似乎有bug，按照官方文档传locale得不到正确的消息:<br>
+ * <code>$t('ab.c', 'zh-CN')</code><br>
+ * https://vue-i18n.intlify.dev/api/injection.html#t-key-locale
+ * @param key
+ * @param locale
+ * @param [args]
+ * @return {String}
+ */
+export const $i18nByLocale = (key, locale, args) => {
+  return i18n.global.t(key, locale, {
+    locale,
+    list: args || []
+  })
+}
+
+/**
+ * 方便多个资源key解析
+ * @param {String} key 国际化资源key
+ * @param {String} args 可选参数，也是资源key，方便多个资源key解析
+ */
+export const $i18nKey = (key, ...args) => {
+  args = args.map(argKey => $i18nBundle(argKey))
+  return $i18nBundle(key, args)
+}
 
 export default {
   install (app) {
@@ -57,7 +92,10 @@ export default {
     Object.assign(app.config.globalProperties, {
       $changeLocale,
       $i18nMsg,
-      $i18nBundle
+      $i18nKey,
+      $i18nBundle,
+      $isLocale,
+      $i18nByLocale
     })
   }
 }

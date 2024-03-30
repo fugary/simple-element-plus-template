@@ -1,14 +1,9 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { filterIconsByKeywords } from '@/services/icon/IconService'
-import { useVModel } from '@vueuse/core'
 import { UPDATE_MODEL_EVENT, CHANGE_EVENT, useFormItem } from 'element-plus'
 
 const props = defineProps({
-  modelValue: {
-    type: String,
-    default: ''
-  },
   dialogAttrs: {
     type: Object,
     default () {
@@ -60,7 +55,10 @@ const filterIcons = computed(() => {
 
 const emit = defineEmits([UPDATE_MODEL_EVENT, CHANGE_EVENT])
 
-const vModel = useVModel(props, 'modelValue', emit)
+const vModel = defineModel({
+  type: String,
+  default: ''
+})
 
 const { formItem } = useFormItem()
 
@@ -91,76 +89,76 @@ const selectIcon = icon => {
       type="primary"
       :disabled="disabled||readonly"
       size="small"
-      @click="iconSelectVisible = true"
+      @click.prevent="iconSelectVisible = true"
     >
       {{ $t('common.label.select') }}
     </el-button>
-  </label>
-  <el-button
-    v-if="clearable&&vModel"
-    type="danger"
-    :disabled="disabled||readonly"
-    size="small"
-    @click="selectIcon()"
-  >
-    {{ $t('common.label.clear') }}
-  </el-button>
-  <el-dialog
-    v-model="iconSelectVisible"
-    :width="dialogWidth"
-    v-bind="dialogAttrs"
-    draggable
-    class="icon-dialog"
-    :title="$t('common.msg.pleaseSelectIcon')"
-  >
-    <el-container
-      style="overflow: auto;"
-      :style="{ height: dialogHeight }"
-      class="icon-container"
+    <el-button
+      v-if="clearable&&vModel"
+      type="danger"
+      :disabled="disabled||readonly"
+      size="small"
+      @click.prevent="selectIcon()"
     >
-      <el-header height="40px">
-        <el-form label-width="120px">
-          <el-form-item :label="$t('common.label.keywords')">
-            <el-input
-              v-model="keyWords"
-              :placeholder="$t('common.msg.inputKeywords')"
-            />
-          </el-form-item>
-        </el-form>
-      </el-header>
-      <el-main class="icon-area">
-        <recycle-scroller
-          v-slot="{ item }"
-          class="scroller icon-list"
-          :items="filterIcons"
-          :item-size="80"
-          key-field="id"
-        >
-          <el-row>
-            <el-col
-              v-for="icon in item.icons"
-              :key="icon"
-              :span="24/colSize"
-              class="text-center"
-            >
-              <a
-                class="el-button el-button--large is-text icon-a"
-                @click="selectIcon(icon)"
+      {{ $t('common.label.clear') }}
+    </el-button>
+    <el-dialog
+      v-model="iconSelectVisible"
+      :width="dialogWidth"
+      v-bind="dialogAttrs"
+      draggable
+      class="icon-dialog"
+      :title="$t('common.msg.pleaseSelectIcon')"
+    >
+      <el-container
+        style="overflow: auto;"
+        :style="{ height: dialogHeight }"
+        class="icon-container"
+      >
+        <el-header height="40px">
+          <el-form label-width="120px">
+            <el-form-item :label="$t('common.label.keywords')">
+              <el-input
+                v-model="keyWords"
+                :placeholder="$t('common.msg.inputKeywords')"
+              />
+            </el-form-item>
+          </el-form>
+        </el-header>
+        <el-main class="icon-area">
+          <recycle-scroller
+            v-slot="{ item }"
+            class="scroller icon-list"
+            :items="filterIcons"
+            :item-size="80"
+            key-field="id"
+          >
+            <el-row>
+              <el-col
+                v-for="icon in item.icons"
+                :key="icon"
+                :span="24/colSize"
+                class="text-center"
               >
-                <div>
-                  <common-icon
-                    size="20"
-                    :icon="icon"
-                  /><br>
-                  <span class="icon-text">{{ icon }}</span>
-                </div>
-              </a>
-            </el-col>
-          </el-row>
-        </recycle-scroller>
-      </el-main>
-    </el-container>
-  </el-dialog>
+                <a
+                  class="el-button el-button--large is-text icon-a"
+                  @click.prevent="selectIcon(icon)"
+                >
+                  <div>
+                    <common-icon
+                      size="20"
+                      :icon="icon"
+                    /><br>
+                    <span class="icon-text">{{ icon }}</span>
+                  </div>
+                </a>
+              </el-col>
+            </el-row>
+          </recycle-scroller>
+        </el-main>
+      </el-container>
+    </el-dialog>
+  </label>
 </template>
 
 <style scoped>

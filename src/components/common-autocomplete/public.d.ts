@@ -19,6 +19,18 @@ export interface CommonSelectPageOption {
 }
 
 export interface CommonAutocompleteOption {
+    /** id属性名 */
+    labelProp?: string;
+    /** label属性名 */
+    idProp?: string;
+    /**
+     * 分页数
+     */
+    pageSize: number;
+    /**
+     * 前端分页模式
+     */
+    frontendPaging: boolean;
     /** 自动完成表格列配置 */
     columns: Array<CommonTableColumn>;
     /** 空数据提示信息 */

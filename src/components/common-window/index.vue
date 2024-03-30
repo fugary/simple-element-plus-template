@@ -1,16 +1,12 @@
 <script setup>
 import { useVModel } from '@vueuse/core'
-import { computed } from 'vue'
+import { computed, ref, provide } from 'vue'
 import { UPDATE_MODEL_EVENT } from 'element-plus'
 
 const props = defineProps({
   modelValue: {
     type: Boolean,
     default: false
-  },
-  draggable: {
-    type: Boolean,
-    default: true
   },
   title: {
     type: String,
@@ -23,6 +19,10 @@ const props = defineProps({
   width: {
     type: String,
     default: '800px'
+  },
+  defaultCls: {
+    type: [String, Object],
+    default: ''
   },
   buttons: {
     type: Array,
@@ -63,19 +63,44 @@ const props = defineProps({
   closeClick: {
     type: Function,
     default: null
+  },
+  destroyOnClose: {
+    type: Boolean,
+    default: false
+  },
+  draggable: {
+    type: Boolean,
+    default: true
+  },
+  overflow: {
+    type: Boolean,
+    default: true
+  },
+  closeOnClickModal: {
+    type: Boolean,
+    default: true
+  },
+  closeOnPressEscape: {
+    type: Boolean,
+    default: false
+  },
+  appendToBody: {
+    type: Boolean,
+    default: false
   }
 })
-
 const emit = defineEmits([UPDATE_MODEL_EVENT])
 const showDialog = useVModel(props, 'modelValue', emit) // 自动响应v-model
+const windowForm = ref(null) // 如果common-window下面有common-form，注册到这里
+provide('commonWindowForm', windowForm)
 
 const okButtonClick = $event => {
-  if (!props.okClick || props.okClick($event) !== false) {
+  if (!props.okClick || props.okClick({ $event, form: windowForm.value }) !== false) {
     showDialog.value = false
   }
 }
 const cancelButtonClick = $event => {
-  if (!props.cancelClick || props.cancelClick($event) !== false) {
+  if (!props.cancelClick || props.cancelClick({ $event, form: windowForm.value }) !== false) {
     showDialog.value = false
   }
 }
@@ -85,7 +110,7 @@ const calcBeforeClose = computed(() => {
     return props.beforeClose
   } else if (props.closeClick) {
     return done => {
-      if (props.closeClick() !== false) {
+      if (props.closeClick({ form: windowForm.value }) !== false) {
         done()
       }
     }
@@ -102,9 +127,14 @@ const calcBeforeClose = computed(() => {
     :before-close="calcBeforeClose"
     :width="width"
     :draggable="draggable"
-    v-bind="$attrs"
+    :overflow="true"
+    :destroy-on-close="destroyOnClose"
+    :close-on-click-modal="closeOnClickModal"
+    :close-on-press-escape="closeOnPressEscape"
+    :append-to-body="appendToBody"
   >
     <el-container
+      :class="defaultCls"
       :style="{ height:height }"
     >
       <slot
@@ -135,7 +165,7 @@ const calcBeforeClose = computed(() => {
             :disabled="button.disabled"
             :round="button.round"
             :circle="button.circle"
-            @click="button.click&&button.click($event)"
+            @click="button.click&&button.click({$event, form:windowForm})"
           >
             {{ button.label || $t(button.labelKey) }}
           </el-button>

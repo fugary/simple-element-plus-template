@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useCityAutocompleteConfig, useCitySelectPageConfig } from '@/services/city/CityService'
 import { $i18nMsg } from '@/messages'
 import { ElMessage } from 'element-plus'
+import { defineFormOptions } from '@/components/utils'
 
 const defaultCity = ref({})
 
@@ -14,11 +15,53 @@ setTimeout(() => {
   }
 }, 1000)
 
+const getGenderOptions = (type) => {
+  type = type || 'radio'
+  return [
+    {
+      type,
+      label: '男',
+      value: 'male'
+    },
+    {
+      type,
+      label: '女',
+      value: 'female'
+    },
+    {
+      type,
+      label: '保密',
+      value: 'unknown'
+    }
+  ]
+}
+
+const getHobbyOptions = (type) => {
+  type = type || 'checkbox'
+  return [
+    {
+      type,
+      label: '编程',
+      value: 'program'
+    },
+    {
+      type,
+      label: '吃饭',
+      value: 'eat'
+    },
+    {
+      type,
+      label: '睡觉',
+      value: 'sleep'
+    }
+  ]
+}
+
 /**
  * @type {[CommonFormOption]}
  */
 const formOptions = computed(() => {
-  return [{
+  return defineFormOptions([{
     label: '用户名',
     prop: 'userName',
     value: '',
@@ -52,22 +95,14 @@ const formOptions = computed(() => {
     label: '兴趣爱好',
     type: 'checkbox-group',
     prop: 'hobby',
-    value: '',
     required: true,
-    children: [
-      {
-        label: '编程',
-        value: 'program'
-      },
-      {
-        label: '吃饭',
-        value: 'eat'
-      },
-      {
-        label: '睡觉',
-        value: 'sleep'
-      }
-    ]
+    children: getHobbyOptions()
+  }, {
+    label: '兴趣爱好',
+    type: 'checkbox-group',
+    prop: 'hobby',
+    required: true,
+    children: getHobbyOptions('checkbox-button')
   }, {
     label: '职业',
     type: 'select',
@@ -94,20 +129,14 @@ const formOptions = computed(() => {
     prop: 'gender',
     value: '',
     required: true,
-    children: [
-      {
-        label: '男',
-        value: 'male'
-      },
-      {
-        label: '女',
-        value: 'female'
-      },
-      {
-        label: '保密',
-        value: 'unknown'
-      }
-    ]
+    children: getGenderOptions()
+  }, {
+    label: '性别',
+    type: 'radio-group',
+    prop: 'gender',
+    value: '',
+    required: true,
+    children: getGenderOptions('radio-button')
   }, {
     label: '图标',
     prop: 'icon',
@@ -123,6 +152,9 @@ const formOptions = computed(() => {
     placeholder: '请选择城市',
     change: (city) => {
       defaultCity.value = city
+    },
+    getAutocompleteLabel: () => {
+      return $i18nMsg(defaultCity.value?.nameCN, defaultCity.value?.nameEN)
     },
     attrs: {
       defaultLabel: $i18nMsg(defaultCity.value?.nameCn, defaultCity.value?.nameEn),
@@ -146,9 +178,11 @@ const formOptions = computed(() => {
     prop: 'address',
     value: '',
     attrs: {
-      type: 'textarea'
+      type: 'textarea',
+      maxlength: 100,
+      showWordLimit: true
     }
-  }]
+  }])
 })
 const userDto = ref({
   contacts: [{
@@ -195,7 +229,7 @@ const submitForm = (form) => {
 </script>
 
 <template>
-  <div>
+  <el-container class="flex-column container-center">
     <common-form
       :model="userDto"
       :options="formOptions"
@@ -246,7 +280,7 @@ const submitForm = (form) => {
     <div>
       {{ userDto }}
     </div>
-  </div>
+  </el-container>
 </template>
 
 <style scoped>

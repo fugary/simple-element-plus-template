@@ -1,7 +1,10 @@
 <script setup>
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
+
 const router = useRouter()
+const globalConfigStore = useGlobalConfigStore()
 /**
  * @type {CommonMenuItemProps}
  */
@@ -15,7 +18,7 @@ const props = defineProps({
   },
   index: {
     type: [Number, String],
-    required: false
+    default: ''
   }
 })
 const isSubMenu = computed(() => {
@@ -35,7 +38,7 @@ const menuCls = computed(() => {
 })
 const dropdownClick = (menuItem, $event) => {
   if (menuItem.click) {
-    menuItem.click($event)
+    menuItem.click($event, menuItem)
   } else {
     const route = menuItem.route || menuItem.index
     if (route) {
@@ -44,35 +47,39 @@ const dropdownClick = (menuItem, $event) => {
   }
 }
 
+const checkShowMenuIcon = menuItem => {
+  return menuItem.icon && (globalConfigStore.showMenuIcon || (!menuItem.labelKey && !menuItem.label))
+}
+
+const showMenuIcon = computed(() => {
+  return checkShowMenuIcon(props.menuItem)
+})
+
 </script>
 
 <template>
   <div
     v-if="menuItem.isSplit"
-    :key="menuItem.index||index"
     :class="menuCls"
   >
     <slot name="split" />
   </div>
   <el-sub-menu
     v-else-if="isSubMenu"
-    :key="menuItem.index||index"
     :index="`${menuItem.index||index}`"
     :class="menuCls"
+    :disabled="menuItem.disabled"
     v-bind="menuItem.attrs"
   >
     <template #title>
       <common-icon
+        v-if="showMenuIcon"
         :size="menuItem.iconSize"
         :icon="menuItem.icon"
       />
       <span v-if="menuItem.labelKey||menuItem.label">
         {{ menuItem.labelKey?$t(menuItem.labelKey):menuItem.label }}
       </span>
-      <div
-        v-if="menuItem.html"
-        v-html="menuItem.html"
-      />
     </template>
     <common-menu-item
       v-for="(childMenu, childIdx) in menuItem.children"
@@ -83,13 +90,14 @@ const dropdownClick = (menuItem, $event) => {
   </el-sub-menu>
   <el-menu-item
     v-else-if="isDropdown"
-    :key="menuItem.index||index"
     :class="menuCls"
-    @click="menuItem.click&&menuItem.click($event)"
+    :disabled="menuItem.disabled"
+    @click="menuItem.click&&menuItem.click($event, menuItem)"
   >
     <el-dropdown class="common-dropdown">
       <span class="el-dropdown-link">
         <common-icon
+          v-if="showMenuIcon"
           :size="menuItem.iconSize"
           :icon="menuItem.icon"
         />
@@ -104,6 +112,7 @@ const dropdownClick = (menuItem, $event) => {
           @click="dropdownClick(childMenu, $event)"
         >
           <common-icon
+            v-if="checkShowMenuIcon(childMenu)"
             :size="childMenu.iconSize"
             :icon="childMenu.icon"
           />
@@ -117,12 +126,14 @@ const dropdownClick = (menuItem, $event) => {
   <el-menu-item
     v-else
     :class="menuCls"
+    :disabled="menuItem.disabled"
     :route="menuItem.route"
     v-bind="menuItem.attrs"
     :index="menuItem.index"
-    @click="menuItem.click&&menuItem.click(menuItem, $event)"
+    @click="menuItem.click&&menuItem.click($event,menuItem)"
   >
     <common-icon
+      v-if="showMenuIcon"
       :size="menuItem.iconSize"
       :icon="menuItem.icon"
     />
@@ -130,10 +141,6 @@ const dropdownClick = (menuItem, $event) => {
       <span v-if="menuItem.labelKey||menuItem.label">
         {{ menuItem.labelKey?$t(menuItem.labelKey):menuItem.label }}
       </span>
-      <div
-        v-if="menuItem.html"
-        v-html="menuItem.html"
-      />
     </template>
   </el-menu-item>
 </template>
@@ -141,8 +148,5 @@ const dropdownClick = (menuItem, $event) => {
 <style scoped>
 .common-dropdown {
   height: 100%;
-}
-.common-dropdown .el-icon {
-  margin-top: 20px;
 }
 </style>

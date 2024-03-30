@@ -6,7 +6,7 @@ import kebabCase from 'lodash/kebabCase'
 const props = defineProps({
   icon: {
     type: String,
-    required: false
+    default: ''
   }
 })
 const calcIcon = computed(() => {

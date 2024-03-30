@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { inject, ref, onMounted, isRef, watchEffect } from 'vue'
 import { useVModel } from '@vueuse/core'
 
 /**
@@ -23,6 +23,17 @@ const props = defineProps({
     type: Object,
     default: null
   },
+  inline: {
+    type: Boolean
+  },
+  className: {
+    type: String,
+    default: 'common-form'
+  },
+  buttonStyle: {
+    type: [String, Object],
+    default: ''
+  },
   validateOnRuleChange: {
     type: Boolean,
     default: false
@@ -34,6 +45,10 @@ const props = defineProps({
   showSubmit: {
     type: Boolean,
     default: true
+  },
+  disableSubmitIfNotValid: {
+    type: Boolean,
+    default: false
   },
   submitLabel: {
     type: String,
@@ -66,11 +81,26 @@ const emit = defineEmits(['submitForm', 'update:model'])
 const formModel = useVModel(props, 'model', emit)
 
 //= ============form暴露============//
-
 const form = ref()
 
 defineExpose({
   form
+})
+onMounted(() => {
+  const windowFormRef = inject('commonWindowForm', null)
+  if (isRef(windowFormRef)) {
+    windowFormRef.value = form.value
+  }
+})
+
+/**
+ * 表单校验不通过时禁止点击提交按钮
+ */
+const disableSubmit = ref(false)
+watchEffect(async () => {
+  if (!props.disableSubmitIfNotValid) { return false }
+  if (!form.value) { return true }
+  await form.value.validate((ok) => { disableSubmit.value = !ok })
 })
 
 </script>
@@ -78,10 +108,10 @@ defineExpose({
 <template>
   <el-form
     ref="form"
-    class="common-form"
+    :inline="inline"
+    :class="className"
     :model="formModel"
     :label-width="labelWidth"
-    v-bind="$attrs"
     :validate-on-rule-change="validateOnRuleChange"
   >
     <template
@@ -90,13 +120,13 @@ defineExpose({
     >
       <slot
         v-if="option.slot"
-        name="option.slot"
+        :name="option.slot"
         :option="option"
         :form="form"
         :model="formModel"
       />
       <common-form-control
-        v-if="option.enabled!==false"
+        v-if="!option.slot&&option.enabled!==false"
         :model="formModel"
         :option="option"
       />
@@ -106,9 +136,13 @@ defineExpose({
       :model="formModel"
       name="default"
     />
-    <el-form-item v-if="showButtons">
+    <el-form-item
+      v-if="showButtons"
+      :style="buttonStyle"
+    >
       <el-button
         v-if="showSubmit"
+        :disabled="disableSubmit"
         type="primary"
         @click="$emit('submitForm', form)"
       >

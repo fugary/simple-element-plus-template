@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useTabsViewStore } from '@/stores/TabsViewStore'
 import { useRoute } from 'vue-router'
-import { useMenuInfo, useMenuName } from '@/components/utils'
+import { parsePathParams, useMenuInfo, useMenuName } from '@/components/utils'
 
 const tabsViewStore = useTabsViewStore()
 
@@ -20,7 +20,7 @@ const breadcrumbs = computed(() => {
       icon = item.meta.icon
     }
     return {
-      path: item.path,
+      path: parsePathParams(item.path, route.params),
       menuName: useMenuName(item),
       icon
     }
@@ -32,11 +32,11 @@ const breadcrumbs = computed(() => {
     return notExist && !item.menuName.endsWith('Base')
   })
 })
+
 </script>
 
 <template>
   <el-breadcrumb
-    v-bind="$attrs"
     class="common-breadcrumb"
   >
     <el-breadcrumb-item

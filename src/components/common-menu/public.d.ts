@@ -8,6 +8,14 @@ export interface CommonMenuItem {
     isDropdown?: boolean;
     /** 是否是分割元素 */
     isSplit?: boolean;
+    /**
+     * 是否禁用，禁用状态仍然是显示的
+     */
+    disabled?: boolean;
+    /**
+     * 是否启用，默认true，设置false不显示
+     */
+    enabled?: boolean;
     /** 自定义样式 */
     menuCls?: string;
     /** 路由地址 */

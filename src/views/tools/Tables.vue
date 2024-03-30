@@ -13,8 +13,7 @@ const tableData = ref([])
 const loading = ref(true)
 const loadUsers = async () => {
   loading.value = true
-  const usersResult = await loadUsersResult({ page: page.value })
-  loading.value = false
+  const usersResult = await loadUsersResult({ page: page.value }).finally(() => (loading.value = false))
   if (usersResult.success && usersResult.resultData) {
     const resultData = usersResult.resultData
     tableData.value = resultData.userList

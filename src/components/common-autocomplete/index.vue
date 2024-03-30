@@ -1,8 +1,7 @@
 <script setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { debounce, isEmpty, isObject } from 'lodash'
+import { debounce, isEmpty, isObject, cloneDeep, chunk } from 'lodash'
 import { onClickOutside, onKeyStroke, useVModel } from '@vueuse/core'
-import chunk from 'lodash/chunk'
 import { UPDATE_MODEL_EVENT, CHANGE_EVENT, useFormItem } from 'element-plus'
 
 /**
@@ -51,7 +50,7 @@ const props = defineProps({
   },
   inputWidth: {
     type: String,
-    default: '200px'
+    default: ''
   },
   autocompleteConfig: {
     type: Object,
@@ -128,10 +127,13 @@ const selectPageData = ref({})
 const selectPageTab = ref(null)
 const popoverVisible = ref(false)
 const autocompletePopover = ref()
-const autoPage = ref({
-  pageSize: 8,
+const defaultAutoPage = {
+  pageSize: props.autocompleteConfig?.pageSize || 8,
   pageNumber: 1
-})
+}
+const autoPage = ref(props.autocompleteConfig?.frontendPaging
+  ? null
+  : cloneDeep(defaultAutoPage))
 const loadingData = ref(false)
 
 const idProp = computed(() => props.autocompleteConfig?.idProp || props.idProp)
@@ -194,10 +196,21 @@ const onInputKeywords = debounce((input) => {
   }
 }, props.debounceTime)
 
+const calcDefaultLabelFunc = () => {
+  if (!props.useIdModel) {
+    const value = props.modelValue
+    return value && isObject(value) ? value[labelProp.value] : ''
+  }
+  return props.defaultLabel
+}
+
+const calcDefaultLabel = computed(calcDefaultLabelFunc)
+
 onMounted(() => {
   onClickOutside(autocompletePopover.value?.popperRef?.contentRef, () => {
     popoverVisible.value = false
   })
+  setAutocompleteLabel(calcDefaultLabel.value)
 })
 
 watch(() => popoverVisible.value, (val) => {
@@ -211,7 +224,6 @@ watch(() => popoverVisible.value, (val) => {
 })
 
 watch(() => props.modelValue, (value) => {
-  console.info('=====================value', value)
   if (!props.useIdModel) {
     setAutocompleteLabel(value && isObject(value) ? value[labelProp.value] : '')
     if (isEmpty(value)) {
@@ -220,13 +232,7 @@ watch(() => props.modelValue, (value) => {
   }
 })
 
-watch(() => {
-  if (!props.useIdModel) {
-    const value = props.modelValue
-    return value && isObject(value) ? value[labelProp.value] : ''
-  }
-  return props.defaultLabel
-}, (label) => {
+watch(calcDefaultLabelFunc, (label) => {
   setAutocompleteLabel(label)
 })
 
@@ -287,7 +293,6 @@ const moveSelection = function (down) {
     currentOnIndex.value = -1
     currentOnRow.value = null
   }
-  console.info('=================', tableRef.value.table, currentOnIndex.value, currentOnRow.value)
   tableRef.value.table?.setCurrentRow(currentOnRow.value)
 }
 
@@ -347,6 +352,15 @@ watch(() => props.selectPageConfig, () => {
   selectPagePageConfig.value = {}
   selectPageData.value = {}
   selectPageTab.value = null
+})
+
+watch(() => props.autocompleteConfig, (autocompleteConfig) => {
+  defaultAutoPage.pageSize = autocompleteConfig.pageSize || 8
+  if (autocompleteConfig.frontendPaging) {
+    autoPage.value = null
+  } else {
+    autoPage.value = cloneDeep(defaultAutoPage)
+  }
 })
 
 </script>
@@ -443,6 +457,8 @@ watch(() => props.selectPageConfig, () => {
         :empty-text="autocompleteConfig.emptyMessage"
         :data="dataList"
         :page-attrs="pageAttrs"
+        :frontend-paging="autocompleteConfig.frontendPaging"
+        :frontend-page-size="defaultAutoPage.pageSize"
         @row-click="onSelectData($event)"
         @current-page-change="onInputKeywords(false)"
       >

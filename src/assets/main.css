@@ -19,9 +19,42 @@ html, body, #app, .index-container {
     border-right: 0 none;
 }
 
+.common-el-tooltip {
+    max-width: 500px;
+}
+
+.common-dropdown .el-dropdown-link {
+    display: flex;
+    align-items: center;
+}
+
+.el-dropdown-link:focus {
+    outline: none;
+}
+
 .el-menu-left:not(.el-menu--collapse) {
     width: 250px;
     min-height: 400px;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.padding-5 {
+    padding: 5px;
+}
+
+.padding-10 {
+    padding: 10px;
+}
+
+.padding-15 {
+    padding: 15px;
+}
+
+.padding-main {
+    padding: var(--el-main-padding);
 }
 
 .padding-left1 {
@@ -30,11 +63,17 @@ html, body, #app, .index-container {
 .padding-left2 {
     padding-left: 10px;
 }
+.padding-left3 {
+    padding-left: 15px;
+}
 .padding-right1 {
     padding-right: 5px;
 }
 .padding-right2 {
     padding-right: 10px;
+}
+.padding-right3 {
+    padding-right: 15px;
 }
 
 .padding-top1 {
@@ -43,12 +82,59 @@ html, body, #app, .index-container {
 .padding-top2 {
     padding-top: 10px;
 }
+.padding-top3 {
+    padding-top: 15px;
+}
 .padding-bottom1 {
     padding-bottom: 5px;
 }
 .padding-bottom2 {
     padding-bottom: 10px;
 }
+.padding-bottom3 {
+    padding-bottom: 15px;
+}
+
+.margin-bottom1 {
+    margin-bottom: 5px;
+}
+.margin-bottom2 {
+    margin-bottom: 10px;
+}
+.margin-bottom3 {
+    margin-bottom: 15px;
+}
+
+.margin-left1 {
+    margin-left: 5px;
+}
+.margin-left2 {
+    margin-left: 10px;
+}
+.margin-left3 {
+    margin-left: 15px;
+}
+
+.margin-right1 {
+    margin-right: 5px;
+}
+.margin-right2 {
+    margin-right: 10px;
+}
+.margin-right3 {
+    margin-right: 15px;
+}
+
+.margin-top1 {
+    margin-top: 5px;
+}
+.margin-top2 {
+    margin-top: 10px;
+}
+.margin-top3 {
+    margin-top: 15px;
+}
+
 .text-center {
     text-align: center;
 }
@@ -94,6 +180,10 @@ html, body, #app, .index-container {
     flex-direction: column;
 }
 
+.flex-start {
+    align-items: flex-start;
+}
+
 .container-center {
     display: flex;
     justify-content: center;
@@ -101,20 +191,61 @@ html, body, #app, .index-container {
     padding-top: 20px;
 }
 
-.common-form.el-form--inline .el-input{
-    --el-input-width: 220px;
+.reason-code-container .el-radio__label{
+    white-space: break-spaces;
 }
 
+.common-tabs .el-tabs__new-tab {
+    width: 50%;
+    border: none;
+    margin: 10px 10px 0 10px;
+    justify-content: right;
+}
+
+.el-tabs__item.is-active {
+    font-weight: bold;
+}
+
+.common-form.el-form--inline .el-select,
+.common-subform.el-form--inline .el-select{
+    --el-select-width: 200px;
+}
+
+.common-form.el-form--inline .el-input,
 .common-subform.el-form--inline .el-input{
-    --el-input-width: 220px;
+    --el-input-width: 200px;
+    --el-date-editor-width: 200px;
+}
+
+.common-form-small.common-form.el-form--inline .el-select{
+    --el-select-width: 160px;
+}
+
+.common-form-small.common-form.el-form--inline .el-input{
+    --el-input-width: 160px;
+    --el-date-editor-width: 160px;
 }
 
 .form-edit-width-70 {
     width:70%
 }
 
+.form-edit-width-90 {
+    width:90%
+}
+
 .form-edit-width-100 {
     width:100%
+}
+
+.form-edit-width-70 .el-select:not(:is(.el-form--inline .el-select,.el-pagination .el-select)),
+.form-edit-width-90 .el-select:not(:is(.el-form--inline .el-select,.el-pagination .el-select)),
+.form-edit-width-100 .el-select:not(:is(.el-form--inline .el-select,.el-pagination .el-select)){
+    width: 100%;
+}
+
+.pointer {
+    cursor: pointer;
 }
 
 .common-autocomplete .el-popover__title{
@@ -133,6 +264,8 @@ html, body, #app, .index-container {
 
 .common-autocomplete .common-select-page .el-tabs__item {
     height: 30px;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
 }
 
 .common-autocomplete .common-select-page .common-select-page-btn {
@@ -144,6 +277,90 @@ html, body, #app, .index-container {
 
 .common-autocomplete .common-select-page .el-tabs__content {
     padding: 5px;
+}
+
+.common-hide-expand.el-table .el-table__expand-icon {
+    display: none;
+}
+
+.exchange-button {
+    position: absolute;
+    right: -20px;
+}
+
+.small-card .el-card__header{
+    padding: 10px;
+}
+
+.small-card.el-card {
+    margin-bottom: 15px;
+}
+
+.table-card .el-card__body {
+    padding: 0;
+}
+
+.product-book-card .el-card__body {
+    padding: 10px;
+}
+
+.operation-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.common-data-row label {
+    font-weight: 600 ;
+}
+
+.common-data-row .el-col {
+    padding: 3px 0;
+}
+
+.el-dropdown+.el-button {
+    margin-left: 12px;
+}
+
+.segment-label {
+    font-weight: 600;
+}
+
+.common-form-auto {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.common-form-auto .el-form-item {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.common-form-auto .el-form-item__content {
+    height: 32px;
+}
+
+.common-form-auto .el-form--inline .el-input,
+.common-form-auto.el-form--inline .el-input,
+.common-form-auto .el-form--inline .el-select,
+.common-form-auto.el-form--inline .el-select {
+    --el-input-width: 100%;
+    --el-date-editor-width: 100%;
+}
+
+.common-form-auto.el-form--inline .el-form-item,
+.common-form-auto .el-form--inline .el-form-item {
+    margin-right: 10px;
+}
+
+.el-form-item.is-required .common-form-label .common-form-label-text:before {
+    content: "*";
+    color: var(--el-color-danger);
+    margin-right: 4px;
+}
+
+.flex-grow2 {
+    flex-grow: 2;
 }
 
 /**

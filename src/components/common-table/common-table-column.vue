@@ -1,6 +1,6 @@
 <script setup>
-import { formatDate } from '@/components/utils'
-import { computed } from 'vue'
+import { formatDate, toLabelByKey } from '@/components/utils'
+import { computed, useSlots } from 'vue'
 import { get } from 'lodash'
 
 /**
@@ -36,22 +36,24 @@ const formatter = computed(() => {
 })
 
 const getPropertyData = (row) => {
-  return get(row, props.column.property)
+  return get(row, props.column.prop || props.column.property)
 }
+
+const slots = useSlots()
 
 </script>
 
 <template>
   <el-table-column
     v-if="!column.isOperation"
-    :label="column.label || $t(column.labelKey)"
+    :label="column.label || toLabelByKey(column.labelKey)"
     :prop="column.prop||column.property"
     :width="column.width"
     v-bind="column.attrs"
     :formatter="formatter"
   >
     <template
-      v-if="column.slot||column.click"
+      v-if="column.click"
       #default="scope"
     >
       <el-link
@@ -62,16 +64,22 @@ const getPropertyData = (row) => {
       >
         {{ formatter?formatter(scope.row, scope):getPropertyData(scope.row) }}
       </el-link>
+    </template>
+    <template
+      v-for="(slot, slotKey) in slots"
+      :key="slotKey"
+      #[slotKey]="scope"
+    >
       <slot
+        :name="slotKey"
         v-bind="scope"
         :column-conf="column"
-        name="default"
       />
     </template>
   </el-table-column>
   <el-table-column
     v-if="column.isOperation"
-    :label="column.label || $t(column.labelKey)"
+    :label="column.label || toLabelByKey(column.labelKey)"
     :width="column.width"
     v-bind="column.attrs"
   >
@@ -80,7 +88,7 @@ const getPropertyData = (row) => {
     >
       <template v-for="(button, index) in column.buttons">
         <el-button
-          v-if="!button.buttonIf||button.buttonIf(scope.row, scope)"
+          v-if="(!button.buttonIf||button.buttonIf(scope.row, scope))&&button.enabled!==false"
           :key="index"
           :type="button.type"
           :icon="button.icon"
@@ -90,7 +98,7 @@ const getPropertyData = (row) => {
           :circle="button.circle"
           @click="button.click&&button.click(scope.row, scope)"
         >
-          {{ button.label || $t(button.labelKey) }}
+          {{ button.label || toLabelByKey(button.labelKey) }}
         </el-button>
       </template>
       <slot
