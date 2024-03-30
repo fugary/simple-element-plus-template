@@ -51,6 +51,12 @@ const options = [
     }]
   },
   {
+    labelKey: 'common.label.showMenuIcon',
+    prop: 'showMenuIcon',
+    type: 'switch',
+    model: globalConfigStore
+  },
+  {
     labelKey: 'common.label.breadcrumb',
     prop: 'isShowBreadcrumb',
     type: 'switch',

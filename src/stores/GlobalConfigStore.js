@@ -6,11 +6,15 @@ import { changeMessages } from '@/messages'
 
 export const useGlobalConfigStore = defineStore('globalConfig', () => {
   const currentLocale = ref(GlobalLocales.CN)
-  const isDarkTheme = useDark()
+  const systemKey = import.meta.env.VITE_APP_SYSTEM_KEY
+  const isDarkTheme = useDark({
+    storageKey: `__${systemKey}__vueuse-color-scheme`
+  })
   const isCollapseLeft = ref(false)
   const isShowSettings = ref(false)
   const isShowBreadcrumb = ref(true)
-  const layoutMode = ref(GlobalLayoutMode.LEFT)
+  const showMenuIcon = ref(true)
+  const layoutMode = ref(GlobalLayoutMode.TOP)
   return {
     currentLocale,
     isDarkTheme,
@@ -18,6 +22,7 @@ export const useGlobalConfigStore = defineStore('globalConfig', () => {
     isShowSettings,
     isShowBreadcrumb,
     layoutMode,
+    showMenuIcon,
     changeLocale (locale) {
       if (Object.values(GlobalLocales).includes(locale)) {
         currentLocale.value = locale
