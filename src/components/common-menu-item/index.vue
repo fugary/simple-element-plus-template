@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
+import { GlobalLayoutMode } from '@/consts/GlobalConstants'
 
 const router = useRouter()
 const globalConfigStore = useGlobalConfigStore()
@@ -48,7 +49,9 @@ const dropdownClick = (menuItem, $event) => {
 }
 
 const checkShowMenuIcon = menuItem => {
-  return menuItem.icon && (globalConfigStore.showMenuIcon || (!menuItem.labelKey && !menuItem.label))
+  return menuItem.icon && (globalConfigStore.showMenuIcon ||
+      (!menuItem.labelKey && !menuItem.label) ||
+      (globalConfigStore.isCollapseLeft && globalConfigStore.layoutMode === GlobalLayoutMode.LEFT))
 }
 
 const showMenuIcon = computed(() => {

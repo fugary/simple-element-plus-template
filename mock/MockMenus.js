@@ -94,7 +94,7 @@ const allMenus = [
   {
     id: 25,
     parentId: 2,
-    iconCls: 'TipsAndUpdatesOutlined',
+    iconCls: 'DynamicFormFilled',
     nameCn: '窗口表单示例',
     nameEn: 'Window Forms',
     menuUrl: '/window-forms'
