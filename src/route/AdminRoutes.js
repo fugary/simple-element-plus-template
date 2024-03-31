@@ -2,20 +2,25 @@ const BASE_PATH = '/admin'
 
 export default [{
   path: `${BASE_PATH}/users`,
-  name: 'Users',
-  component: () => import('@/views/admin/Users.vue')
+  name: 'UsersBase',
+  children: [{
+    path: '',
+    name: 'Users',
+    component: () => import('@/views/admin/Users.vue')
+  }, {
+    path: 'edit/:id',
+    name: 'UserEdit',
+    component: () => import('@/views/admin/UserEdit.vue'),
+    meta: {
+      replaceTabHistory: 'Users',
+      labelKey: 'common.label.edit',
+      icon: 'Edit'
+    }
+  }]
 }, {
   path: `${BASE_PATH}/roles`,
   name: 'Roles',
   component: () => import('@/views/admin/Roles.vue')
-}, {
-  path: `${BASE_PATH}/groups`,
-  name: 'Groups',
-  component: () => import('@/views/admin/Groups.vue')
-}, {
-  path: `${BASE_PATH}/tenants`,
-  name: 'Tenants',
-  component: () => import('@/views/admin/Tenants.vue')
 }, {
   path: `${BASE_PATH}/authority`,
   name: 'Authority',

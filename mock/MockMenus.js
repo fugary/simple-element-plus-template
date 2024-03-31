@@ -32,22 +32,6 @@ const allMenus = [
   {
     id: 14,
     parentId: 1,
-    iconCls: 'GroupsOutlined',
-    nameCn: '用户组管理',
-    nameEn: 'Groups',
-    menuUrl: '/admin/groups'
-  },
-  {
-    id: 15,
-    parentId: 1,
-    iconCls: 'SupervisedUserCircleOutlined',
-    nameCn: '租户管理',
-    nameEn: 'Tenants',
-    menuUrl: '/admin/tenants'
-  },
-  {
-    id: 16,
-    parentId: 1,
     iconCls: 'menu',
     nameCn: '菜单管理',
     nameEn: 'Menus',
@@ -78,10 +62,10 @@ const allMenus = [
   {
     id: 23,
     parentId: 2,
-    iconCls: 'Grid',
-    nameCn: '表格示例',
-    nameEn: 'Tables',
-    menuUrl: '/tables'
+    iconCls: 'DynamicFormFilled',
+    nameCn: '窗口表单示例',
+    nameEn: 'Window Forms',
+    menuUrl: '/window-forms'
   },
   {
     id: 24,
@@ -90,14 +74,6 @@ const allMenus = [
     nameCn: '其他示例',
     nameEn: 'Others',
     menuUrl: '/tests'
-  },
-  {
-    id: 25,
-    parentId: 2,
-    iconCls: 'DynamicFormFilled',
-    nameCn: '窗口表单示例',
-    nameEn: 'Window Forms',
-    menuUrl: '/window-forms'
   }
 ]
 
