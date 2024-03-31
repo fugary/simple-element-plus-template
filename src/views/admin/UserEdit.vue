@@ -42,7 +42,7 @@ const submitForm = form => {
       :model="userDto"
       :options="userFormOptions"
       label-width="120px"
-      back-url="/tables"
+      back-url="/users"
       @submit-form="submitForm"
     />
   </el-container>
