@@ -114,9 +114,9 @@ const toEditUser = user => {
   currentUser.value = { ...user }
   showEdit.value = true
 }
-const formRef = ref()
-const submitForm = () => {
-  formRef.value.form.validate(valid => {
+
+const submitForm = ({ form }) => {
+  form.validate(valid => {
     if (valid) {
       console.log('submit', currentUser.value)
       showEdit.value = false
@@ -173,7 +173,6 @@ const submitForm = () => {
     >
       <common-form
         v-if="currentUser"
-        ref="formRef"
         class="form-edit-width-100"
         :model="currentUser"
         :options="userFormOptions"
