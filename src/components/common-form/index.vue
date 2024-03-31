@@ -87,9 +87,9 @@ defineExpose({
   form
 })
 onMounted(() => {
-  const windowFormRef = inject('commonWindowForm', null)
-  if (isRef(windowFormRef)) {
-    windowFormRef.value = form.value
+  const commonWindowRef = inject('commonWindow', null)
+  if (isRef(commonWindowRef)) {
+    commonWindowRef.value.addForm(form)
   }
 })
 

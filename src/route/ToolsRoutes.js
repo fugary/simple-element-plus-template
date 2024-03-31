@@ -11,6 +11,10 @@ export default [{
   name: 'tests',
   component: () => import('@/views/tools/TestPage.vue')
 }, {
+  path: '/window-forms',
+  name: 'tests',
+  component: () => import('@/views/tools/WindowForms.vue')
+}, {
   path: '/tables',
   name: 'TablesBase',
   children: [{

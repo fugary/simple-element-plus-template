@@ -1,7 +1,8 @@
 <script setup>
 import { useVModel } from '@vueuse/core'
-import { computed, ref, provide } from 'vue'
+import { computed, ref, provide, unref } from 'vue'
 import { UPDATE_MODEL_EVENT } from 'element-plus'
+import { proxyMethod } from '@/components/utils'
 
 const props = defineProps({
   modelValue: {
@@ -91,8 +92,27 @@ const props = defineProps({
 })
 const emit = defineEmits([UPDATE_MODEL_EVENT])
 const showDialog = useVModel(props, 'modelValue', emit) // 自动响应v-model
-const windowForm = ref(null) // 如果common-window下面有common-form，注册到这里
-provide('commonWindowForm', windowForm)
+const windowForms = ref([]) // 如果common-window下面有common-form，注册到这里
+const commonWindow = ref({
+  showWindow: showDialog,
+  addForm (form) {
+    if (form && !windowForms.value.includes(form)) {
+      windowForms.value.push(form)
+    }
+  }
+})
+provide('commonWindow', commonWindow)
+const methods = ['validate', 'validateField', 'resetFields', 'clearValidate']
+const windowForm = computed(() => {
+  let result = windowForms.value[0]
+  if (windowForms.value.length > 1) {
+    result = methods.reduce((res, methodName) => {
+      res[methodName] = proxyMethod(windowForms.value, methodName)
+      return res
+    }, {})
+  }
+  return unref(result)
+})
 
 const okButtonClick = $event => {
   if (!props.okClick || props.okClick({ $event, form: windowForm.value }) !== false) {

@@ -1,6 +1,6 @@
-import { ref } from 'vue'
+import { ref, unref } from 'vue'
 import { $i18nBundle, $i18nKey } from '@/messages'
-import { isArray, isObject } from 'lodash'
+import { isArray, isObject, isFunction } from 'lodash'
 import dayjs from 'dayjs'
 
 export const getFrontendPage = (totalCount, pageSize, pageNumber = 1) => {
@@ -183,3 +183,19 @@ export const formatDay = (date, format) => {
   }
 }
 
+export const proxyMethod = (targets = [], methodName) => {
+  return (...args) => {
+    const results = []
+    for (let target of targets) {
+      target = unref(target)
+      const method = target[methodName]
+      if (isFunction(method)) {
+        results.push(method.call(target, ...args))
+      }
+    }
+    if (isObject(results[0]) && isFunction(results[0]?.then)) {
+      return Promise.all(results)
+    }
+    return results
+  }
+}
