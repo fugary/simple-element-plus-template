@@ -76,7 +76,7 @@ const searchFormOptions = computed(() => {
   ]
 })
 const doSearch = form => {
-  console.info('=================searchParam', searchParam.value)
+  console.info('=================searchParam', searchParam.value, form)
 }
 </script>
 

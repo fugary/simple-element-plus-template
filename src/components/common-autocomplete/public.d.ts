@@ -90,6 +90,8 @@ export interface CommonAutocompleteProps {
     minHeight?: string;
     // input自定义属性
     inputAttrs?: InputProps;
+    // 输入当做值的特殊模式
+    inputAsValue?: boolean;
     // 验证事件
     validateEvent?: boolean;
 }

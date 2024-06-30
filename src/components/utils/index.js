@@ -1,7 +1,6 @@
 import { ref, unref } from 'vue'
 import { $i18nBundle, $i18nKey } from '@/messages'
-import { isArray, isObject, isFunction } from 'lodash'
-import dayjs from 'dayjs'
+import { isArray, isFunction, isObject } from 'lodash-es'
 
 export const getFrontendPage = (totalCount, pageSize, pageNumber = 1) => {
   const pageCount = Math.floor((totalCount + pageSize - 1) / pageSize)
@@ -138,10 +137,27 @@ export const parsePathParams = (path, params) => {
   return path
 }
 
+export const proxyMethod = (targets = [], methodName) => {
+  return (...args) => {
+    const results = []
+    for (let target of targets.filter(target => !!unref(target))) {
+      target = unref(target)
+      const method = target[methodName]
+      if (isFunction(method)) {
+        results.push(method.call(target, ...args))
+      }
+    }
+    if (isObject(results[0]) && isFunction(results[0]?.then)) {
+      return Promise.all(results)
+    }
+    return results
+  }
+}
+
 /**
  * 定义表单选项，带有jsdoc注解，方便代码提示
- * @param {CommonFormOption[]} formOptions 表单选项
- * @return {CommonFormOption[]} 表单选项配置
+ * @param {CommonFormOption|CommonFormOption[]} formOptions 表单选项
+ * @return {CommonFormOption|CommonFormOption[]} 表单选项配置
  */
 export const defineFormOptions = (formOptions) => {
   return formOptions
@@ -170,32 +186,4 @@ export const defineTableButtons = (tableButtons) => {
  */
 export const defineMenuItems = (menuItems) => {
   return menuItems
-}
-export const formatDate = (date, format) => {
-  if (date) {
-    return dayjs(date).format(format || 'YYYY-MM-DD HH:mm:ss')
-  }
-}
-
-export const formatDay = (date, format) => {
-  if (date) {
-    return dayjs(date).format(format || 'YYYY-MM-DD')
-  }
-}
-
-export const proxyMethod = (targets = [], methodName) => {
-  return (...args) => {
-    const results = []
-    for (let target of targets) {
-      target = unref(target)
-      const method = target[methodName]
-      if (isFunction(method)) {
-        results.push(method.call(target, ...args))
-      }
-    }
-    if (isObject(results[0]) && isFunction(results[0]?.then)) {
-      return Promise.all(results)
-    }
-    return results
-  }
 }

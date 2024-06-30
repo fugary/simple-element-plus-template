@@ -1,36 +1,22 @@
 <script setup>
 import { computed } from 'vue'
-import { useTabsViewStore } from '@/stores/TabsViewStore'
 import { useRoute } from 'vue-router'
-import { parsePathParams, useMenuInfo, useMenuName } from '@/components/utils'
+import { calcMatchedRoutes } from '@/route/RouteUtils'
 
-const tabsViewStore = useTabsViewStore()
+const props = defineProps({
+  labelConfig: {
+    type: [Object, Array],
+    default: null
+  },
+  showIcon: {
+    type: Boolean,
+    default: true
+  }
+})
 
 const route = useRoute()
-
 const breadcrumbs = computed(() => {
-  const exists = []
-  return route.matched.map((item, index) => {
-    item = index === route.matched.length - 1 ? route : item
-    const menuInfo = useMenuInfo(item)
-    let icon = ''
-    if (menuInfo && menuInfo.icon) {
-      icon = menuInfo.icon
-    } else if (item.meta && item.meta.icon) {
-      icon = item.meta.icon
-    }
-    return {
-      path: parsePathParams(item.path, route.params),
-      menuName: useMenuName(item),
-      icon
-    }
-  }).filter(item => {
-    const notExist = !exists.includes(item.menuName)
-    if (notExist) {
-      exists.push(item.menuName)
-    }
-    return notExist && !item.menuName.endsWith('Base')
-  })
+  return calcMatchedRoutes(route, props.labelConfig)
 })
 
 </script>
@@ -40,12 +26,12 @@ const breadcrumbs = computed(() => {
     class="common-breadcrumb"
   >
     <el-breadcrumb-item
-      v-for="item in breadcrumbs"
+      v-for="(item, index) in breadcrumbs"
       :key="item.path"
-      :to="{ path: item.path }"
+      :to="index!==breadcrumbs.length-1?{ path: item.path }:undefined"
     >
       <common-icon
-        v-if="tabsViewStore.isShowTabIcon&&item.icon"
+        v-if="showIcon&&item.icon"
         :icon="item.icon"
       />
       {{ item.menuName }}

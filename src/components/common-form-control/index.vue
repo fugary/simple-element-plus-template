@@ -3,8 +3,8 @@ import { computed, isVNode, ref, watch } from 'vue'
 import { $i18nBundle } from '@/messages'
 import ControlChild from '@/components/common-form-control/control-child.vue'
 import { toLabelByKey, useInputType } from '@/components/utils'
-import cloneDeep from 'lodash/cloneDeep'
-import { get, isFunction, set } from 'lodash'
+import { cloneDeep, get, isFunction, set, isArray, isString } from 'lodash-es'
+
 import dayjs from 'dayjs'
 
 /**
@@ -32,12 +32,30 @@ const props = defineProps({
   }
 })
 
+const needProcessValue = option => option.trim || option.upperCase || option.lowerCase
+const processValue = (value, option) => {
+  if (value && isString(value)) {
+    value = option.trim ? value.trim() : value
+    value = option.upperCase ? value.toUpperCase() : value
+    value = option.lowerCase ? value.toLowerCase() : value
+    modelValue.value = value
+  }
+  return value
+}
+
 const calcOption = computed(() => {
-  let option = props.option
+  let option = { ...props.option }
   if (isFunction(option.dynamicOption)) {
     option = { ...option, ...option.dynamicOption(props.model, option, props.addInfo) }
   } else if (isFunction(option.dynamicAttrs)) {
     option = { ...option, attrs: { ...option.attrs, ...option.dynamicAttrs(props.model, option, props.addInfo) } }
+  }
+  if (needProcessValue(option)) {
+    const change = option.change
+    option.change = value => {
+      value = processValue(value, option)
+      isFunction(change) && change(value)
+    }
   }
   return option
 })
@@ -47,14 +65,14 @@ const inputType = computed(() => useInputType(calcOption.value))
 const modelAttrs = computed(() => {
   const option = calcOption.value
   const attrs = { ...option.attrs }
-  if (attrs.clearable === undefined && ['el-input', 'el-select', 'el-select-v2', 'common-autocomplete', 'el-autocomplete', 'el-cascader', 'el-tree-select'].includes(inputType.value)) {
-    attrs.clearable = true
+  if (['el-input', 'el-select', 'el-select-v2', 'common-autocomplete', 'el-autocomplete', 'el-cascader', 'el-tree-select'].includes(inputType.value)) {
+    attrs.clearable = attrs.clearable ?? true
   }
   if (inputType.value === 'common-autocomplete' && option.getAutocompleteLabel) {
     attrs.defaultLabel = option.getAutocompleteLabel(props.model, option)
   }
   if (inputType.value === 'el-date-picker') {
-    attrs.disabledDate = (date) => {
+    attrs.disabledDate = attrs.disabledDate || ((date) => {
       const option = calcOption.value
       let result = false
       if (option.minDate) {
@@ -64,25 +82,22 @@ const modelAttrs = computed(() => {
         result = date.getTime() > dayjs(option.maxDate).startOf('d').toDate().getTime()
       }
       return result
+    })
+    const defaultValue = attrs.defaultValue || modelValue.value || option.minDate
+    if (defaultValue && !isArray(defaultValue)) {
+      attrs.defaultValue = dayjs(defaultValue).toDate()
     }
-  }
-  const defaultValue = modelValue.value || option.minDate
-  if (defaultValue) {
-    attrs.defaultValue = dayjs(defaultValue).toDate()
   }
   return attrs
 })
 
-watch(() => [inputType.value, calcOption.value.minDate, calcOption.value.maxDate], ([type, minDate, maxDate]) => {
+watch([inputType, () => calcOption.value.minDate, () => calcOption.value.maxDate], ([type]) => {
   const option = calcOption.value
   const date = modelValue.value
   if (type === 'el-date-picker' && date && !option.disabled && option.clearInvalidDate !== false) {
     let invalid = false
-    if (minDate) {
-      invalid = dayjs(date).isBefore(dayjs(option.minDate).startOf('d'))
-    }
-    if (invalid && maxDate) {
-      invalid = dayjs(date).isAfter(dayjs(option.maxDate).startOf('d'))
+    if (isFunction(modelAttrs.value.disabledDate)) {
+      invalid = modelAttrs.value.disabledDate(dayjs(date).toDate())
     }
     if (invalid) {
       modelValue.value = undefined
@@ -126,7 +141,8 @@ const childTypeMapping = { // 自动映射子元素类型，配置的时候可�
 
 const children = computed(() => {
   const option = calcOption.value
-  const result = option.children || [] // 初始化一些默认值
+  let result = option.children || [] // 初始化一些默认值
+  result = result.filter(childItem => childItem.enabled !== false)
   result.forEach(childItem => {
     if (!childItem.type) {
       childItem.type = childTypeMapping[option.type]
@@ -141,7 +157,7 @@ const rules = computed(() => {
   const option = calcOption.value
   let _rules = cloneDeep(option.rules || [])
   if (option.prop) {
-    if (option.required !== undefined) {
+    if (option.required) {
       const label = option.label || toLabelByKey(option.labelKey)
       _rules = [{
         trigger: option.trigger,
@@ -149,7 +165,7 @@ const rules = computed(() => {
         message: $i18nBundle('common.msg.nonNull', [label])
       }, ..._rules]
     }
-    if (option.pattern !== undefined) {
+    if (option.pattern) {
       const label = option.label || toLabelByKey(option.labelKey)
       _rules = [{
         pattern: option.pattern,
@@ -175,9 +191,7 @@ initFormModel()
 
 watch(() => calcOption.value, initFormModel, { deep: true })
 
-const hasModelText = computed(() => {
-  return modelAttrs.value.modelText || calcOption.value.formatter
-})
+const hasModelText = computed(() => isFunction(calcOption.value.formatter))
 
 const emit = defineEmits(['change'])
 
@@ -199,18 +213,10 @@ const controlLabelWidth = computed(() => {
 
 const formatResult = computed(() => {
   if (hasModelText.value) {
-    if (modelAttrs.value.modelText) {
-      return {
-        modelText: modelAttrs.value.modelText
-      }
-    }
-    const option = calcOption.value
-    if (option.formatter) {
-      const result = option.formatter(modelValue.value, calcOption.value)
-      return {
-        modelText: result,
-        vnode: isVNode(result)
-      }
+    const result = calcOption.value.formatter(modelValue.value, calcOption.value)
+    return {
+      modelText: result,
+      vnode: isVNode(result)
     }
   }
   return null
@@ -233,7 +239,16 @@ const formatResult = computed(() => {
       #label
     >
       <slot name="beforeLabel" />
-      <span :class="calcOption.labelCls">{{ label }}</span>
+      <span
+        v-if="!$slots.label"
+        :class="calcOption.labelCls"
+      >{{ label }}</span>
+      <slot
+        v-else
+        name="label"
+        :option="calcOption"
+        :model="formModel"
+      />
       <slot name="afterLabel" />
       <el-tooltip
         v-if="calcOption.tooltip||calcOption.tooltipFunc"
@@ -255,40 +270,42 @@ const formatResult = computed(() => {
         </span>
       </el-tooltip>
     </template>
-    <component
-      :is="inputType"
-      v-model="modelValue"
-      v-bind="modelAttrs"
-      :placeholder="calcOption.placeholder"
-      :disabled="calcOption.disabled"
-      :readonly="calcOption.readonly"
-      @change="controlChange"
-    >
-      <template
-        v-if="hasModelText&&formatResult"
-        #default
+    <slot>
+      <component
+        :is="inputType"
+        v-model="modelValue"
+        v-bind="modelAttrs"
+        :placeholder="calcOption.placeholder"
+        :disabled="calcOption.disabled"
+        :readonly="calcOption.readonly"
+        @change="controlChange"
       >
-        <span
-          v-if="formatResult.modelText&&!formatResult.vnode"
-          class="common-form-label-text"
-          v-html="formatResult.modelText"
-        />
-        <component
-          :is="formatResult.modelText"
-          v-if="formatResult.vnode"
-          class="common-form-label-text"
-        />
-      </template>
-      <slot name="childBefore" />
-      <template v-if="children&&children.length">
-        <control-child
-          v-for="(childItem, index) in children"
-          :key="index"
-          :option="childItem"
-        />
-      </template>
-      <slot name="childAfter" />
-    </component>
+        <template
+          v-if="hasModelText&&formatResult"
+          #default
+        >
+          <span
+            v-if="formatResult.modelText&&!formatResult.vnode"
+            class="common-form-label-text"
+            v-html="formatResult.modelText"
+          />
+          <component
+            :is="formatResult.modelText"
+            v-if="formatResult.vnode"
+            class="common-form-label-text"
+          />
+        </template>
+        <slot name="childBefore" />
+        <template v-if="children&&children.length">
+          <control-child
+            v-for="(childItem, index) in children"
+            :key="index"
+            :option="childItem"
+          />
+        </template>
+        <slot name="childAfter" />
+      </component>
+    </slot>
     <slot name="after" />
   </el-form-item>
 </template>

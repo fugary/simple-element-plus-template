@@ -1,6 +1,8 @@
 <script setup>
-import { inject, ref, onMounted, isRef, watchEffect } from 'vue'
-import { useVModel } from '@vueuse/core'
+import { inject, ref, onMounted, isRef, watchEffect, onUnmounted } from 'vue'
+import { useVModel, onKeyStroke } from '@vueuse/core'
+import { useRouter } from 'vue-router'
+import { isFunction } from 'lodash-es'
 
 /**
  * @type {CommonFormProps}
@@ -42,6 +44,10 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  disableButtons: {
+    type: Boolean,
+    default: false
+  },
   showSubmit: {
     type: Boolean,
     default: true
@@ -71,9 +77,23 @@ const props = defineProps({
     default: ''
   },
   backUrl: {
-    type: String,
+    type: [String, Function],
     default: ''
+  },
+  submitByEnter: {
+    type: Boolean,
+    default: true
+  },
+  scrollToError: {
+    type: Boolean,
+    default: false
   }
+})
+
+const router = useRouter()
+
+defineOptions({
+  inheritAttrs: false
 })
 
 const emit = defineEmits(['submitForm', 'update:model'])
@@ -86,10 +106,31 @@ const form = ref()
 defineExpose({
   form
 })
+const formDiv = ref()
+const removeEnterFn = ref()
+const commonWindowRef = inject('commonWindow', null)
 onMounted(() => {
-  const commonWindowRef = inject('commonWindow', null)
   if (isRef(commonWindowRef)) {
-    commonWindowRef.value.addForm(form)
+    commonWindowRef.value?.addForm(form)
+  }
+  if (props.submitByEnter) {
+    removeEnterFn.value = onKeyStroke('Enter', (event) => {
+      event?.stopImmediatePropagation()
+      if (form.value) {
+        console.info('=========================submitByEnter', formDiv.value)
+        emit('submitForm', form.value)
+      }
+    }, { target: formDiv.value })
+  }
+})
+
+onUnmounted(() => {
+  if (isRef(commonWindowRef)) {
+    commonWindowRef.value?.removeForm(form)
+  }
+  if (removeEnterFn.value) {
+    removeEnterFn.value()
+    removeEnterFn.value = null
   }
 })
 
@@ -103,75 +144,109 @@ watchEffect(async () => {
   await form.value.validate((ok) => { disableSubmit.value = !ok })
 })
 
+const goBack = (...args) => {
+  if (isFunction(props.backUrl)) {
+    return props.backUrl(...args)
+  } else if (props.backUrl) {
+    router.push(props.backUrl)
+  } else {
+    router.go(-1)
+  }
+}
+
 </script>
 
 <template>
-  <el-form
-    ref="form"
-    :inline="inline"
-    :class="className"
-    :model="formModel"
-    :label-width="labelWidth"
-    :validate-on-rule-change="validateOnRuleChange"
+  <div
+    ref="formDiv"
+    class="common-form-div"
+    :class="$attrs.class"
   >
-    <template
-      v-for="(option,index) in options"
-      :key="index"
-    >
-      <slot
-        v-if="option.slot"
-        :name="option.slot"
-        :option="option"
-        :form="form"
-        :model="formModel"
-      />
-      <common-form-control
-        v-if="!option.slot&&option.enabled!==false"
-        :model="formModel"
-        :option="option"
-      />
-    </template>
-    <slot
-      :form="form"
+    <el-form
+      ref="form"
+      :inline="inline"
+      :class="className"
       :model="formModel"
-      name="default"
-    />
-    <el-form-item
-      v-if="showButtons"
-      :style="buttonStyle"
+      :label-width="labelWidth"
+      :scroll-to-error="scrollToError"
+      :validate-on-rule-change="validateOnRuleChange"
+      v-bind="{...$attrs, 'class':undefined}"
+      @submit.prevent
     >
-      <el-button
-        v-if="showSubmit"
-        :disabled="disableSubmit"
-        type="primary"
-        @click="$emit('submitForm', form)"
+      <template
+        v-for="(option,index) in options"
+        :key="index"
       >
-        {{ submitLabel||$t('common.label.submit') }}
-      </el-button>
-      <el-button
-        v-if="showReset"
-        @click="form.resetFields()"
-      >
-        {{ resetLabel||$t('common.label.reset') }}
-      </el-button>
-      <el-button
-        v-if="showBack||backUrl"
-        @click="backUrl?$router.push(backUrl):$router.go(-1)"
-      >
-        {{ backLabel||$t('common.label.back') }}
-      </el-button>
+        <slot
+          v-if="option.slot"
+          :name="option.slot"
+          :option="option"
+          :form="form"
+          :model="formModel"
+        />
+        <common-form-control
+          v-if="!option.slot&&option.enabled!==false"
+          :model="formModel"
+          :option="option"
+        >
+          <template
+            v-if="option.labelSlot"
+            #label="scope"
+          >
+            <slot
+              v-if="option.labelSlot"
+              :name="option.labelSlot"
+              :form="form"
+              v-bind="scope"
+            />
+          </template>
+        </common-form-control>
+      </template>
       <slot
         :form="form"
         :model="formModel"
-        name="buttons"
+        name="default"
       />
-    </el-form-item>
-    <slot
-      :form="form"
-      :model="formModel"
-      name="after-buttons"
-    />
-  </el-form>
+      <el-form-item
+        v-if="showButtons"
+        :style="buttonStyle"
+        class="buttonsDiv"
+      >
+        <el-button
+          v-if="showSubmit"
+          :disabled="disableSubmit || disableButtons"
+          type="primary"
+          @click="$emit('submitForm', form)"
+        >
+          {{ submitLabel||$t('common.label.submit') }}
+        </el-button>
+        <el-button
+          v-if="showReset"
+          :disabled="disableButtons"
+          @click="form.resetFields()"
+        >
+          {{ resetLabel||$t('common.label.reset') }}
+        </el-button>
+        <el-button
+          v-if="showBack||backUrl"
+          :disabled="disableButtons"
+          @click="goBack"
+        >
+          {{ backLabel||$t('common.label.back') }}
+        </el-button>
+        <slot
+          :form="form"
+          :model="formModel"
+          name="buttons"
+        />
+      </el-form-item>
+      <slot
+        :form="form"
+        :model="formModel"
+        name="after-buttons"
+      />
+    </el-form>
+  </div>
 </template>
 
 <style scoped>

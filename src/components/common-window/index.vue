@@ -1,6 +1,6 @@
 <script setup>
 import { useVModel } from '@vueuse/core'
-import { computed, ref, provide, unref } from 'vue'
+import { computed, ref, provide, unref, watch, onBeforeUnmount } from 'vue'
 import { UPDATE_MODEL_EVENT } from 'element-plus'
 import { proxyMethod } from '@/components/utils'
 
@@ -10,6 +10,10 @@ const props = defineProps({
     default: false
   },
   title: {
+    type: String,
+    default: ''
+  },
+  header: {
     type: String,
     default: ''
   },
@@ -30,6 +34,14 @@ const props = defineProps({
     default: () => []
   },
   showClose: {
+    type: Boolean,
+    default: true
+  },
+  showFullscreen: {
+    type: Boolean,
+    default: false
+  },
+  dblclickToFullscreen: {
     type: Boolean,
     default: true
   },
@@ -65,6 +77,10 @@ const props = defineProps({
     type: Function,
     default: null
   },
+  showButtons: {
+    type: Boolean,
+    default: true
+  },
   destroyOnClose: {
     type: Boolean,
     default: false
@@ -98,6 +114,11 @@ const commonWindow = ref({
   addForm (form) {
     if (form && !windowForms.value.includes(form)) {
       windowForms.value.push(form)
+    }
+  },
+  removeForm (form) {
+    if (form && windowForms.value.includes(form)) {
+      windowForms.value.splice(windowForms.value.indexOf(form), 1)
     }
   }
 })
@@ -138,21 +159,61 @@ const calcBeforeClose = computed(() => {
   return null
 })
 
+const isFullscreen = defineModel('fullscreen', { type: Boolean, default: false })
+
+const fullscreenRef = ref()
+if (props.showFullscreen && props.dblclickToFullscreen) {
+  watch(fullscreenRef, (fullscreenRefVal) => {
+    const headerElement = fullscreenRefVal?.parentElement
+    if (headerElement) {
+      const dblclickHandler = () => { isFullscreen.value = !isFullscreen.value }
+      headerElement.addEventListener('dblclick', dblclickHandler)
+      onBeforeUnmount(() => headerElement.removeEventListener('dblclick', dblclickHandler))
+    }
+  })
+}
+
 </script>
 
 <template>
   <el-dialog
     v-model="showDialog"
-    :title="title"
+    class="common-window"
+    :header="header||title"
     :before-close="calcBeforeClose"
     :width="width"
     :draggable="draggable"
-    :overflow="true"
+    :overflow="overflow"
     :destroy-on-close="destroyOnClose"
     :close-on-click-modal="closeOnClickModal"
     :close-on-press-escape="closeOnPressEscape"
     :append-to-body="appendToBody"
+    :show-close="showClose"
+    :fullscreen="isFullscreen"
   >
+    <template #header="{ titleId, titleClass}">
+      <slot name="header">
+        <span
+          :id="titleId"
+          class="el-dialog__title"
+          :class="titleClass"
+        >
+          {{ header||title }}
+        </span>
+      </slot>
+      <button
+        v-if="showFullscreen"
+        ref="fullscreenRef"
+        class="el-dialog__headerbtn dialog-fullscreen-btn"
+        style="right: 30px;"
+        @click="isFullscreen = !isFullscreen"
+      >
+        <common-icon
+          class="el-dialog__close"
+          :icon="isFullscreen?'FullscreenExitFilled':'FullscreenFilled'"
+        />
+      </button>
+    </template>
     <el-container
       :class="defaultCls"
       :style="{ height:height }"
@@ -161,7 +222,10 @@ const calcBeforeClose = computed(() => {
         name="default"
       />
     </el-container>
-    <template #footer>
+    <template
+      v-if="showButtons"
+      #footer
+    >
       <span class="dialog-footer container-center">
         <el-button
           v-if="showOk"
@@ -177,7 +241,7 @@ const calcBeforeClose = computed(() => {
         </el-button>
         <template v-for="(button, index) in buttons">
           <el-button
-            v-if="!button.buttonIf||button.buttonIf()"
+            v-if="button.enabled!==false&&(!button.buttonIf||button.buttonIf())"
             :key="index"
             :type="button.type"
             :icon="button.icon"

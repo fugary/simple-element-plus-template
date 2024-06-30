@@ -1,6 +1,6 @@
 <script setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { debounce, isEmpty, isObject, cloneDeep, chunk } from 'lodash'
+import { debounce, isEmpty, isObject, cloneDeep, chunk } from 'lodash-es'
 import { onClickOutside, onKeyStroke, useVModel } from '@vueuse/core'
 import { UPDATE_MODEL_EVENT, CHANGE_EVENT, useFormItem } from 'element-plus'
 
@@ -76,6 +76,10 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  inputAsValue: {
+    type: Boolean,
+    default: false
+  },
   inputAttrs: {
     type: Object,
     default: null
@@ -127,6 +131,7 @@ const selectPageData = ref({})
 const selectPageTab = ref(null)
 const popoverVisible = ref(false)
 const autocompletePopover = ref()
+const inputRef = ref()
 const defaultAutoPage = {
   pageSize: props.autocompleteConfig?.pageSize || 8,
   pageNumber: 1
@@ -192,6 +197,8 @@ const onInputKeywords = debounce((input) => {
     }
     if (!val && input) {
       onSelectData()
+    } else if (input && props.inputAsValue && props.useIdModel) {
+      vModel.value = val
     }
   }
 }, props.debounceTime)
@@ -211,6 +218,16 @@ onMounted(() => {
     popoverVisible.value = false
   })
   setAutocompleteLabel(calcDefaultLabel.value)
+  // 向下按键移动元素
+  onKeyStroke('ArrowDown', () => moveSelection(true), { target: inputRef.value })
+  // 向上按键移动元素
+  onKeyStroke('ArrowUp', () => moveSelection(false), { target: inputRef.value })
+  // 选中回车
+  onKeyStroke('Enter', (event) => {
+    onSelectData(currentOnRow.value)
+    event?.stopImmediatePropagation()
+    event?.stopPropagation()
+  }, { target: inputRef.value })
 })
 
 watch(() => popoverVisible.value, (val) => {
@@ -229,6 +246,9 @@ watch(() => props.modelValue, (value) => {
     if (isEmpty(value)) {
       vModel.value = null
     }
+  } else if (!value) {
+    setAutocompleteLabel('')
+    vModel.value = value
   }
 })
 
@@ -293,17 +313,8 @@ const moveSelection = function (down) {
     currentOnIndex.value = -1
     currentOnRow.value = null
   }
-  tableRef.value.table?.setCurrentRow(currentOnRow.value)
+  tableRef.value?.table?.setCurrentRow(currentOnRow.value)
 }
-
-// 向下按键移动元素
-onKeyStroke('ArrowDown', () => moveSelection(true))
-// 向上按键移动元素
-onKeyStroke('ArrowUp', () => moveSelection(false))
-// 选中回车
-onKeyStroke('Enter', () => {
-  onSelectData(currentOnRow.value)
-})
 
 //= ===============selectPage处理=================//
 const selectPagePageConfig = ref({})
@@ -376,6 +387,7 @@ watch(() => props.autocompleteConfig, (autocompleteConfig) => {
   >
     <template #reference>
       <el-input
+        ref="inputRef"
         v-model="keywords"
         :clearable="clearable"
         :placeholder="placeholder||title"

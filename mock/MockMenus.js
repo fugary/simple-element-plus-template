@@ -70,6 +70,22 @@ const allMenus = [
   {
     id: 24,
     parentId: 2,
+    iconCls: 'Edit',
+    nameCn: '编辑器示例',
+    nameEn: 'Editors',
+    menuUrl: '/editors'
+  },
+  {
+    id: 25,
+    parentId: 2,
+    iconCls: 'PieChartSharp',
+    nameCn: '图表示例',
+    nameEn: 'Charts',
+    menuUrl: '/charts'
+  },
+  {
+    id: 30,
+    parentId: 2,
     iconCls: 'TipsAndUpdatesOutlined',
     nameCn: '其他示例',
     nameEn: 'Others',

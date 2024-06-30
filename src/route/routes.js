@@ -2,7 +2,9 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '@/views/Login.vue'
 import AdminRoutes from '@/route/AdminRoutes'
 import ToolsRoutes from '@/route/ToolsRoutes'
-import { checkRouteAuthority } from '@/authority'
+import { checkRouteAuthority, processRouteLoading } from '@/authority'
+import { checkReplaceHistoryShouldReplace } from '@/route/RouteUtils'
+import { useTabsViewStore } from '@/stores/TabsViewStore'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -55,6 +57,29 @@ const router = createRouter({
   ]
 })
 
+const scrollMain = (to, scrollOption) => {
+  setTimeout(() => { // 因为有0.3s动画需要延迟到动画之后
+    scrollOption = scrollOption || to?.meta?.scroll || { top: 0 }
+    console.log('======================scrollTo', scrollOption.top)
+    document.querySelector('.home-main')?.scrollTo(scrollOption)
+  }, 350)
+}
+
+/**
+ * 自定义路由滚动行为，在home-main容器中滚动顶部
+ * @param to
+ * @param from
+ */
+export const routeScrollBehavior = (to, from) => {
+  const tabsViewStore = useTabsViewStore()
+  const scrollOption = !checkReplaceHistoryShouldReplace(to, from) ? tabsViewStore.currentTabItem?.scroll : undefined
+  scrollMain(to, scrollOption)
+}
+
 router.beforeEach(checkRouteAuthority)
+router.afterEach((...args) => {
+  processRouteLoading(...args)
+  routeScrollBehavior(...args)
+})
 
 export default router

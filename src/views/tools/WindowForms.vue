@@ -63,6 +63,7 @@ const submitForm = ({ form }) => {
     <common-window
       v-model="showWindow"
       :ok-click="submitForm"
+      show-fullscreen
     >
       <el-container class="flex-column container-center">
         <common-form

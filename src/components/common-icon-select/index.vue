@@ -102,13 +102,14 @@ const selectIcon = icon => {
     >
       {{ $t('common.label.clear') }}
     </el-button>
-    <el-dialog
+    <common-window
       v-model="iconSelectVisible"
       :width="dialogWidth"
       v-bind="dialogAttrs"
       draggable
       class="icon-dialog"
       :title="$t('common.msg.pleaseSelectIcon')"
+      :show-buttons="false"
     >
       <el-container
         style="overflow: auto;"
@@ -155,9 +156,15 @@ const selectIcon = icon => {
               </el-col>
             </el-row>
           </recycle-scroller>
+          <el-backtop
+            v-common-tooltip="$t('common.label.backtop')"
+            target=".scroller"
+            :right="10"
+            :bottom="10"
+          />
         </el-main>
       </el-container>
-    </el-dialog>
+    </common-window>
   </label>
 </template>
 
@@ -179,6 +186,10 @@ const selectIcon = icon => {
 }
 .icon-area {
   padding: 0;
+  position: relative;
+}
+.icon-area .el-backtop {
+  position: absolute;
 }
 .icon-a {
   height:80px;

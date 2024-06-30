@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { ICON_PREFIX } from '@/icons'
-import kebabCase from 'lodash/kebabCase'
+import { kebabCase } from 'lodash-es'
 
 const props = defineProps({
   icon: {

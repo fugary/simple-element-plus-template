@@ -39,7 +39,7 @@ export const useCityAutocompleteConfig = () => {
       label: $i18nMsg('英文名', 'EN Name'),
       property: 'nameEn'
     }],
-    searchMethod ({ query, page }, cb) {
+    searchMethod ({ page }, cb) {
       loadAutoCities({ page }) // {query, page}
         .then(result => {
           const data = {

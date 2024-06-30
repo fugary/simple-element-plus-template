@@ -17,3 +17,11 @@ export const GlobalLocales = {
   CN: 'zh-CN',
   EN: 'en-US'
 }
+/**
+ * 搜索调条件记住
+ */
+export const LoadSaveParamMode = {
+  ALL: 'all',
+  BACK: 'back',
+  NEVER: 'never'
+}

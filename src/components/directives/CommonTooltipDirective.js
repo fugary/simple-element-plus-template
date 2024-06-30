@@ -1,4 +1,4 @@
-import { isObject, isString } from 'lodash'
+import { isObject, isString } from 'lodash-es'
 import CommonTooltip from '@/components/directives/CommonTooltip.vue'
 import { DynamicHelper } from '@/components/directives/index'
 
@@ -9,7 +9,7 @@ const calcTooltipConfig = (binding) => {
   } else if (isString(binding.value)) {
     config.content = binding.value
   }
-  if (binding.arg) {
+  if (!config.placement && binding.arg) {
     config.placement = binding.arg
   }
   return config

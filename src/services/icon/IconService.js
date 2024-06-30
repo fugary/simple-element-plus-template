@@ -1,5 +1,5 @@
 import { INSTALL_ICONS } from '@/icons'
-import chunk from 'lodash/chunk'
+import { chunk } from 'lodash-es'
 
 /**
  * @param keywords {string}
@@ -9,7 +9,14 @@ import chunk from 'lodash/chunk'
 export const filterIconsByKeywords = (keywords, colSize) => {
   let installIcons = INSTALL_ICONS
   if (keywords) {
-    installIcons = installIcons.filter(icon => icon.toLowerCase().includes(keywords.toLowerCase()))
+    installIcons = installIcons.filter(icon => {
+      keywords = keywords.trim()
+      if (keywords.includes(' ')) {
+        return keywords.split(/\s+/).every(k => icon.toLowerCase().includes(k.toLowerCase()))
+      } else {
+        return icon.toLowerCase().includes(keywords.toLowerCase())
+      }
+    })
   }
   return chunk(installIcons, colSize).map((arr, idx) => {
     return {

@@ -145,12 +145,41 @@ html, body, #app, .index-container {
     text-align: right;
 }
 
+.flex-center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-center-col{
+    display: flex;
+    align-items: center;
+}
+
 .el-dialog {
     --el-dialog-border-radius: var(--el-border-radius-large);
 }
 
 .icon-dialog .el-dialog__body {
     padding: 10px;
+}
+
+.el-dialog.is-fullscreen .el-dialog__header,
+.el-dialog.is-fullscreen .el-dialog__footer{
+    position: fixed;
+    left: 0;
+    right:0;
+    z-index: 999;
+    border-radius: 0;
+}
+.el-dialog.is-fullscreen .el-dialog__footer{
+    bottom: var(--el-dialog-padding-primary);
+}
+.el-dialog.is-fullscreen .dialog-footer{
+    border-radius: 0;
+}
+.el-dialog.is-fullscreen .el-dialog__body{
+    padding: 48px 12px;
 }
 
 .icon-list::-webkit-scrollbar {
@@ -182,6 +211,10 @@ html, body, #app, .index-container {
 
 .flex-start {
     align-items: flex-start;
+}
+
+.home-main {
+    padding-bottom: 0;
 }
 
 .container-center {

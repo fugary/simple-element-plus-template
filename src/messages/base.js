@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import { cloneDeep } from 'lodash-es'
 
 const base = { // 预定义几种属性
   label: {},

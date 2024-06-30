@@ -1,7 +1,6 @@
 <script setup>
-import { get, isArray, isObject, set } from 'lodash'
+import { get, isArray, isFunction, isObject, set, cloneDeep } from 'lodash-es'
 import { computed, onMounted, useSlots } from 'vue'
-import cloneDeep from 'lodash/cloneDeep'
 
 const props = defineProps({
   /**
@@ -52,6 +51,13 @@ const isUnlimited = computed(() => {
       })
       return unlimited
     }
+  } else if (filterType === 'slider') {
+    if (!value) {
+      return true
+    }
+    if (option?.attrs?.range) {
+      return value?.[0] === (option.attrs?.min || 0) && value?.[1] === (option.attrs?.max || 10)
+    }
   }
   return !value || !value.length
 })
@@ -64,8 +70,16 @@ const setUnlimited = () => {
     value = []
   } else if (filterType === 'common-tab-filter') {
     value = {}
+  } else if (filterType === 'slider') {
+    // slider range 默认值是[0,100]
+    if (option?.attrs?.range) {
+      value = [option.attrs?.min || 0, option.attrs?.max || 100]
+    }
   }
   set(props.model, option.prop, value)
+  if (isFunction(option.change)) {
+    option.change(value)
+  }
 }
 
 const initFilterModel = () => {

@@ -11,6 +11,14 @@ export type TableButtonProps = {
      * @param data 表格数据
      */
     buttonIf: (data: any) => boolean
+    /**
+     * 动态计算按钮属性
+     */
+    dynamicButton: (data: any) => any
+    /**
+     * 按钮其他选项
+     */
+    attrs: ButtonProps
 } & ButtonProps
 
 /**
@@ -77,6 +85,8 @@ export interface CommonTableProps extends TableProps<any> {
     pageAlign?: 'left' | 'center' | 'right';
     /** 其他分页配置项 */
     pageAttrs?: PaginationProps;
+    /** 是否显示分页数量选择 **/
+    showPageSizes?: boolean;
     /** loading状态 */
     loading?: boolean;
     /** loading显示消息 */

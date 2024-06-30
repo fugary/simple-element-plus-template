@@ -1,7 +1,9 @@
 <script setup>
-import { formatDate, toLabelByKey } from '@/components/utils'
+import { formatDate } from '@/utils'
 import { computed, useSlots } from 'vue'
-import { get } from 'lodash'
+import { get } from 'lodash-es'
+import { toLabelByKey } from '@/components/utils'
+import TableDynamicButton from '@/components/common-table/table-dynamic-button.vue'
 
 /**
  * 配置信息
@@ -49,6 +51,7 @@ const slots = useSlots()
     :label="column.label || toLabelByKey(column.labelKey)"
     :prop="column.prop||column.property"
     :width="column.width"
+    :min-width="column.minWidth"
     v-bind="column.attrs"
     :formatter="formatter"
   >
@@ -86,20 +89,16 @@ const slots = useSlots()
     <template
       #default="scope"
     >
-      <template v-for="(button, index) in column.buttons">
-        <el-button
-          v-if="(!button.buttonIf||button.buttonIf(scope.row, scope))&&button.enabled!==false"
-          :key="index"
-          :type="button.type"
-          :icon="button.icon"
-          :size="button.size||buttonSize"
-          :disabled="button.disabled"
-          :round="button.round"
-          :circle="button.circle"
-          @click="button.click&&button.click(scope.row, scope)"
-        >
-          {{ button.label || toLabelByKey(button.labelKey) }}
-        </el-button>
+      <template
+        v-for="(button, index) in column.buttons"
+        :key="index"
+      >
+        <table-dynamic-button
+          :button-config="button"
+          :item="scope.row"
+          :button-size="buttonSize"
+          :scope="{...scope,item:scope.row}"
+        />
       </template>
       <slot
         name="default"

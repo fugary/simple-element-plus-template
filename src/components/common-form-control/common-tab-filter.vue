@@ -26,7 +26,7 @@ const props = defineProps({
     default: undefined
   }
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'change'])
 const vModel = useVModel(props, 'modelValue', emit)
 
 const childTypeMapping = { // 自动映射子元素类型，配置的时候可以不写type
@@ -72,7 +72,7 @@ const inputType = computed(() => useInputType({ type: props.type }))
         :is="inputType"
         v-if="vModel"
         v-model="vModel[tab.prop]"
-        @change="vModel._tabFilter=true"
+        @change="vModel.isTabFilter=true;$emit('change', vModel)"
       >
         <control-child
           v-for="(childItem, childIdx) in tab.children"

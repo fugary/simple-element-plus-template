@@ -11,6 +11,14 @@ export default [{
   name: 'TestPage',
   component: () => import('@/views/tools/TestPage.vue')
 }, {
+  path: '/editors',
+  name: 'Editors',
+  component: () => import('@/views/tools/Editors.vue')
+}, {
+  path: '/charts',
+  name: 'Charts',
+  component: () => import('@/views/tools/Charts.vue')
+}, {
   path: '/window-forms',
   name: 'WindowForms',
   component: () => import('@/views/tools/WindowForms.vue')

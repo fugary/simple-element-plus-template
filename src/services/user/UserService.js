@@ -93,7 +93,7 @@ export const useUserAutocompleteConfig = () => {
       property: 'address',
       width: '300px'
     }],
-    searchMethod ({ query, page }, cb) {
+    searchMethod ({ page }, cb) {
       loadUsersResult({ page })
         .then(result => {
           const data = {

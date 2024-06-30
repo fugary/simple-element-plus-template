@@ -1,7 +1,8 @@
 <script setup>
 import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
 import { useTabsViewStore } from '@/stores/TabsViewStore'
-import { GlobalLayoutMode, GlobalLocales } from '@/consts/GlobalConstants'
+import { GlobalLayoutMode, GlobalLocales, LoadSaveParamMode } from '@/consts/GlobalConstants'
+import { I18N_ENABLED, REMEMBER_SEARCH_PARAM_ENABLED, THEME_ENABLED } from '@/config'
 const globalConfigStore = useGlobalConfigStore()
 const tabsViewStore = useTabsViewStore()
 /**
@@ -12,7 +13,7 @@ const options = [
     labelKey: 'common.label.theme',
     prop: 'isDarkTheme',
     type: 'switch',
-    model: globalConfigStore,
+    enabled: THEME_ENABLED,
     attrs: {
       activeActionIcon: 'icon-moon',
       inactiveActionIcon: 'icon-sunny'
@@ -22,7 +23,7 @@ const options = [
     labelKey: 'common.label.language',
     type: 'select',
     prop: 'currentLocale',
-    model: globalConfigStore,
+    enabled: I18N_ENABLED,
     change (val) {
       globalConfigStore.changeLocale(val)
     },
@@ -36,9 +37,7 @@ const options = [
   },
   {
     labelKey: 'common.label.layout',
-    type: 'select',
-    prop: 'layoutMode',
-    model: globalConfigStore,
+    slot: 'layout',
     change (val) {
       globalConfigStore.changeLayout(val)
     },
@@ -53,14 +52,12 @@ const options = [
   {
     labelKey: 'common.label.showMenuIcon',
     prop: 'showMenuIcon',
-    type: 'switch',
-    model: globalConfigStore
+    type: 'switch'
   },
   {
     labelKey: 'common.label.breadcrumb',
     prop: 'isShowBreadcrumb',
     type: 'switch',
-    model: globalConfigStore,
     change (val) {
       globalConfigStore.isShowBreadcrumb = val
     }
@@ -88,6 +85,25 @@ const options = [
     prop: 'isShowTabIcon',
     type: 'switch',
     model: tabsViewStore
+  },
+  {
+    labelKey: 'common.label.saveParamMode',
+    prop: 'loadSaveParamMode',
+    type: 'select',
+    enabled: REMEMBER_SEARCH_PARAM_ENABLED,
+    attrs: {
+      clearable: false
+    },
+    children: [{
+      labelKey: 'common.label.allSaveParamMode',
+      value: LoadSaveParamMode.ALL
+    }, {
+      labelKey: 'common.label.backSaveParamMode',
+      value: LoadSaveParamMode.BACK
+    }, {
+      labelKey: 'common.label.neverSaveParamMode',
+      value: LoadSaveParamMode.NEVER
+    }]
   }
 ]
 </script>
@@ -106,7 +122,39 @@ const options = [
         :show-buttons="false"
         :options="options"
         label-position="left"
-      />
+        :model="globalConfigStore"
+      >
+        <template #layout="{option}">
+          <common-form-control
+            :model="globalConfigStore"
+            :option="option"
+          >
+            <el-radio-group
+              v-model="globalConfigStore.layoutMode"
+              size="small"
+            >
+              <el-radio-button
+                v-for="item in option.children"
+                :key="item.value"
+                :value="item.value"
+              >
+                <common-icon
+                  v-if="item.value==='left'"
+                  v-common-tooltip="$t(item.labelKey)"
+                  icon="VerticalSplitFilled"
+                  :size="16"
+                />
+                <common-icon
+                  v-if="item.value==='top'"
+                  v-common-tooltip="$t(item.labelKey)"
+                  icon="HorizontalSplitFilled"
+                  :size="16"
+                />
+              </el-radio-button>
+            </el-radio-group>
+          </common-form-control>
+        </template>
+      </common-form>
     </template>
     <template #footer>
       <div style="flex: auto">

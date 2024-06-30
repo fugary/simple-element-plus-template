@@ -1,6 +1,6 @@
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import * as MaterialIconsVue from '@vicons/material'
-import kebabCase from 'lodash/kebabCase'
+import { kebabCase } from 'lodash-es'
 
 export const INSTALL_ICONS = []
 export const ICON_PREFIX = 'icon-'

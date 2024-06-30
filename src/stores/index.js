@@ -1,5 +1,7 @@
 import { createPinia } from 'pinia'
 import { createPersistedState } from 'pinia-plugin-persistedstate'
+import { useSystemKey } from '@/utils'
+import { cloneDeep, isFunction } from 'lodash-es'
 
 /**
  * 组合式api的$reset需要自己实现
@@ -7,9 +9,17 @@ import { createPersistedState } from 'pinia-plugin-persistedstate'
  * @param store
  */
 const piniaPluginResetStore = ({ store }) => {
-  const initialState = JSON.parse(JSON.stringify(store.$state)) // deep clone(store.$state)
+  const initialState = cloneDeep(store.$state) // deep clone(store.$state)
   store.$reset = () => {
-    store.$state = JSON.parse(JSON.stringify(initialState))
+    const initState = cloneDeep(initialState)
+    if (isFunction(store.$customReset)) {
+      const newState = store.$customReset(initState)
+      if (newState) {
+        store.$patch(state => Object.assign(state, newState))
+        return
+      }
+    }
+    store.$patch(state => Object.assign(state, initState))
   }
 }
 
@@ -19,7 +29,7 @@ export default {
     pinia.use(piniaPluginResetStore)
     pinia.use(createPersistedState({
       key: key => {
-        const systemKey = import.meta.env.VITE_APP_SYSTEM_KEY
+        const systemKey = useSystemKey()
         return `__${systemKey}__${key}`
       }
     }))

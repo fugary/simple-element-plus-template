@@ -105,6 +105,7 @@ const searchFormOptions = computed(() => {
 })
 const doSearch = form => {
   console.info('=================searchParam', form, searchParam.value)
+  loadUsers()
 }
 /** *************用户编辑**************/
 const currentUser = ref(null)

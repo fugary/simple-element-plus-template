@@ -22,7 +22,7 @@ const activeRoutePath = computed(() => {
     return props.defaultActivePath
   }
   const current = useParentRoute(route)
-  return current && current.path !== '/' ? current.path : ''
+  return current && current.path !== '/' ? current.path : '--'
 })
 </script>
 
@@ -39,7 +39,7 @@ const activeRoutePath = computed(() => {
     >
       <common-menu-item
         :menu-item="menuItem"
-        :index="index"
+        :index="`${index}`"
       >
         <template #split>
           <slot name="split" />

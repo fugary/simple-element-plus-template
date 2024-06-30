@@ -8,6 +8,7 @@ import 'dayjs/locale/zh-cn'
 import dayjs from 'dayjs'
 import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
 import { GlobalLocales } from '@/consts/GlobalConstants'
+import { isArray, isString } from 'lodash-es'
 
 const DEFAULT_LOCALE = 'zh-CN'
 dayjs.locale(DEFAULT_LOCALE) // dayjs的语言配置
@@ -57,7 +58,12 @@ export const $i18nMsg = (cn, en, replaceEmpty = true) => {
  * @param {String[]=} params 可选参数
  * @returns {string}
  */
-export const $i18nBundle = i18n.global.t
+export const $i18nBundle = (key, params) => {
+  if (!key || !isString(key) || !key.includes('.')) { // 仅处理含有.的key
+    return key
+  }
+  return i18n.global.t(key, params)
+}
 
 /**
  * 根据key和locale返回数据<br>
@@ -78,12 +84,20 @@ export const $i18nByLocale = (key, locale, args) => {
 
 /**
  * 方便多个资源key解析
- * @param {String} key 国际化资源key
+ * @param {String|[String]} key 国际化资源key
  * @param {String} args 可选参数，也是资源key，方便多个资源key解析
  */
 export const $i18nKey = (key, ...args) => {
+  if (isArray(key)) {
+    args = key.slice(1)
+    key = key[0]
+  }
   args = args.map(argKey => $i18nBundle(argKey))
   return $i18nBundle(key, args)
+}
+
+export const $i18nConcat = (...items) => {
+  return items.map(item => (item ?? '')).filter(item => !!item).join($i18nMsg('', ' ', false))
 }
 
 export default {
@@ -95,6 +109,7 @@ export default {
       $i18nKey,
       $i18nBundle,
       $isLocale,
+      $i18nConcat,
       $i18nByLocale
     })
   }

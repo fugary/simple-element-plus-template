@@ -123,6 +123,12 @@ export interface CommonFormOption extends FormControlTypeOption {
     readonly?: boolean;
     /** 占位提示符 */
     placeholder?: string;
+    /** 日期最小值**/
+    minDate: string|Date;
+    /** 日期最大值**/
+    maxDate: string|Date;
+    /** 是否清理不可用日期值**/
+    clearInvalidDate: boolean;
     /** 有些控件柚子节点 */
     children?: Array<CommonFormOption>;
     /** async-validator验证器 */
@@ -133,6 +139,12 @@ export interface CommonFormOption extends FormControlTypeOption {
     tooltip?: string;
     /** 提示函数 */
     tooltipFunc?: () => void;
+    /** 自动trim，默认false**/
+    trim?: boolean,
+    /** 自动upperCase，默认false**/
+    upperCase?: boolean,
+    /** 自动lowerCase，默认false**/
+    lowerCase?: boolean,
     /**
      * common-form-label格式化
      * @param modelValue 数据
@@ -141,6 +153,8 @@ export interface CommonFormOption extends FormControlTypeOption {
     formatter?: (modelValue:any, option: CommonFormOption) => string|VNode;
     /** 自定义slot名称 */
     slot?: string;
+    /** 自定义label slot名称 */
+    labelSlot?: string;
     /**
      * 根据model数据动态计算Option值
      * @param model 表单model
@@ -184,4 +198,6 @@ export interface CommonFormProps extends FormProps {
     backUrl: string;
     /** 行级排列 */
     inline: boolean;
+    /** 回车提交 */
+    submitByEnter: boolean;
 }

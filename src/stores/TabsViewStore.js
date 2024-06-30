@@ -1,5 +1,10 @@
-import { ref } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import { defineStore } from 'pinia'
+import {
+  checkReplaceHistoryShouldReplace,
+  isNestedRoute
+} from '@/route/RouteUtils'
+import { TAB_MODE_MAX_CACHES } from '@/config'
 
 /**
  * @typedef {Object} TabsViewStore
@@ -14,10 +19,12 @@ import { defineStore } from 'pinia'
  * @return {TabsViewStore}
  */
 export const useTabsViewStore = defineStore('tabsView', () => {
-  const isTabMode = ref(true)
+  const isTabMode = ref(false)
   const isCachedTabMode = ref(true)
   const isShowTabIcon = ref(true)
   const currentTab = ref('')
+  const currentTabItem = ref(null)
+  const maxCacheCount = ref(TAB_MODE_MAX_CACHES)
   /**
    * @type {{value: [import('vue-router').RouteRecordRaw]}}
    */
@@ -48,14 +55,15 @@ export const useTabsViewStore = defineStore('tabsView', () => {
     }
   }
 
-  const checkMataReplaceHistory = (historyTab, tab) => {
-    // 如果meta中配置有replaceTabHistory，默认替换相关的tab
-    return historyTab.meta && historyTab.meta.replaceTabHistory && historyTab.meta.replaceTabHistory === tab.name
-  }
+  const isHomeTab = tab => !!tab?.meta?.homeFlag
 
-  const isSameReplaceHistory = (historyTab, tab) => {
-    return historyTab.meta && historyTab.meta.replaceTabHistory && tab.meta && tab.meta.replaceTabHistory &&
-        historyTab.meta.replaceTabHistory === tab.meta.replaceTabHistory
+  const getNestedParentTab = tab => isNestedRoute(tab) && tab.matched?.length >= 2 ? tab.matched[tab.matched.length - 2] : tab
+
+  const addNestedParentTab = (tab, replaceTab) => {
+    if (isCachedTabMode.value && !forceNotCache(tab)) {
+      const parentTab = getNestedParentTab(tab)
+      addCachedTab(parentTab, replaceTab)
+    }
   }
 
   const addHistoryTab = (tab) => {
@@ -63,16 +71,20 @@ export const useTabsViewStore = defineStore('tabsView', () => {
     if (isTabMode.value) {
       const idx = historyTabs.value.findIndex(v => v.path === tab.path)
       if (idx < 0) {
-        const replaceIdx = historyTabs.value.findIndex(v => checkMataReplaceHistory(v, tab) ||
-            checkMataReplaceHistory(tab, v) || isSameReplaceHistory(v, tab))
+        const replaceIdx = historyTabs.value.findIndex(v => checkReplaceHistoryShouldReplace(v, tab))
         let replaceTab = null
         if (replaceIdx > -1) {
           replaceTab = historyTabs.value[replaceIdx]
           historyTabs.value.splice(replaceIdx, 1, Object.assign({}, tab))
         } else {
-          historyTabs.value.push(Object.assign({}, tab)) // 可能是Proxy，需要解析出来
+          // 可能是Proxy，需要解析出来
+          isHomeTab(tab) ? historyTabs.value.unshift({ ...tab }) : historyTabs.value.push({ ...tab })
         }
-        addCachedTab(tab, replaceTab)
+        if (isNestedRoute(tab)) {
+          addNestedParentTab(tab, replaceTab)
+        } else {
+          addCachedTab(tab, replaceTab)
+        }
       }
     }
   }
@@ -99,7 +111,10 @@ export const useTabsViewStore = defineStore('tabsView', () => {
 
   const removeHistoryTabs = (tab, type) => {
     if (tab) {
-      const idx = cachedTabs.value.findIndex(v => v === tab.name)
+      const idx = historyTabs.value.findIndex(v => v.path === tab.path)
+      if (idx < 0) {
+        return
+      }
       let removeTabs = []
       if (type === 'right') {
         removeTabs = historyTabs.value.splice(idx + 1)
@@ -111,17 +126,24 @@ export const useTabsViewStore = defineStore('tabsView', () => {
       }
     }
   }
+
+  const forceNotCache = tab => {
+    const noCacheRoute = tab.matched?.find(route => route.meta && route.meta.cache === false)
+    return !!noCacheRoute
+  }
+
   const addCachedTab = (tab, replaceTab) => {
-    if (isCachedTabMode.value && tab.name && !tab.name.includes('-')) {
+    if (isCachedTabMode.value && !forceNotCache(tab) && tab.name && !tab.name.includes('-')) {
       removeCachedTab(replaceTab)
       if (!cachedTabs.value.includes(tab.name)) {
-        cachedTabs.value.push(tab.name)
+        nextTick(() => { cachedTabs.value.push(tab.name) })
       }
     }
   }
 
   const removeCachedTab = tab => {
     if (tab) {
+      tab = getNestedParentTab(tab)
       const idx = cachedTabs.value.findIndex(v => v === tab.name)
       if (idx > -1) {
         cachedTabs.value.splice(idx, 1)
@@ -142,17 +164,30 @@ export const useTabsViewStore = defineStore('tabsView', () => {
     }
   }
 
+  watch(currentTab, path => {
+    currentTabItem.value = historyTabs.value.find(v => path && v.path === path)
+  })
+
   return {
     isTabMode,
     isCachedTabMode,
     isShowTabIcon,
+    maxCacheCount,
     currentTab,
+    currentTabItem,
     historyTabs,
     cachedTabs,
+    $customReset (initState) {
+      Object.assign(initState, { // 保留部分配置
+        isTabMode: isTabMode.value,
+        isCachedTabMode: isCachedTabMode.value,
+        isShowTabIcon: isShowTabIcon.value
+      })
+    },
     changeTabMode (val) {
       isTabMode.value = val
       if (!isTabMode.value) {
-        clearHistoryTabs()
+        clearAllTabs()
       }
     },
     changeCachedTabMode (val) {

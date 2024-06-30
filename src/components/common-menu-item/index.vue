@@ -18,7 +18,7 @@ const props = defineProps({
     required: true
   },
   index: {
-    type: [Number, String],
+    type: String,
     default: ''
   }
 })
@@ -87,7 +87,7 @@ const showMenuIcon = computed(() => {
     <common-menu-item
       v-for="(childMenu, childIdx) in menuItem.children"
       :key="childMenu.index||childIdx"
-      :index="childIdx"
+      :index="`${menuItem.index||index}_${childIdx}`"
       :menu-item="childMenu"
     />
   </el-sub-menu>
@@ -128,6 +128,7 @@ const showMenuIcon = computed(() => {
   </el-menu-item>
   <el-menu-item
     v-else
+    v-open-new-window="menuItem.index"
     :class="menuCls"
     :disabled="menuItem.disabled"
     :route="menuItem.route"

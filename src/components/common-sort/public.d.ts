@@ -3,7 +3,7 @@ export interface SortOption {
   labelKey?: string;// 国际化资源key，首选该属性，不存在才使用label
   label?: string;
   showIcon?: boolean; // 控制某些排序不显示图标
-  fixedValue?: 'ASC' | 'DESC' // 固定排序模式
+  fixedValue?: 'ASC' | 'DESC'; // 固定排序模式
 }
 
 /**

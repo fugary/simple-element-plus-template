@@ -2,10 +2,15 @@
 import { useMenuInfo, useMenuName } from '@/components/utils'
 import { computed, ref } from 'vue'
 import { useTabsViewStore } from '@/stores/TabsViewStore'
+import { $i18nKey } from '@/messages'
 
 const tabsViewStore = useTabsViewStore()
 
 const props = defineProps({
+  labelConfig: {
+    type: Object,
+    default: null
+  },
   /**
    * @type RouteRecordRaw
    */
@@ -18,6 +23,11 @@ const props = defineProps({
 defineEmits(['removeHistoryTab', 'removeOtherHistoryTabs', 'removeHistoryTabs', 'refreshHistoryTab', 'onDropdownVisibleChange'])
 
 const menuName = computed(() => {
+  const labelConfig = props.labelConfig
+  if (labelConfig) {
+    const label = labelConfig.label || $i18nKey(labelConfig.labelKey)
+    if (label) return label
+  }
   return useMenuName(props.tabItem)
 })
 
@@ -26,6 +36,11 @@ const menuInfo = computed(() => {
 })
 
 const menuIcon = computed(() => {
+  const labelConfig = props.labelConfig
+  if (labelConfig) {
+    const icon = labelConfig.icon
+    if (icon) return icon
+  }
   if (menuInfo.value && menuInfo.value.icon) {
     return menuInfo.value.icon
   }

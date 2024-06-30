@@ -9,6 +9,7 @@ import CommonMenu from '@/components/common-menu/index.vue'
 import CommonMenuItem from '@/components/common-menu-item/index.vue'
 import CommonTabsView from '@/components/common-tabs-view/index.vue'
 import CommonTable from '@/components/common-table/index.vue'
+import CommonTableV2 from '@/components/common-table/common-table-v2.vue'
 import CommonTableForm from '@/components/common-table-form/index.vue'
 import CommonBreadcrumb from '@/components/common-breadcrumb/index.vue'
 import CommonWindow from '@/components/common-window/index.vue'
@@ -35,6 +36,7 @@ export default {
     Vue.component('CommonMenuItem', CommonMenuItem)
     Vue.component('CommonTabsView', CommonTabsView)
     Vue.component('CommonTable', CommonTable)
+    Vue.component('CommonTableV2', CommonTableV2)
     Vue.component('CommonTableForm', CommonTableForm)
     Vue.component('CommonBreadcrumb', CommonBreadcrumb)
     Vue.component('CommonWindow', CommonWindow)

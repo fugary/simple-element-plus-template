@@ -1,9 +1,8 @@
 import { createApp } from 'vue'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-import 'element-plus/theme-chalk/dark/css-vars.css'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import '@/vendors/dayjs.js'
+import ElementPlus from '@/vendors/element-plus'
 import stores from '@/stores'
 import icons from '@/icons'
 import messages from '@/messages'
@@ -13,6 +12,7 @@ import App from '@/App.vue'
 import router from '@/route/routes'
 
 import './assets/main.css'
+import MonacoEditor from '@/vendors/monaco-editor'
 
 const app = createApp(App)
 
@@ -23,5 +23,6 @@ app.use(ElementPlus)
 app.use(icons)
 app.use(messages)
 app.use(commons)
+app.use(MonacoEditor)
 
 app.mount('#app')

@@ -12,7 +12,8 @@ defineProps({
 
 const propConfig = ref({
   placement: 'top-start',
-  rawContent: true
+  rawContent: true,
+  effect: 'dark'
 })
 
 const setConfig = (config) => {
@@ -42,6 +43,7 @@ defineExpose({
     v-bind="propConfig"
   >
     <template #content>
+      <!--eslint-disable-next-line vue/no-v-html-->
       <div v-html="propConfig.content" />
     </template>
   </component>

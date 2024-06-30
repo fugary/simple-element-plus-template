@@ -1,6 +1,6 @@
 <script setup>
 import CommonTableColumn from '@/components/common-table/common-table-column.vue'
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, watch, onUnmounted } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
 import { getFrontendPage } from '@/components/utils'
 
@@ -38,7 +38,7 @@ const props = defineProps({
   },
   border: {
     type: Boolean,
-    default: true
+    default: false
   },
   /**
    * el-button
@@ -82,6 +82,10 @@ const props = defineProps({
         background: true
       }
     }
+  },
+  showPageSizes: {
+    type: Boolean,
+    default: true
   },
   loading: {
     type: Boolean,
@@ -158,7 +162,7 @@ const isInfiniteEnd = ref(false)
 
 function checkInfiniteEnd (pageVal) {
   if (props.infinitePaging) {
-    isInfiniteEnd.value = pageVal ? pageVal.pageNumber >= pageVal.pageCount : true
+    isInfiniteEnd.value = pageVal ? pageVal.pageNumber >= (pageVal.pageCount || 0) : true
   }
 }
 
@@ -198,10 +202,10 @@ watch(() => frontendPage, () => {
 
 onMounted(() => {
   if (props.infinitePaging) {
-    console.info('================================mounted', infiniteRef.value)
-    useIntersectionObserver(infiniteRef, onInfiniteLoad, {
-      threshold: 1
+    const { stop } = useIntersectionObserver(infiniteRef, onInfiniteLoad, {
+      threshold: 0.5
     })
+    onUnmounted(stop)
   }
 })
 
@@ -218,6 +222,24 @@ const onInfiniteLoad = (args) => {
     }
   }
 }
+
+const calcPageAttrs = computed(() => {
+  let newPageAttrs = props.pageAttrs
+  if (!props.showPageSizes && newPageAttrs.layout) {
+    newPageAttrs = {
+      ...newPageAttrs,
+      layout: newPageAttrs.layout.split(/\s*,\s*/).filter(item => item !== 'sizes').join(',')
+    }
+  }
+  return newPageAttrs
+})
+
+const calcBorder = computed(() => {
+  if (props.infinitePaging) {
+    return true // 这里有个bug，infinitePaging时border为false显示将会有问题
+  }
+  return props.border
+})
 
 const table = ref()
 
@@ -240,7 +262,7 @@ defineExpose({
       :stripe="stripe"
       :data="calcData"
       :class="{'common-hide-expand': hideExpandBtn}"
-      :border="border"
+      :border="calcBorder"
     >
       <common-table-column
         v-for="(column, index) in calcColumns"
@@ -293,7 +315,7 @@ defineExpose({
     <el-pagination
       v-if="!infinitePaging&&!frontendPaging&&page&&page.pageCount"
       class="common-pagination"
-      v-bind="pageAttrs"
+      v-bind="calcPageAttrs"
       :total="page.totalCount"
       :page-size="page.pageSize"
       :current-page="page.pageNumber"
@@ -303,7 +325,7 @@ defineExpose({
     <el-pagination
       v-if="!infinitePaging&&frontendPaging&&frontendPage&&frontendPage.pageCount"
       class="common-pagination"
-      v-bind="pageAttrs"
+      v-bind="calcPageAttrs"
       :total="frontendPage.totalCount"
       :page-size="frontendPage.pageSize"
       :current-page="frontendPage.pageNumber"

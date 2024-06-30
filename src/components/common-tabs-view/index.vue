@@ -2,8 +2,10 @@
 import { useTabsViewStore } from '@/stores/TabsViewStore'
 import { useRoute, useRouter } from 'vue-router'
 import { onMounted, ref, watch } from 'vue'
-import isString from 'lodash/isString'
+import { isString } from 'lodash-es'
 import TabsViewItem from '@/components/common-tabs-view/tabs-view-item.vue'
+import { toGetParams } from '@/utils'
+import { isNestedRoute } from '@/route/RouteUtils'
 
 const router = useRouter()
 const route = useRoute()
@@ -13,7 +15,7 @@ watch(route, () => {
     tabsViewStore.addHistoryTab(route)
     tabsViewStore.currentTab = route.path
   }
-})
+}, { immediate: true })
 
 onMounted(() => {
   if (!tabsViewStore.historyTabs.length) {
@@ -26,7 +28,9 @@ const selectHistoryTab = path => {
   const tab = isString(path) ? tabsViewStore.findHistoryTab(path) : path
   if (tab) {
     router.push(tab)
-    tabsViewStore.addCachedTab(tab)
+    if (!isNestedRoute(tab)) {
+      tabsViewStore.addCachedTab(tab)
+    }
   }
 }
 
@@ -39,8 +43,11 @@ const removeHistoryTab = path => {
 
 const refreshHistoryTab = tab => {
   const time = new Date().getTime()
-  router.push(`${tab.path}?${time}`)
-  tabsViewStore.addCachedTab(tab)
+  const query = Object.assign({}, tab.query, { _t: time })
+  router.replace(`${tab.path}?${toGetParams(query)}`)
+  if (!isNestedRoute(tab)) {
+    tabsViewStore.addCachedTab(tab)
+  }
 }
 
 const removeOtherHistoryTabs = tab => {
@@ -82,6 +89,7 @@ const onDropdownVisibleChange = (visible, tab) => {
       ref="tabItems"
       :key="item.path"
       :tab-item="item"
+      :label-config="item.labelConfig"
       @refresh-history-tab="refreshHistoryTab"
       @remove-other-history-tabs="removeOtherHistoryTabs"
       @remove-history-tabs="removeHistoryTabs"

@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue'
-import TableFormControl from '@/components/common-table-form/table-form-control.vue'
 import { toLabelByKey } from '@/components/utils'
 
 const props = defineProps({
@@ -19,6 +18,10 @@ const props = defineProps({
   showOperation: {
     type: Boolean,
     default: true
+  },
+  operationWidth: {
+    type: String,
+    default: '110px'
   }
 })
 
@@ -55,13 +58,11 @@ const options = computed(() => {
 <template>
   <el-table
     :data="dataList"
-    border
     class="common-table-form"
   >
     <el-table-column
       v-for="(option, index) in options"
-      :key="index"
-      :label="option.label||toLabelByKey(option.labelKey)"
+      :key="`${option.prop}__${index}`"
       :width="option.width"
     >
       <template
@@ -71,6 +72,16 @@ const options = computed(() => {
         <slot
           v-bind="scope"
           :name="option.headerSlot"
+        />
+      </template>
+      <template
+        v-else
+        #header
+      >
+        <el-form-item
+          :label="option.label||toLabelByKey(option.labelKey)"
+          class="common-table-form-label"
+          :required="option.required"
         />
       </template>
       <!--用于自定义显示属性-->
@@ -88,7 +99,7 @@ const options = computed(() => {
         v-else
         #default="{row, $index}"
       >
-        <table-form-control
+        <common-form-control
           :model="row"
           label-width="0"
           :option="option"
@@ -99,11 +110,13 @@ const options = computed(() => {
     </el-table-column>
     <el-table-column
       v-if="showOperation"
+      :width="operationWidth"
       :label="$t('common.label.operation')"
     >
       <template #default="{row, $index}">
         <div class="el-form-item">
           <el-button
+            circle
             type="danger"
             size="small"
             :underline="false"

@@ -1,13 +1,17 @@
 <script setup>
 import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
-import { $changeLocale, elementLocale, $i18nBundle } from '@/messages'
+import { $changeLocale, elementLocale } from '@/messages'
 import { useTitle } from '@vueuse/core'
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { calcRouteTitle, useRoutePopStateEvent } from '@/route/RouteUtils'
 
 const globalConfigStore = useGlobalConfigStore()
 $changeLocale(globalConfigStore.currentLocale)
-const title = computed(() => $i18nBundle('common.label.title'))
+const route = useRoute()
+const title = computed(() => calcRouteTitle(route))
 useTitle(title)
+useRoutePopStateEvent()
 </script>
 
 <template>

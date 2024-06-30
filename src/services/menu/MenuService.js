@@ -14,6 +14,8 @@ import { $i18nMsg } from '@/messages'
 import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
 import { GlobalLocales } from '@/consts/GlobalConstants'
 import { useLoginConfigStore } from '@/stores/LoginConfigStore'
+import { I18N_ENABLED, THEME_ENABLED } from '@/config'
+import { $logout } from '@/utils'
 
 export const searchMenusResult = (queryParam, config) => {
   return $httpPost('/api/searchMenus', queryParam, config)
@@ -136,6 +138,7 @@ export const useThemeAndLocaleMenus = () => {
   return [{
     icon: 'LanguageFilled',
     isDropdown: true,
+    enabled: I18N_ENABLED,
     children: [
       {
         iconIf: () => GlobalLocales.CN === globalConfigStore.currentLocale ? 'check' : '',
@@ -151,6 +154,7 @@ export const useThemeAndLocaleMenus = () => {
   },
   {
     isDropdown: true,
+    enabled: THEME_ENABLED,
     iconIf: () => !globalConfigStore.isDarkTheme ? 'moon' : 'sunny',
     click: () => globalConfigStore.changeTheme(!globalConfigStore.isDarkTheme)
   }]
@@ -189,9 +193,8 @@ export const useBaseTopMenus = () => {
         },
         {
           labelKey: 'common.label.logout',
-          click (router) {
-            loginConfigStore.logout()
-            router.push('/login')
+          click () {
+            $logout()
           }
         }
       ]
