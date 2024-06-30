@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { loadAndParseMenus, menu2CommonMenu, useBaseTopMenus } from '@/services/menu/MenuService'
 
 export const useMenuConfigStore = defineStore('menuConfig', () => {
@@ -10,7 +10,7 @@ export const useMenuConfigStore = defineStore('menuConfig', () => {
   return {
     businessMenus,
     loadBaseTopMenus () {
-      return ref(useBaseTopMenus())
+      return reactive(useBaseTopMenus())
     },
     async loadBusinessMenus () {
       businessMenus.value = await loadAndParseMenus()

@@ -7,6 +7,7 @@ import stores from '@/stores'
 import icons from '@/icons'
 import messages from '@/messages'
 import commons from '@/components'
+import utils from '@/utils'
 
 import App from '@/App.vue'
 import router from '@/route/routes'
@@ -23,6 +24,7 @@ app.use(ElementPlus)
 app.use(icons)
 app.use(messages)
 app.use(commons)
+app.use(utils)
 app.use(MonacoEditor)
 
 app.mount('#app')

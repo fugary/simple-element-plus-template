@@ -92,7 +92,7 @@ export const addParamsToURL = (url, params = {}) => {
   const baseUrl = hasParams ? url.substring(0, queryIndex) : url
   return `${baseUrl}?${toGetParams({ ...getParams, ...params })}`
 }
-const router = null
+let router = null
 /**
  * @param {string|RouteLocationRaw|number} path 路径、路由对象、数字
  * @param replace 是否用replace方法
@@ -301,5 +301,31 @@ export const $copyText = (text) => {
         })
       }
     }
+  }
+}
+
+export default {
+  install (app) {
+    router = app.config.globalProperties.$router
+    Object.assign(app.config.globalProperties, {
+      $goto,
+      $reload,
+      $back: $goto,
+      $logout,
+      $date: formatDate,
+      $day: formatDay,
+      $number,
+      $currency,
+      $currencyShort,
+      $coreShowLoading,
+      $coreHideLoading,
+      $coreAlert,
+      $coreSuccess,
+      $coreWarning,
+      $coreError,
+      $coreConfirm,
+      $openNewWin,
+      $openWin
+    })
   }
 }
