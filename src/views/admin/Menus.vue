@@ -3,6 +3,8 @@ import { computed, onMounted, ref } from 'vue'
 import { useDefaultPage } from '@/config'
 import { useRouter } from 'vue-router'
 import { searchMenusResult } from '@/services/menu/MenuService'
+import { $coreConfirm } from '@/utils'
+import { $i18nBundle } from '@/messages'
 
 const router = useRouter()
 
@@ -62,7 +64,10 @@ const buttons = ref([{
   labelKey: 'common.label.delete',
   type: 'danger',
   click: item => {
-    console.info('删除=============', item)
+    $coreConfirm($i18nBundle('common.msg.commonDeleteConfirm', [item.nameCn]))
+      .then(() => {
+        console.info('删除=============', item)
+      })
   }
 }])
 //* ************搜索框**************//
