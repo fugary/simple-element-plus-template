@@ -78,7 +78,7 @@ const allMenus = [
   {
     id: 25,
     parentId: 2,
-    iconCls: 'PieChartSharp',
+    iconCls: 'PieChart',
     nameCn: '图表示例',
     nameEn: 'Charts',
     menuUrl: '/charts'

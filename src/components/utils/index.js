@@ -1,4 +1,4 @@
-import { ref, unref } from 'vue'
+import { isVNode, ref, unref } from 'vue'
 import { $i18nBundle, $i18nKey } from '@/messages'
 import { isArray, isFunction, isObject } from 'lodash-es'
 
@@ -64,8 +64,8 @@ export const useMenuName = item => {
       return toLabelByKey(menuInfo.labelKey)
     }
   }
-  if (item.meta && item.meta.labelKey) {
-    return toLabelByKey(item.meta.labelKey)
+  if (item.meta && (item.meta.label || item.meta.labelKey)) {
+    return item.meta.label || toLabelByKey(item.meta.labelKey)
   }
   return item.name || 'No Name'
 }
@@ -152,6 +152,24 @@ export const proxyMethod = (targets = [], methodName) => {
     }
     return results
   }
+}
+
+export const calcSlotsResult = (config, data) => {
+  const results = {}
+  if (config?.slots) {
+    const slots = config.slots
+    for (const slotKey in slots) {
+      const slot = slots[slotKey]
+      if (isFunction(slot)) {
+        const slotResult = slot(data, config)
+        results[slotKey] = {
+          result: slotResult,
+          vnode: isVNode(slotResult)
+        }
+      }
+    }
+  }
+  return results
 }
 
 /**
