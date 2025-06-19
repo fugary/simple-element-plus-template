@@ -258,14 +258,16 @@ const formatResult = computed(() => {
         :content="calcOption.tooltip"
         placement="top-start"
         raw-content
+        v-bind="calcOption.tooltipAttrs"
       >
         <span>
           <el-link
-            :underline="false"
+            v-bind="calcOption.tooltipLinkAttrs"
+            underline="never"
             @click="calcOption.tooltipFunc"
           >&nbsp;
             <common-icon
-              icon="QuestionFilled"
+              :icon="calcOption.tooltipIcon||'QuestionFilled'"
             />
           </el-link>
         </span>
@@ -288,7 +290,7 @@ const formatResult = computed(() => {
         >
           <component
             :is="scope[`__slotResult__${slotKey}`]"
-            v-if="isVNode(scope[`__slotResult__${slotKey}`] = slot(scope))"
+            v-if="isVNode(scope[`__slotResult__${slotKey}`] = slot(scope, calcOption))"
           />
           <template v-else>
             {{ scope[`__slotResult__${slotKey}`] }}
