@@ -12,6 +12,7 @@ import utils from '@/utils'
 import App from '@/App.vue'
 import router from '@/route/routes'
 
+import './assets/custom-icons.css'
 import './assets/main.css'
 import MonacoEditor from '@/vendors/monaco-editor'
 
