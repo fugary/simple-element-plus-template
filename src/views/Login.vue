@@ -4,40 +4,51 @@ import { useRouter } from 'vue-router'
 import { useThemeAndLocaleMenus } from '@/services/menu/MenuService'
 import { useLoginConfigStore } from '@/stores/LoginConfigStore'
 import { ElMessage } from 'element-plus'
+import { Lock, User } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const loginConfigStore = useLoginConfigStore()
 
 const themeAndLocaleMenus = ref(useThemeAndLocaleMenus())
 
-/**
- * @type {[CommonFormOption]}
- */
 const loginFormOptions = [{
   labelKey: 'common.label.username',
   required: true,
-  prop: 'userName'
+  prop: 'userName',
+  attrs: {
+    size: 'large',
+    'prefix-icon': User
+  }
 }, {
   labelKey: 'common.label.password',
   required: true,
   prop: 'userPassword',
   attrs: {
-    showPassword: true
+    size: 'large',
+    showPassword: true,
+    'prefix-icon': Lock
   }
 }]
 
-/**
- * @type {LoginVo}
- */
 const loginVo = ref({
   userName: 'admin',
   userPassword: '123456'
 })
 
-const submitForm = form => {
-  form.validate(async (valid) => {
+const loading = ref(false)
+const formRef = ref()
+
+const submitForm = async () => {
+  const form = formRef.value?.form
+  if (!form) return
+
+  await form.validate(async (valid) => {
     if (valid) {
+      loading.value = true
       const loginResult = await loginConfigStore.login(loginVo.value)
+        .finally(() => {
+          loading.value = false
+        })
       if (loginResult.success) {
         router.push('/')
       } else {
@@ -46,60 +57,92 @@ const submitForm = form => {
     }
   })
 }
-const formRef = ref()
 </script>
 
 <template>
-  <el-container>
-    <el-card class="login-form">
-      <template #header>
-        <div class="card-header">
-          <span>{{ $t('common.msg.loginTitle') }}</span>
-          <common-menu
-            :menus="themeAndLocaleMenus"
-            mode="horizontal"
-            :ellipsis="false"
-          />
-        </div>
-      </template>
-      <common-form
-        ref="formRef"
-        :model="loginVo"
-        :options="loginFormOptions"
-        label-width="100px"
-        :show-buttons="false"
+  <div class="login-container">
+    <!-- Tools -->
+    <div class="login-tools">
+      <common-menu
+        :menus="themeAndLocaleMenus"
+        mode="horizontal"
+        :ellipsis="false"
       />
-      <template #footer>
-        <el-button
-          type="primary"
-          @click="submitForm(formRef.form)"
+    </div>
+
+    <!-- Left Branding -->
+    <div class="login-branding">
+      <div class="branding-decoration" />
+      <div class="branding-content">
+        <transition
+          name="fade-slide"
+          mode="out-in"
         >
-          {{ $t('common.label.submit') }}
-        </el-button>
-        <el-button
-          @click="formRef.form.resetFields()"
-        >
-          {{ $t('common.label.reset') }}
-        </el-button>
-      </template>
-    </el-card>
-  </el-container>
+          <div :key="$i18n.locale">
+            <h1 class="branding-title">
+              {{ $t('common.label.title') }}
+            </h1>
+            <p class="branding-subtitle">
+              {{ $t('common.msg.loginSubtitle') }}
+            </p>
+          </div>
+        </transition>
+      </div>
+    </div>
+
+    <!-- Right Form Section -->
+    <div class="login-form-section">
+      <div class="form-wrapper">
+        <div class="form-header">
+          <h2>{{ $t('common.msg.loginTitle') }}</h2>
+          <p class="form-subtitle">
+            {{ $t('common.msg.loginWelcome') }}
+          </p>
+        </div>
+
+        <common-form
+          ref="formRef"
+          :model="loginVo"
+          :options="loginFormOptions"
+          class="modern-form"
+          label-position="top"
+          :show-buttons="false"
+          @submit-form="submitForm"
+        />
+
+        <div class="form-actions">
+          <el-button
+            type="primary"
+            class="login-btn"
+            :loading="loading"
+            @click="submitForm"
+          >
+            {{ loading ? $t('common.label.logining') : $t('common.label.login') }}
+          </el-button>
+
+          <el-button
+            class="reset-btn"
+            text
+            @click="formRef.form.resetFields()"
+          >
+            {{ $t('common.label.reset') }}
+          </el-button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
+<style scoped src="@/assets/login.css"></style>
+
 <style scoped>
-.login-form {
-  width: 500px;
-  margin: 5% auto;
+:deep(.el-menu--horizontal) {
+  border-bottom: none !important;
 }
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+:deep(.el-menu--horizontal > .el-menu-item) {
+  border-bottom: none !important;
 }
-
-.el-menu--horizontal.el-menu {
-  border-bottom: none;
+:deep(.el-menu--horizontal > .el-menu-item.is-active) {
+  border-bottom: none !important;
 }
-
 </style>
