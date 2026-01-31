@@ -1,6 +1,6 @@
 import { fileURLToPath, URL } from 'node:url'
 
-import { defineConfig, loadEnv, splitVendorChunkPlugin } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { viteMockServe } from 'vite-plugin-mock'
 import vueJsx from '@vitejs/plugin-vue-jsx'
@@ -15,9 +15,6 @@ const optionalPlugins = [{
   plugin: viteMockServe({
     mockPath: './mock'
   }),
-  enabled: true
-}, {
-  plugin: splitVendorChunkPlugin(),
   enabled: true
 }].filter(p => p.enabled).map(p => p.plugin)
 
@@ -49,7 +46,7 @@ export default ({ mode }) => {
         output: {
           chunkFileNames: JS_FILE_NAMES, // 引入文件名的名称
           entryFileNames: JS_FILE_NAMES, // 包的入口文件名称
-          assetFileNames (assetInfo) {
+          assetFileNames(assetInfo) {
             if (assetInfo.name?.endsWith('.css')) { // CSS文件
               return CSS_FILE_NAMES
             } else if (IMG_EXT_LIST.some((ext) => assetInfo.name?.endsWith(ext))) { // 图片
@@ -57,7 +54,7 @@ export default ({ mode }) => {
             }
             return 'assets/[name]-[hash].[ext]' // 其他资源
           },
-          manualChunks (id) {
+          manualChunks(id) {
             if (id.includes('element-plus')) {
               return 'elp'
             }
