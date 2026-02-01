@@ -16,6 +16,7 @@ import { GlobalLocales } from '@/consts/GlobalConstants'
 import { useLoginConfigStore } from '@/stores/LoginConfigStore'
 import { I18N_ENABLED, THEME_ENABLED } from '@/config'
 import { $logout } from '@/utils'
+import { nextTick } from 'vue'
 
 export const searchMenusResult = (queryParam, config) => {
   return $httpPost('/api/searchMenus', queryParam, config)
@@ -135,6 +136,67 @@ const processMenus = (menus, parent = undefined) => {
 
 export const useThemeAndLocaleMenus = () => {
   const globalConfigStore = useGlobalConfigStore()
+
+  const toggleTheme = (event) => {
+    // Attempt to get coordinates from the event or global event
+    // Element Plus el-menu-item emits a custom object, not a MouseEvent, so event.clientX might be missing.
+    const mouseEvent = event && typeof event.clientX === 'number' ? event : window.event
+    const x = mouseEvent?.clientX ?? window.innerWidth / 2
+    const y = mouseEvent?.clientY ?? window.innerHeight / 2
+
+    const endRadius = Math.hypot(
+      Math.max(x, innerWidth - x),
+      Math.max(y, innerHeight - y)
+    )
+
+    // Fallback for browsers without View Transition API
+    if (!document.startViewTransition) {
+      globalConfigStore.changeTheme(!globalConfigStore.isDarkTheme)
+      return
+    }
+
+    // Disable transitions to prevent "fading" snapshot
+    const css = document.createElement('style')
+    css.appendChild(document.createTextNode(`* {
+      -webkit-transition: none !important;
+      -moz-transition: none !important;
+      -o-transition: none !important;
+      -ms-transition: none !important;
+      transition: none !important;
+    }`))
+    document.head.appendChild(css)
+
+    const transition = document.startViewTransition(async () => {
+      globalConfigStore.changeTheme(!globalConfigStore.isDarkTheme)
+      await nextTick()
+    })
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`
+      ]
+      document.documentElement.animate(
+        {
+          clipPath: globalConfigStore.isDarkTheme ? [...clipPath].reverse() : clipPath
+        },
+        {
+          duration: 400,
+          easing: 'ease-in',
+          fill: 'forwards',
+          pseudoElement: globalConfigStore.isDarkTheme
+            ? '::view-transition-old(root)'
+            : '::view-transition-new(root)'
+        }
+      )
+    })
+
+    // Clean up the transition disable style after the animation finishes
+    transition.finished.then(() => {
+      document.head.removeChild(css)
+    })
+  }
+
   return [{
     icon: 'LanguageFilled',
     isDropdown: true,
@@ -156,7 +218,7 @@ export const useThemeAndLocaleMenus = () => {
     isDropdown: true,
     enabled: THEME_ENABLED,
     iconIf: () => !globalConfigStore.isDarkTheme ? 'moon' : 'sunny',
-    click: () => globalConfigStore.changeTheme(!globalConfigStore.isDarkTheme)
+    click: (event) => toggleTheme(event)
   }]
 }
 
