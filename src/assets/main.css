@@ -568,3 +568,35 @@ body,
 .dark::view-transition-new(root) {
     z-index: 1;
 }
+
+/* 整体编辑器区域 */
+.monaco-editor.vs {
+    background-color: #f5f7fa;
+}
+
+/* gutter（行号区） */
+.monaco-editor.vs .margin {
+    background-color: #f0f2f5;
+    box-shadow: inset -1px 0 0 #dcdfe6;
+}
+
+/* 内容区 */
+.monaco-editor.vs .monaco-editor-background {
+    background-color: #ffffff;
+}
+
+/* Dark Mode Editor Contrast */
+.dark .monaco-editor.vs-dark {
+    background-color: var(--el-bg-color);
+    border: none;
+}
+
+.dark .monaco-editor.vs-dark .margin {
+    background-color: #252526 !important;
+    box-shadow: inset -1px 0 0 #424242;
+    border: none;
+}
+
+.dark .monaco-editor.vs-dark .monaco-editor-background {
+    background-color: #1e1e1e !important;
+}

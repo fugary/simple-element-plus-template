@@ -1,9 +1,17 @@
 <script setup>
 import { useMonacoEditorOptions } from '@/vendors/monaco-editor'
 import { $copyText } from '@/utils'
+import { useGlobalConfigStore } from '@/stores/GlobalConfigStore'
+import { computed } from 'vue'
+
+const globalConfigStore = useGlobalConfigStore()
 const { contentRef, languageRef, editorRef, monacoEditorOptions, formatDocument } = useMonacoEditorOptions({
   readOnly: false
 })
+const theme = computed(() => {
+  return globalConfigStore.isDarkTheme ? 'vs-dark' : 'vs'
+})
+
 </script>
 
 <template>
@@ -13,6 +21,7 @@ const { contentRef, languageRef, editorRef, monacoEditorOptions, formatDocument 
       :language="languageRef"
       height="400px"
       :options="monacoEditorOptions"
+      :theme="theme"
       @mount="editorRef=$event"
     />
     <el-footer
