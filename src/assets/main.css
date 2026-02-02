@@ -636,3 +636,8 @@ body,
     opacity: 1;
     box-shadow: var(--el-box-shadow);
 }
+
+/* Layout Improvements */
+.height100 {
+    height: 100%;
+}
