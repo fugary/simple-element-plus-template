@@ -600,3 +600,39 @@ body,
 .dark .monaco-editor.vs-dark .monaco-editor-background {
     background-color: #1e1e1e !important;
 }
+
+.home-main.is-maximized {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2000;
+    background-color: var(--el-bg-color);
+}
+
+.fullscreen-btn {
+    position: fixed;
+    top: auto;
+    right: 40px;
+    bottom: 90px;
+    z-index: 999;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--el-bg-color-overlay);
+    color: var(--el-color-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: var(--el-box-shadow-lighter);
+    opacity: 1;
+    transition: opacity 0.3s;
+    font-size: 20px;
+}
+
+.fullscreen-btn:hover {
+    opacity: 1;
+    box-shadow: var(--el-box-shadow);
+}
