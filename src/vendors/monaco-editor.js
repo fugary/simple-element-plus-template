@@ -17,7 +17,6 @@ const defaultConfig = {
   automaticLayout: true,
   autoIndent: 'full',
   scrollBeyondLastLine: false,
-  theme: 'vs-dark',
   wordWrap: 'on',
   readOnly: true
 }

@@ -45,6 +45,7 @@ const chartConfig = {
     <v-chart
       v-if="chartConfig"
       class="chart"
+      :key="theme"
       :theme="theme"
       :option="chartConfig"
       autoresize

@@ -96,5 +96,10 @@ useMenuConfigStore().loadBusinessMenus()
   </el-container>
 </template>
 <style scoped>
-
+.tabs-header {
+  padding-top: 6px !important;
+  height: auto !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
 </style>
